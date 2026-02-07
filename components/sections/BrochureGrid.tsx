@@ -89,10 +89,15 @@ export default function BrochureGrid() {
                                 </p>
                             </div>
 
-                            <button className="w-full bg-brushed-gold text-white py-5 rounded-sm text-xs font-bold tracking-[0.25em] uppercase shadow-xl shadow-brushed-gold/20 hover:shadow-brushed-gold/30 transition-all flex items-center justify-center gap-3">
+                            <a
+                                href={brochure.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full bg-brushed-gold text-white py-5 rounded-sm text-xs font-bold tracking-[0.25em] uppercase shadow-xl shadow-brushed-gold/20 hover:shadow-brushed-gold/30 transition-all flex items-center justify-center gap-3"
+                            >
                                 <ArrowRight className="w-4 h-4" />
                                 Explore Brochure
-                            </button>
+                            </a>
                         </div>
                     </article>
                 ))}
