@@ -70,10 +70,6 @@ export default function InquiryForm() {
                 </button>
             </form>
 
-            <div className="mt-12 text-center opacity-40 text-[10px] tracking-[0.15em] leading-relaxed uppercase px-8 text-midnight-navy">
-                © 2026 FEEL JAPAN WITH K. ALL RIGHTS RESERVED.
-                <div className="mt-1">EXCLUSIVELY FOR TRAVEL PARTNERS.</div>
-            </div>
         </section>
     );
 }
