@@ -56,48 +56,50 @@ export default function BrochureGrid() {
             </div>
 
             {/* Brochure Cards */}
-            <div className="px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 md:max-w-7xl md:mx-auto">
+            <div className="px-6 md:px-12 lg:px-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 xl:gap-12 max-w-7xl mx-auto">
                 {BROCHURES.map((brochure) => (
-                    <article key={brochure.id} className="flex flex-col group">
+                    <article key={brochure.id} className="flex flex-col group h-full">
                         {/* Image Card */}
-                        <div className="relative aspect-[3/4] overflow-hidden rounded-sm shadow-2xl mb-8">
-                            <div className="absolute inset-0 bg-midnight-navy/10 z-10"></div>
+                        <div className="relative aspect-[3/4] overflow-hidden rounded-sm shadow-xl hover:shadow-2xl transition-all duration-500 mb-6">
+                            <div className="absolute inset-0 bg-midnight-navy/10 z-10 group-hover:bg-transparent transition-colors duration-500"></div>
                             <img
                                 src={brochure.image}
                                 alt={brochure.title}
-                                className="h-full w-full object-cover transition-transform duration-[1.5s] ease-in-out group-hover:scale-105"
+                                className="h-full w-full object-cover transition-transform duration-[1.5s] ease-in-out group-hover:scale-110"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/60 via-midnight-navy/10 to-transparent opacity-70"></div>
-                        </div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/80 via-transparent to-transparent opacity-80"></div>
 
-                        {/* Content */}
-                        <div className="space-y-6">
-                            {/* Tags */}
-                            <div className="flex flex-wrap gap-3">
-                                {brochure.tags.map((tag, idx) => (
-                                    <span key={idx} className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-sm border-l-2 ${tag.border} bg-white shadow-sm`}>
+                            {/* Floating Tag inside image for better space usage on mobile */}
+                            <div className="absolute bottom-4 left-4 right-4 flex flex-wrap gap-2 z-20">
+                                {brochure.tags.slice(0, 2).map((tag, idx) => (
+                                    <span key={idx} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-white/95 backdrop-blur-sm shadow-sm">
                                         <tag.icon className={`w-3 h-3 ${tag.color}`} />
                                         <span className="text-[9px] font-bold uppercase tracking-widest text-midnight-navy">{tag.label}</span>
                                     </span>
                                 ))}
                             </div>
+                        </div>
 
+                        {/* Content */}
+                        <div className="flex flex-col flex-grow space-y-4">
                             <div>
-                                <h3 className="text-3xl font-serif text-midnight-navy leading-snug mb-3">{brochure.title}</h3>
-                                <p className="text-sm text-midnight-navy/60 leading-7 font-light">
+                                <h3 className="text-2xl lg:text-3xl font-serif text-midnight-navy leading-tight mb-2 group-hover:text-brushed-gold transition-colors">{brochure.title}</h3>
+                                <p className="text-sm text-midnight-navy/60 leading-relaxed font-light line-clamp-3">
                                     {brochure.description}
                                 </p>
                             </div>
 
-                            <a
-                                href={brochure.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-full bg-brushed-gold text-white py-5 rounded-sm text-xs font-bold tracking-[0.25em] uppercase shadow-xl shadow-brushed-gold/20 hover:shadow-brushed-gold/30 transition-all flex items-center justify-center gap-3"
-                            >
-                                <ArrowRight className="w-4 h-4" />
-                                Explore Brochure
-                            </a>
+                            <div className="mt-auto pt-4">
+                                <a
+                                    href={brochure.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full bg-midnight-navy text-white py-4 rounded-sm text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-brushed-gold transition-colors duration-300 flex items-center justify-center gap-2 group-hover:bg-brushed-gold"
+                                >
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                    View Collection
+                                </a>
+                            </div>
                         </div>
                     </article>
                 ))}
