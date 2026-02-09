@@ -136,7 +136,29 @@ function parseBrochureHTML(html: string, filename: string): any {
 
         const activities: Activity[] = [];
 
-        // Extract list items from this section
+        // Helper function to map icon class to icon name
+        const mapIcon = (iconClass: string): string => {
+            if (iconClass.includes('check')) return 'Check';
+            if (iconClass.includes('plane')) return 'Plane';
+            if (iconClass.includes('bus') || iconClass.includes('van')) return 'Bus';
+            if (iconClass.includes('hotel')) return 'Hotel';
+            if (iconClass.includes('camera')) return 'Camera';
+            if (iconClass.includes('map')) return 'MapPin';
+            if (iconClass.includes('shopping') || iconClass.includes('bag')) return 'ShoppingBag';
+            if (iconClass.includes('utensils')) return 'Utensils';
+            if (iconClass.includes('train')) return 'Train';
+            if (iconClass.includes('star') || iconClass.includes('sparkle')) return 'Star';
+            if (iconClass.includes('ticket')) return 'Ticket';
+            if (iconClass.includes('user')) return 'UserCheck';
+            if (iconClass.includes('bottle')) return 'Droplet';
+            if (iconClass.includes('mosque')) return 'Star';
+            if (iconClass.includes('mountain')) return 'Mountain';
+            if (iconClass.includes('torii')) return 'MapPin';
+            if (iconClass.includes('box')) return 'Package';
+            return 'Circle';
+        };
+
+        // Pattern 1: Extract list items (newer format)
         const liRegex = /<li[^>]*>\s*<i[^>]*fa-([a-z-]+)[^>]*><\/i>\s*(.*?)<\/li>/gis;
         let liMatch;
         while ((liMatch = liRegex.exec(daySection)) !== null) {
@@ -147,24 +169,25 @@ function parseBrochureHTML(html: string, filename: string): any {
                 .replace(/&amp;/g, '&')
                 .trim();
 
-            // Map font awesome icons
-            let icon = 'Circle';
-            if (iconClass.includes('check')) icon = 'Check';
-            else if (iconClass.includes('plane')) icon = 'Plane';
-            else if (iconClass.includes('bus') || iconClass.includes('van')) icon = 'Bus';
-            else if (iconClass.includes('hotel')) icon = 'Hotel';
-            else if (iconClass.includes('camera')) icon = 'Camera';
-            else if (iconClass.includes('map')) icon = 'MapPin';
-            else if (iconClass.includes('shopping')) icon = 'ShoppingBag';
-            else if (iconClass.includes('utensils')) icon = 'Utensils';
-            else if (iconClass.includes('train')) icon = 'Train';
-            else if (iconClass.includes('star')) icon = 'Star';
-            else if (iconClass.includes('ticket')) icon = 'Ticket';
-            else if (iconClass.includes('user')) icon = 'UserCheck';
-            else if (iconClass.includes('bottle')) icon = 'Droplet';
-
             if (description) {
-                activities.push({ icon, description });
+                activities.push({ icon: mapIcon(iconClass), description });
+            }
+        }
+
+        // Pattern 2: Extract div-based activities (older format)
+        // <div class="flex gap-4..."><i class="fa-solid fa-..."></i><div><p class="font-bold...">Title</p><p class="text-sm">Description</p></div></div>
+        if (activities.length === 0) {
+            const divRegex = /<div[^>]*flex[^>]*gap[^>]*>\s*<i[^>]*fa-([a-z-]+)[^>]*><\/i>\s*<div>\s*<p[^>]*>([^<]*)<\/p>\s*<p[^>]*>([^<]*)/gis;
+            let divMatch;
+            while ((divMatch = divRegex.exec(daySection)) !== null) {
+                const iconClass = divMatch[1];
+                const title = divMatch[2].replace(/&amp;/g, '&').trim();
+                const desc = divMatch[3].replace(/&amp;/g, '&').replace(/<[^>]*>/g, '').trim();
+                const fullDescription = desc ? `${title}: ${desc}` : title;
+
+                if (fullDescription) {
+                    activities.push({ icon: mapIcon(iconClass), description: fullDescription });
+                }
             }
         }
 
