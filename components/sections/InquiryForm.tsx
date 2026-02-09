@@ -1,6 +1,20 @@
+"use client";
+
 import { ChevronDown } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function InquiryForm() {
+    const searchParams = useSearchParams();
+    const [selectedPackage, setSelectedPackage] = useState("");
+
+    useEffect(() => {
+        const pkg = searchParams.get('package');
+        if (pkg) {
+            setSelectedPackage(pkg);
+        }
+    }, [searchParams]);
+
     return (
         <section id="inquire" className="bg-[#f5f5f5] px-8 py-16 rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] relative z-10 -mt-6">
             <div className="text-center mb-10">
@@ -40,10 +54,12 @@ export default function InquiryForm() {
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 mb-1.5 ml-1">Interested Brochure</label>
                     <div className="relative">
                         <select
-                            defaultValue=""
+                            value={selectedPackage}
+                            onChange={(e) => setSelectedPackage(e.target.value)}
                             className="w-full bg-white text-midnight-navy border border-midnight-navy/10 rounded-lg px-4 py-4 focus:outline-none focus:ring-1 focus:ring-brushed-gold focus:border-brushed-gold appearance-none cursor-pointer transition-all"
                         >
                             <option value="" disabled>Select a collection</option>
+                            {selectedPackage && <option value={selectedPackage}>{selectedPackage}</option>}
                             <option value="muslim-friendly">Muslim-Friendly Corporate</option>
                             <option value="executive-zen">Executive Zen Retreats</option>
                             <option value="kyoto-heritage">Kyoto Heritage Exclusive</option>

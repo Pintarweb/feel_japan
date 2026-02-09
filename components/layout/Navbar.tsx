@@ -4,7 +4,11 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { X } from 'lucide-react';
 
-export default function Navbar() {
+interface NavbarProps {
+    hideInquiry?: boolean;
+}
+
+export default function Navbar({ hideInquiry = false }: NavbarProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
@@ -39,11 +43,13 @@ export default function Navbar() {
                 </div>
 
                 {/* Inquiry CTA */}
-                <div className="flex items-center">
-                    <Link href="/inquire" className="text-xs font-bold tracking-widest uppercase text-brushed-gold hover:text-midnight-navy transition-colors">
-                        Inquiry
-                    </Link>
-                </div>
+                {!hideInquiry && (
+                    <div className="flex items-center">
+                        <Link href="/inquire" className="text-xs font-bold tracking-widest uppercase text-brushed-gold hover:text-midnight-navy transition-colors">
+                            Inquiry
+                        </Link>
+                    </div>
+                )}
             </nav>
 
             {/* Mobile Menu Overlay */}
@@ -61,9 +67,11 @@ export default function Navbar() {
                     <Link href="/#collections" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">
                         Portfolio
                     </Link>
-                    <Link href="/inquire" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">
-                        Inquiry
-                    </Link>
+                    {!hideInquiry && (
+                        <Link href="/inquire" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">
+                            Inquiry
+                        </Link>
+                    )}
                 </div>
             </div>
         </>
