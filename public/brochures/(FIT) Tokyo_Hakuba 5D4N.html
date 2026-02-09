@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,53 +9,71 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap');
-        
+
         body {
             font-family: 'Montserrat', sans-serif;
             background-color: #f8fafc;
         }
-        h1, h2, h3 {
+
+        h1,
+        h2,
+        h3 {
             font-family: 'Playfair Display', serif;
         }
+
         .hero-gradient {
-            background-color: #1a202c; /* Fallback color */
+            background-color: #1a202c;
+            /* Fallback color */
             background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&q=80&w=1920');
             background-size: cover;
             background-position: center;
         }
+
         .card-shadow {
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
+
         .japan-red {
             color: #bc002d;
         }
+
         .bg-japan-red {
             background-color: #bc002d;
         }
+
         .hero-text-shadow {
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
+
 <body class="text-gray-800">
 
     <!-- Hero Section -->
-    <header class="hero-gradient h-[60vh] flex flex-col items-center justify-center text-center text-white px-4 relative">
+    <header
+        class="hero-gradient h-[60vh] flex flex-col items-center justify-center text-center text-white px-4 relative">
         <!-- Logo Branding -->
         <div class="absolute top-8 left-8 bg-white p-2 rounded-2xl shadow-2xl border border-gray-100">
-            <img src="feeljapan_logo.jpg" alt="Feel Japan with K" class="h-16 w-auto object-contain" onerror="this.parentElement.innerHTML='<span class=\'text-black font-bold px-4\'>Feel Japan with K</span>'">
+            <img src="feeljapan_logo.jpg" alt="Feel Japan with K" class="h-16 w-auto object-contain"
+                onerror="this.parentElement.innerHTML='<span class=\'text-black font-bold px-4\'>Feel Japan with K</span>'">
         </div>
 
-        <h1 class="text-5xl md:text-7xl font-bold mb-4 mt-12 tracking-tight hero-text-shadow uppercase">Tokyo & Hakuba</h1>
-        <p class="text-xl md:text-2xl font-light mb-8 opacity-90 hero-text-shadow">5D4N FIT Muslim Tour • Private Experience</p>
+        <h1 class="text-5xl md:text-7xl font-bold mb-4 mt-12 tracking-tight hero-text-shadow uppercase">Tokyo & Hakuba
+        </h1>
+        <p class="text-xl md:text-2xl font-light mb-8 opacity-90 hero-text-shadow">5D4N FIT Muslim Tour • Private
+            Experience</p>
         <div class="flex gap-4">
-            <span class="bg-japan-red text-white px-8 py-3 rounded-full text-sm font-bold shadow-lg uppercase tracking-widest">Type 2</span>
-            <span class="bg-white text-black px-8 py-3 rounded-full text-sm font-bold shadow-lg uppercase tracking-widest">4 - 8 Pax</span>
+            <span
+                class="bg-japan-red text-white px-8 py-3 rounded-full text-sm font-bold shadow-lg uppercase tracking-widest">Type
+                2</span>
+            <span
+                class="bg-white text-black px-8 py-3 rounded-full text-sm font-bold shadow-lg uppercase tracking-widest">4
+                - 8 Pax</span>
         </div>
     </header>
 
     <main class="max-w-6xl mx-auto px-4 py-12">
-        
+
         <!-- Itinerary Section -->
         <section class="mb-20">
             <div class="text-center mb-12">
@@ -62,125 +81,120 @@
                 <div class="h-1 w-20 bg-japan-red mx-auto"></div>
             </div>
 
-            <div class="space-y-12">
+            <div class="space-y-10">
                 <!-- Day 1 -->
-                <div class="flex flex-col md:flex-row gap-8 items-start">
-                    <div class="w-full md:w-1/3">
-                        <div class="bg-white p-6 rounded-2xl card-shadow border-t-4 border-japan-red">
-                            <span class="text-japan-red font-bold text-lg uppercase tracking-widest">Day 01</span>
-                            <h3 class="text-2xl font-bold mt-2 uppercase">Arrival & Tokyo Tour</h3>
-                            <p class="text-gray-500 mt-1 italic text-sm font-semibold">(Lunch/Dinner)</p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="md:w-1/4">
+                        <div class="bg-white p-6 rounded-3xl card-shadow border-t-4 border-japan-red h-full">
+                            <span class="text-japan-red font-black text-xl uppercase tracking-tighter">Day 01</span>
+                            <h3 class="font-bold text-slate-900 uppercase mt-1 leading-tight text-sm">Arrival & Tokyo
+                                Tour</h3>
+                            <p class="text-slate-400 italic text-[10px] font-bold uppercase mt-1 text-japan-red">
+                                (Lunch/Dinner)</p>
                         </div>
                     </div>
-                    <div class="w-full md:w-2/3 space-y-4 pt-2">
-                        <div class="flex gap-4 items-start font-medium text-gray-700">
-                            <i class="fa-solid fa-plane-arrival mt-1 text-japan-red"></i>
-                            <div>
-                                <p class="font-bold text-gray-900 uppercase">Narita Airport Arrival</p>
-                                <p class="text-sm">Meet and greet at the airport lobby. Begin your Tokyo exploration with a visit to the historic <strong>Asakusa Kannon Temple</strong> and <strong>Nakamise Street</strong>.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start font-medium text-gray-700">
-                            <i class="fa-solid fa-city mt-1 text-japan-red"></i>
-                            <div>
-                                <p class="font-bold text-gray-900 uppercase">Modern Tokyo Highlights</p>
-                                <p class="text-sm">Explore <strong>Akihabara</strong> (or Ueno Ameyoko), the futuristic <strong>Odaiba</strong> district, and witness the world-famous <strong>Shibuya Crossing</strong>.</p>
-                            </div>
-                        </div>
+                    <div class="md:w-3/4 bg-white p-8 rounded-3xl card-shadow">
+                        <ul class="space-y-3 text-sm font-semibold text-slate-600">
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Meet and greet at Narita Airport lobby with private transfer</li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Visit the historic Asakusa Kannon Temple & Nakamise Street</li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Explore Akihabara (or Ueno Ameyoko) & futuristic Odaiba district</li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Witness the world-famous Shibuya Crossing</li>
+                        </ul>
                     </div>
                 </div>
 
                 <!-- Day 2 -->
-                <div class="flex flex-col md:flex-row gap-8 items-start">
-                    <div class="w-full md:w-1/3">
-                        <div class="bg-white p-6 rounded-2xl card-shadow border-t-4 border-japan-red">
-                            <span class="text-japan-red font-bold text-lg uppercase tracking-widest">Day 02</span>
-                            <h3 class="text-2xl font-bold mt-2 uppercase">Super Express to Hakuba</h3>
-                            <p class="text-gray-500 mt-1 italic text-sm font-semibold">(Breakfast/Lunch/Dinner)</p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="md:w-1/4">
+                        <div class="bg-white p-6 rounded-3xl card-shadow border-t-4 border-japan-red h-full">
+                            <span class="text-japan-red font-black text-xl uppercase tracking-tighter">Day 02</span>
+                            <h3 class="font-bold text-slate-900 uppercase mt-1 leading-tight text-sm">Super Express to
+                                Hakuba</h3>
+                            <p class="text-slate-400 italic text-[10px] font-bold uppercase mt-1 text-japan-red">
+                                (Breakfast/Lunch/Dinner)</p>
                         </div>
                     </div>
-                    <div class="w-full md:w-2/3 space-y-4 pt-2">
-                        <div class="flex gap-4 items-start font-medium text-gray-700">
-                            <i class="fa-solid fa-train mt-1 text-japan-red"></i>
-                            <div>
-                                <p class="font-bold text-gray-900 uppercase">Shinjuku to Hakuba</p>
-                                <p class="text-sm">Transfer to Shinjuku Station for the <strong>Super Express</strong> (Reserved Seats) to Hakuba. Arrive at the scenic <strong>Hakuba Sunvalley</strong>, a Muslim-friendly resort.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start font-medium text-gray-700">
-                            <i class="fa-solid fa-snowflake mt-1 text-japan-red"></i>
-                            <div>
-                                <p class="font-bold text-gray-900 uppercase">Resort Relaxation</p>
-                                <p class="text-sm">Check into your hotel and enjoy a free program by the slopes. Dinner will be served at the hotel.</p>
-                            </div>
-                        </div>
+                    <div class="md:w-3/4 bg-white p-8 rounded-3xl card-shadow">
+                        <ul class="space-y-3 text-sm font-semibold text-slate-600">
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Transfer to Shinjuku Station for Super Express to Hakuba</li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Arrive at scenic Hakuba Sunvalley, a Muslim-friendly resort</li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Check into hotel & enjoy free program by the slopes</li>
+                        </ul>
                     </div>
                 </div>
 
                 <!-- Day 3 -->
-                <div class="flex flex-col md:flex-row gap-8 items-start">
-                    <div class="w-full md:w-1/3">
-                        <div class="bg-white p-6 rounded-2xl card-shadow border-t-4 border-japan-red">
-                            <span class="text-japan-red font-bold text-lg uppercase tracking-widest">Day 03</span>
-                            <h3 class="text-2xl font-bold mt-2 uppercase">Hakuba Snow Resort</h3>
-                            <p class="text-gray-500 mt-1 italic text-sm font-semibold">(Breakfast/Dinner)</p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="md:w-1/4">
+                        <div class="bg-white p-6 rounded-3xl card-shadow border-t-4 border-japan-red h-full">
+                            <span class="text-japan-red font-black text-xl uppercase tracking-tighter">Day 03</span>
+                            <h3 class="font-bold text-slate-900 uppercase mt-1 leading-tight text-sm">Hakuba Snow Resort
+                            </h3>
+                            <p class="text-slate-400 italic text-[10px] font-bold uppercase mt-1 text-japan-red">
+                                (Breakfast/Dinner)</p>
                         </div>
                     </div>
-                    <div class="w-full md:w-2/3 pt-2">
-                        <div class="flex gap-4 items-start font-medium text-gray-700">
-                            <i class="fa-solid fa-person-skiing mt-1 text-japan-red"></i>
-                            <div>
-                                <p class="font-bold text-gray-900 uppercase">Free & Easy Snow Activities</p>
-                                <p class="text-sm leading-relaxed">Enjoy a full day at the Hakuba Snow Resort. Optional ski gear and wear sets are available for rental. Lunch is on your own arrangement.</p>
-                            </div>
-                        </div>
+                    <div class="md:w-3/4 bg-white p-8 rounded-3xl card-shadow">
+                        <ul class="space-y-3 text-sm font-semibold text-slate-600">
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Full day for Free & Easy snow activities at Hakuba Resort</li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Optional ski gear and wear sets available for rental</li>
+                            <li class="flex items-start gap-3 text-japan-red italic font-bold mt-4"><i
+                                    class="fa-solid fa-utensils mt-1"></i> Lunch on your own arrangement</li>
+                        </ul>
                     </div>
                 </div>
 
                 <!-- Day 4 -->
-                <div class="flex flex-col md:flex-row gap-8 items-start">
-                    <div class="w-full md:w-1/3">
-                        <div class="bg-white p-6 rounded-2xl card-shadow border-t-4 border-japan-red">
-                            <span class="text-japan-red font-bold text-lg uppercase tracking-widest">Day 04</span>
-                            <h3 class="text-2xl font-bold mt-2 uppercase">Return to Tokyo</h3>
-                            <p class="text-gray-500 mt-1 italic text-sm font-semibold">(Breakfast/Lunch)</p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="md:w-1/4">
+                        <div class="bg-white p-6 rounded-3xl card-shadow border-t-4 border-japan-red h-full">
+                            <span class="text-japan-red font-black text-xl uppercase tracking-tighter">Day 04</span>
+                            <h3 class="font-bold text-slate-900 uppercase mt-1 leading-tight text-sm">Return to Tokyo
+                            </h3>
+                            <p class="text-slate-400 italic text-[10px] font-bold uppercase mt-1 text-japan-red">
+                                (Breakfast/Lunch)</p>
                         </div>
                     </div>
-                    <div class="w-full md:w-2/3 space-y-4 pt-2">
-                        <div class="flex gap-4 items-start font-medium text-gray-700">
-                            <i class="fa-solid fa-train-subway mt-1 text-japan-red"></i>
-                            <div>
-                                <p class="font-bold text-gray-900 uppercase">Hakuba to Shinjuku</p>
-                                <p class="text-sm">Morning free time at the resort before taking the <strong>Super Express</strong> back to Shinjuku. Check back into your Tokyo hotel.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start font-medium text-gray-700">
-                            <i class="fa-solid fa-moon mt-1 text-japan-red"></i>
-                            <div>
-                                <p class="font-bold text-gray-900 uppercase">Free Evening</p>
-                                <p class="text-sm">Enjoy a free evening in Tokyo for last-minute shopping or exploration. Dinner on your own.</p>
-                            </div>
-                        </div>
+                    <div class="md:w-3/4 bg-white p-8 rounded-3xl card-shadow">
+                        <ul class="space-y-3 text-sm font-semibold text-slate-600">
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Free time at resort before taking Super Express back to Shinjuku</li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Check back into your Tokyo hotel & enjoy free evening for shopping</li>
+                            <li class="flex items-start gap-3 text-japan-red italic font-bold mt-4"><i
+                                    class="fa-solid fa-utensils mt-1"></i> Dinner by own pax</li>
+                        </ul>
                     </div>
                 </div>
 
                 <!-- Day 5 -->
-                <div class="flex flex-col md:flex-row gap-8 items-start">
-                    <div class="w-full md:w-1/3">
-                        <div class="bg-white p-6 rounded-2xl card-shadow border-t-4 border-gray-400">
-                            <span class="text-gray-500 font-bold text-lg uppercase tracking-widest">Day 05</span>
-                            <h3 class="text-2xl font-bold mt-2 uppercase">Departure</h3>
-                            <p class="text-gray-500 mt-1 italic text-sm font-semibold">(Breakfast)</p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="md:w-1/4">
+                        <div class="bg-white p-6 rounded-3xl card-shadow border-t-4 border-gray-400 h-full">
+                            <span class="text-gray-400 font-black text-xl uppercase tracking-tighter">Day 05</span>
+                            <h3 class="font-bold text-slate-900 uppercase mt-1 leading-tight text-sm">Departure</h3>
+                            <p class="text-slate-400 italic text-[10px] font-bold uppercase mt-1">(Breakfast)</p>
                         </div>
                     </div>
-                    <div class="w-full md:w-2/3 pt-2">
-                        <div class="flex gap-4 items-start font-medium text-gray-700">
-                            <i class="fa-solid fa-plane-departure mt-1 text-japan-red"></i>
-                            <div>
-                                <p class="font-bold text-gray-900 uppercase">Narita Airport Transfer</p>
-                                <p class="text-sm leading-relaxed">Private hotel pick-up and transfer to Narita International Airport for your departure flight back home. End of service.</p>
-                            </div>
-                        </div>
+                    <div class="md:w-3/4 bg-white p-8 rounded-3xl card-shadow">
+                        <ul class="space-y-3 text-sm font-semibold text-slate-600">
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-hotel text-gray-400 mt-1"></i>
+                                Hotel check-out</li>
+                            <li class="flex items-start gap-3"><i
+                                    class="fa-solid fa-van-shuttle text-gray-400 mt-1"></i> Private transfer to Narita
+                                International Airport</li>
+                            <li class="flex items-start gap-3 text-slate-400 italic"><i
+                                    class="fa-solid fa-plane-departure mt-1"></i> Flight back home • End of Service</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -252,7 +266,8 @@
                 <ul class="space-y-6 text-sm font-bold text-gray-700">
                     <li class="flex items-start gap-4">
                         <i class="fa-solid fa-hotel mt-1 text-slate-800"></i>
-                        <span>4 Nights: 2N <strong>Shinjuku Washington</strong> & 2N <strong>Hakuba Sunvalley</strong> with Breakfast</span>
+                        <span>4 Nights: 2N <strong>Shinjuku Washington</strong> & 2N <strong>Hakuba Sunvalley</strong>
+                            with Breakfast</span>
                     </li>
                     <li class="flex items-start gap-4">
                         <i class="fa-solid fa-utensils mt-1 text-slate-800"></i>
@@ -327,7 +342,8 @@
                         </div>
                         <div>
                             <p class="text-japan-red uppercase font-black mb-1">Remittance Policy</p>
-                            <p>Transfer to "Feel Japan with K" bank account in Japan. Remittance fees and Yen rates borne by client.</p>
+                            <p>Transfer to "Feel Japan with K" bank account in Japan. Remittance fees and Yen rates
+                                borne by client.</p>
                         </div>
                     </div>
                 </div>
@@ -341,8 +357,9 @@
         <div class="bg-white p-2 rounded-xl inline-block shadow-md mb-6">
             <img src="feeljapan_logo.jpg" alt="Logo" class="h-14 w-auto" onerror="this.style.display='none'">
         </div>
-        <p class="text-sm text-white font-bold mb-8 italic">"Bringing the beauty of Japan to your heart through Halal-friendly travel."</p>
-        
+        <p class="text-sm text-white font-bold mb-8 italic">"Bringing the beauty of Japan to your heart through
+            Halal-friendly travel."</p>
+
         <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-center gap-12 border-t border-white/10 pt-8">
             <div>
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">KL Headquarters</p>
@@ -359,4 +376,5 @@
     </footer>
 
 </body>
+
 </html>

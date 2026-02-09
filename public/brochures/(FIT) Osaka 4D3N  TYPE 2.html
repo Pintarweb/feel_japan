@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,52 +9,68 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap');
-        
+
         body {
             font-family: 'Montserrat', sans-serif;
             background-color: #f8fafc;
         }
-        h1, h2, h3 {
+
+        h1,
+        h2,
+        h3 {
             font-family: 'Playfair Display', serif;
         }
+
         .hero-gradient {
             background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1590559899731-a382839e5549?auto=format&fit=crop&q=80&w=1920');
             background-size: cover;
             background-position: center;
         }
+
         .card-shadow {
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
+
         .japan-red {
             color: #bc002d;
         }
+
         .bg-japan-red {
             background-color: #bc002d;
         }
+
         .hero-text-shadow {
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
+
 <body class="text-gray-800">
 
     <!-- Hero Section -->
-    <header class="hero-gradient h-[60vh] flex flex-col items-center justify-center text-center text-white px-4 relative">
+    <header
+        class="hero-gradient h-[60vh] flex flex-col items-center justify-center text-center text-white px-4 relative">
         <!-- Logo Branding -->
         <div class="absolute top-8 left-8 bg-white p-2 rounded-2xl shadow-2xl border border-gray-100">
-            <img src="feeljapan_logo.jpg" alt="Feel Japan with K" class="h-16 w-auto object-contain" onerror="this.parentElement.innerHTML='<span class=\'text-black font-bold px-4\'>Feel Japan with K</span>'">
+            <img src="feeljapan_logo.jpg" alt="Feel Japan with K" class="h-16 w-auto object-contain"
+                onerror="this.parentElement.innerHTML='<span class=\'text-black font-bold px-4\'>Feel Japan with K</span>'">
         </div>
 
         <h1 class="text-5xl md:text-7xl font-bold mb-4 mt-12 tracking-tight hero-text-shadow uppercase">Osaka</h1>
-        <p class="text-xl md:text-2xl font-light mb-8 opacity-90 hero-text-shadow">4D3N FIT Muslim Tour • Private Experience</p>
+        <p class="text-xl md:text-2xl font-light mb-8 opacity-90 hero-text-shadow">4D3N FIT Muslim Tour • Private
+            Experience</p>
         <div class="flex gap-4">
-            <span class="bg-japan-red text-white px-8 py-3 rounded-full text-sm font-bold shadow-lg uppercase tracking-widest">Type 2</span>
-            <span class="bg-white text-black px-8 py-3 rounded-full text-sm font-bold shadow-lg uppercase tracking-widest">4 - 8 Pax</span>
+            <span
+                class="bg-japan-red text-white px-8 py-3 rounded-full text-sm font-bold shadow-lg uppercase tracking-widest">Type
+                2</span>
+            <span
+                class="bg-white text-black px-8 py-3 rounded-full text-sm font-bold shadow-lg uppercase tracking-widest">4
+                - 8 Pax</span>
         </div>
     </header>
 
     <main class="max-w-6xl mx-auto px-4 py-12">
-        
+
         <!-- Itinerary Section -->
         <section class="mb-20">
             <div class="text-center mb-12">
@@ -61,97 +78,95 @@
                 <div class="h-1 w-20 bg-japan-red mx-auto"></div>
             </div>
 
-            <div class="space-y-12">
+            <div class="space-y-10">
                 <!-- Day 1 -->
-                <div class="flex flex-col md:flex-row gap-8 items-start">
-                    <div class="w-full md:w-1/3">
-                        <div class="bg-white p-6 rounded-2xl card-shadow border-t-4 border-japan-red">
-                            <span class="text-japan-red font-bold text-lg uppercase tracking-widest">Day 01</span>
-                            <h3 class="text-2xl font-bold mt-2 uppercase">Arrival & Osaka City</h3>
-                            <p class="text-gray-500 mt-1 italic text-sm font-semibold">(Breakfast/Lunch/Dinner)</p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="md:w-1/4">
+                        <div class="bg-white p-6 rounded-3xl card-shadow border-t-4 border-japan-red h-full">
+                            <span class="text-japan-red font-black text-xl uppercase tracking-tighter">Day 01</span>
+                            <h3 class="font-bold text-slate-900 uppercase mt-1 leading-tight text-sm">Arrival & Osaka
+                                City</h3>
+                            <p class="text-slate-400 italic text-[10px] font-bold uppercase mt-1 text-japan-red">
+                                (Breakfast/Lunch/Dinner)</p>
                         </div>
                     </div>
-                    <div class="w-full md:w-2/3 space-y-4 pt-2">
-                        <div class="flex gap-4 items-start font-medium text-gray-700">
-                            <i class="fa-solid fa-plane-arrival mt-1 text-japan-red"></i>
-                            <div>
-                                <p class="font-bold text-gray-900 uppercase">Kansai Airport Welcome</p>
-                                <p class="text-sm">Meet & Greet with a Welcome Breakfast at the airport followed by city exploration including the historic <strong>Osaka Castle</strong> and the <strong>Umeda Sky Building</strong>.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start font-medium text-gray-700">
-                            <i class="fa-solid fa-mosque mt-1 text-japan-red"></i>
-                            <div>
-                                <p class="font-bold text-gray-900 uppercase">Culture & Shopping</p>
-                                <p class="text-sm">Prayer stop at <strong>Osaka Mosque</strong> followed by free time at the vibrant Shinsaibashi and Dotonbori districts.</p>
-                            </div>
-                        </div>
+                    <div class="md:w-3/4 bg-white p-8 rounded-3xl card-shadow">
+                        <ul class="space-y-3 text-sm font-semibold text-slate-600">
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Meet and Greet by Tour Guide at Kansai Airport lobby</li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Visit the historic Osaka Castle Park (Photo stop)</li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Prayer stop at Osaka Mosque for community connection</li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Explore the vibrant Shinsaibashi & Dotonbori districts</li>
+                        </ul>
                     </div>
                 </div>
 
                 <!-- Day 2 -->
-                <div class="flex flex-col md:flex-row gap-8 items-start">
-                    <div class="w-full md:w-1/3">
-                        <div class="bg-white p-6 rounded-2xl card-shadow border-t-4 border-japan-red">
-                            <span class="text-japan-red font-bold text-lg uppercase tracking-widest">Day 02</span>
-                            <h3 class="text-2xl font-bold mt-2 uppercase">Shiga & Kyoto</h3>
-                            <p class="text-gray-500 mt-1 italic text-sm font-semibold">(Breakfast/Lunch/Dinner)</p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="md:w-1/4">
+                        <div class="bg-white p-6 rounded-3xl card-shadow border-t-4 border-japan-red h-full">
+                            <span class="text-japan-red font-black text-xl uppercase tracking-tighter">Day 02</span>
+                            <h3 class="font-bold text-slate-900 uppercase mt-1 leading-tight text-sm">Shiga & Kyoto</h3>
+                            <p class="text-slate-400 italic text-[10px] font-bold uppercase mt-1 text-japan-red">
+                                (Breakfast/Lunch/Dinner)</p>
                         </div>
                     </div>
-                    <div class="w-full md:w-2/3 space-y-4 pt-2">
-                        <div class="flex gap-4 items-start font-medium text-gray-700">
-                            <i class="fa-solid fa-user-ninja mt-1 text-japan-red"></i>
-                            <div>
-                                <p class="font-bold text-gray-900 uppercase">Koka Ninja Village</p>
-                                <p class="text-sm">Step into history with an immersive Ninja experience in Shiga (Admission Included).</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 items-start font-medium text-gray-700">
-                            <i class="fa-solid fa-leaf mt-1 text-japan-red"></i>
-                            <div>
-                                <p class="font-bold text-gray-900 uppercase">Kyoto Arashiyama</p>
-                                <p class="text-sm">Visit the iconic Bamboo Grove and Togetsukyo Bridge. Prayer time at the Kyoto Mosque or Arashiyama area.</p>
-                            </div>
-                        </div>
+                    <div class="md:w-3/4 bg-white p-8 rounded-3xl card-shadow">
+                        <ul class="space-y-3 text-sm font-semibold text-slate-600">
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Step into history at the immersion Koka Ninja Village</li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Visit the iconic Arashiyama Bamboo Grove in Kyoto</li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-japan-red mt-1"></i>
+                                Walk across the famous Togetsukyo Bridge</li>
+                        </ul>
                     </div>
                 </div>
 
                 <!-- Day 3 -->
-                <div class="flex flex-col md:flex-row gap-8 items-start">
-                    <div class="w-full md:w-1/3">
-                        <div class="bg-white p-6 rounded-2xl card-shadow border-t-4 border-japan-red">
-                            <span class="text-japan-red font-bold text-lg uppercase tracking-widest">Day 03</span>
-                            <h3 class="text-2xl font-bold mt-2 uppercase">Free & Easy Day</h3>
-                            <p class="text-gray-500 mt-1 italic text-sm font-semibold">(Breakfast)</p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="md:w-1/4">
+                        <div class="bg-white p-6 rounded-3xl card-shadow border-t-4 border-japan-red h-full">
+                            <span class="text-japan-red font-black text-xl uppercase tracking-tighter">Day 03</span>
+                            <h3 class="font-bold text-slate-900 uppercase mt-1 leading-tight text-sm">Free & Easy Day
+                            </h3>
+                            <p class="text-slate-400 italic text-[10px] font-bold uppercase mt-1">(Breakfast)</p>
                         </div>
                     </div>
-                    <div class="w-full md:w-2/3 pt-2">
-                        <p class="text-gray-700 font-bold mb-4">No van/guide provided. Meals on your own. Recommended options:</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div class="bg-white p-4 rounded-xl shadow border border-gray-100 font-bold text-sm text-center">Universal Studios Japan</div>
-                            <div class="bg-white p-4 rounded-xl shadow border border-gray-100 font-bold text-sm text-center">Nara Deer Park</div>
-                            <div class="bg-white p-4 rounded-xl shadow border border-gray-100 font-bold text-sm text-center">Kobe City Visit</div>
-                        </div>
+                    <div class="md:w-3/4 bg-white p-8 rounded-3xl card-shadow">
+                        <p class="text-sm font-semibold text-slate-600 mb-4 italic">No Van / No Guide support today.
+                            Explore at your own leisure:</p>
+                        <ul class="space-y-3 text-sm font-semibold text-slate-600">
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-star text-japan-red mt-1"></i>
+                                Recommended: Universal Studios Japan or Nara Deer Park</li>
+                            <li class="flex items-start gap-3 text-japan-red italic font-bold mt-4"><i
+                                    class="fa-solid fa-utensils mt-1"></i> Lunch and Dinner by own pax</li>
+                        </ul>
                     </div>
                 </div>
 
                 <!-- Day 4 -->
-                <div class="flex flex-col md:flex-row gap-8 items-start">
-                    <div class="w-full md:w-1/3">
-                        <div class="bg-white p-6 rounded-2xl card-shadow border-t-4 border-gray-400">
-                            <span class="text-gray-500 font-bold text-lg uppercase tracking-widest">Day 04</span>
-                            <h3 class="text-2xl font-bold mt-2 uppercase">Departure</h3>
-                            <p class="text-gray-500 mt-1 italic text-sm font-semibold">(Breakfast)</p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="md:w-1/4">
+                        <div class="bg-white p-6 rounded-3xl card-shadow border-t-4 border-gray-400 h-full">
+                            <span class="text-gray-400 font-black text-xl uppercase tracking-tighter">Day 04</span>
+                            <h3 class="font-bold text-slate-900 uppercase mt-1 leading-tight text-sm">Departure</h3>
+                            <p class="text-slate-400 italic text-[10px] font-bold uppercase mt-1">(Breakfast)</p>
                         </div>
                     </div>
-                    <div class="w-full md:w-2/3 pt-2">
-                        <div class="flex gap-4 items-start font-medium text-gray-700">
-                            <i class="fa-solid fa-plane-departure mt-1 text-japan-red"></i>
-                            <div>
-                                <p class="font-bold text-gray-900 uppercase">Kansai International Airport</p>
-                                <p class="text-sm leading-relaxed">Private transfer from hotel to airport for your flight back to Malaysia. End of Service.</p>
-                            </div>
-                        </div>
+                    <div class="md:w-3/4 bg-white p-8 rounded-3xl card-shadow">
+                        <ul class="space-y-3 text-sm font-semibold text-slate-600">
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-hotel text-gray-400 mt-1"></i>
+                                Hotel check-out</li>
+                            <li class="flex items-start gap-3"><i
+                                    class="fa-solid fa-van-shuttle text-gray-400 mt-1"></i> Private transfer to Kansai
+                                International Airport</li>
+                            <li class="flex items-start gap-3 text-slate-400 italic"><i
+                                    class="fa-solid fa-plane-departure mt-1"></i> Flight back home • End of Service</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -267,7 +282,8 @@
                         </div>
                         <div>
                             <p class="text-japan-red uppercase font-black mb-1">Remittance Policy</p>
-                            <p>Transfer to "Feel Japan with K" bank account in Japan. Remittance fees to be borne by client. All bookings subject to availability.</p>
+                            <p>Transfer to "Feel Japan with K" bank account in Japan. Remittance fees to be borne by
+                                client. All bookings subject to availability.</p>
                         </div>
                     </div>
                 </div>
@@ -281,8 +297,9 @@
         <div class="bg-white p-2 rounded-xl inline-block shadow-md mb-6">
             <img src="feeljapan_logo.jpg" alt="Logo" class="h-14 w-auto" onerror="this.style.display='none'">
         </div>
-        <p class="text-sm text-white font-bold mb-8 italic">"Bringing the beauty of Japan to your heart through Halal-friendly travel."</p>
-        
+        <p class="text-sm text-white font-bold mb-8 italic">"Bringing the beauty of Japan to your heart through
+            Halal-friendly travel."</p>
+
         <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-center gap-12 border-t border-white/10 pt-8">
             <div>
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">KL Headquarters</p>
@@ -299,4 +316,5 @@
     </footer>
 
 </body>
+
 </html>
