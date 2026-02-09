@@ -199,6 +199,7 @@ function parseBrochureHTML(html: string, filename: string): any {
         };
 
         // Pattern 1: Extract list items (newer format)
+        // These have short descriptions already
         const liRegex = /<li[^>]*>\s*<i[^>]*fa-([a-z-]+)[^>]*><\/i>\s*(.*?)<\/li>/gis;
         let liMatch;
         while ((liMatch = liRegex.exec(daySection)) !== null) {
@@ -209,24 +210,32 @@ function parseBrochureHTML(html: string, filename: string): any {
                 .replace(/&amp;/g, '&')
                 .trim();
 
+            // Extract just the first part (before colon or first sentence)
+            // For bullet point format, keep it short
+            if (description.includes(':')) {
+                description = description.split(':')[0].trim();
+            }
+            if (description.length > 50) {
+                description = description.substring(0, 50).trim() + '...';
+            }
+
             if (description) {
                 activities.push({ icon: mapIcon(iconClass), description });
             }
         }
 
         // Pattern 2: Extract div-based activities (older format)
-        // <div class="flex gap-4..."><i class="fa-solid fa-..."></i><div><p class="font-bold...">Title</p><p class="text-sm">Description</p></div></div>
+        // Use ONLY the title, not the description
         if (activities.length === 0) {
             const divRegex = /<div[^>]*flex[^>]*gap[^>]*>\s*<i[^>]*fa-([a-z-]+)[^>]*><\/i>\s*<div>\s*<p[^>]*>([^<]*)<\/p>\s*<p[^>]*>([^<]*)/gis;
             let divMatch;
             while ((divMatch = divRegex.exec(daySection)) !== null) {
                 const iconClass = divMatch[1];
+                // Use only the title as a short bullet point
                 const title = divMatch[2].replace(/&amp;/g, '&').trim();
-                const desc = divMatch[3].replace(/&amp;/g, '&').replace(/<[^>]*>/g, '').trim();
-                const fullDescription = desc ? `${title}: ${desc}` : title;
 
-                if (fullDescription) {
-                    activities.push({ icon: mapIcon(iconClass), description: fullDescription });
+                if (title) {
+                    activities.push({ icon: mapIcon(iconClass), description: title });
                 }
             }
         }
