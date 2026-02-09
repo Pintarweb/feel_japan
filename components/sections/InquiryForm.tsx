@@ -3,6 +3,7 @@
 import { ChevronDown } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { brochures } from '@/data/brochures';
 
 export default function InquiryForm() {
     const searchParams = useSearchParams();
@@ -11,7 +12,7 @@ export default function InquiryForm() {
     useEffect(() => {
         const pkg = searchParams.get('package');
         if (pkg) {
-            setSelectedPackage(pkg);
+            setSelectedPackage(decodeURIComponent(pkg));
         }
     }, [searchParams]);
 
@@ -59,12 +60,10 @@ export default function InquiryForm() {
                             className="w-full bg-white text-midnight-navy border border-midnight-navy/10 rounded-lg px-4 py-4 focus:outline-none focus:ring-1 focus:ring-brushed-gold focus:border-brushed-gold appearance-none cursor-pointer transition-all"
                         >
                             <option value="" disabled>Select a collection</option>
-                            {selectedPackage && <option value={selectedPackage}>{selectedPackage}</option>}
-                            <option value="muslim-friendly">Muslim-Friendly Corporate</option>
-                            <option value="executive-zen">Executive Zen Retreats</option>
-                            <option value="kyoto-heritage">Kyoto Heritage Exclusive</option>
-                            <option value="ryokan-estates">Private Ryokan Estates</option>
-                            <option value="michelin-star">Michelin Star Journeys</option>
+                            {brochures.map((b) => (
+                                <option key={b.id} value={b.slug}>{b.title}</option>
+                            ))}
+                            <option value="custom">Other / Custom Request</option>
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-brushed-gold">
                             <ChevronDown className="w-5 h-5" />

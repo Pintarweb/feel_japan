@@ -6,7 +6,7 @@ export const BROCHURES = [
         title: "FIT Tokyo Summer 2026",
         description: "Free Independent Traveler package for Tokyo. Explore the vibrant capital at your own pace.",
         image: "/thumbnails/fit_tokyo_summer.jpg",
-        link: "/brochures/FITTYOSUMMER26.html",
+        link: "/brochures/5D4N%20Tokyo%20Mt%20Fuji%20Summer%20Discovery",
         tags: [
             { label: "FIT", icon: Star, color: "text-brushed-gold", border: "border-brushed-gold" },
             { label: "Tokyo", icon: MapPin, color: "text-midnight-navy/60", border: "border-midnight-navy/10" }

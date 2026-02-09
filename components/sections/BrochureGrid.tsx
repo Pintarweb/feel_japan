@@ -3,17 +3,32 @@
 import { MapPin, Calendar, Utensils, Star, Share2, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
+import Link from 'next/link';
 
-import { BROCHURES } from '@/lib/constants';
+import { brochures } from '@/data/brochures';
 
 type Category = 'FIT' | 'GIT';
 
 export default function BrochureGrid() {
     const [activeCategory, setActiveCategory] = useState<Category>('FIT');
 
-    const filteredBrochures = BROCHURES.filter(b =>
-        b.tags.some(t => t.label === activeCategory)
-    );
+    const filteredBrochures = brochures.filter(b => b.category === activeCategory).map(b => {
+        const cityTags = Array.isArray(b.city)
+            ? b.city.map(c => ({ label: c, icon: MapPin, color: 'text-midnight-navy/60' }))
+            : [{ label: b.city as string, icon: MapPin, color: 'text-midnight-navy/60' }];
+
+        return {
+            id: b.id,
+            title: b.title,
+            description: b.subtitle,
+            image: b.image,
+            link: `/brochures/${encodeURIComponent(b.slug)}`,
+            tags: [
+                { label: b.category, icon: b.category === 'FIT' ? Star : Utensils, color: 'text-brushed-gold' },
+                ...cityTags
+            ]
+        };
+    });
 
     return (
         <section id="collections" className="py-12 bg-off-white">
@@ -24,8 +39,8 @@ export default function BrochureGrid() {
                     <button
                         onClick={() => setActiveCategory('FIT')}
                         className={`relative z-10 px-8 py-3 rounded-full text-xs font-bold tracking-[0.2em] uppercase transition-all duration-500 flex items-center gap-2 ${activeCategory === 'FIT'
-                                ? 'bg-midnight-navy text-brushed-gold shadow-md'
-                                : 'text-midnight-navy/50 hover:text-midnight-navy hover:bg-gray-50'
+                            ? 'bg-midnight-navy text-brushed-gold shadow-md'
+                            : 'text-midnight-navy/50 hover:text-midnight-navy hover:bg-gray-50'
                             }`}
                     >
                         <span className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${activeCategory === 'FIT' ? 'bg-brushed-gold' : 'bg-midnight-navy/30'}`}></span>
@@ -34,8 +49,8 @@ export default function BrochureGrid() {
                     <button
                         onClick={() => setActiveCategory('GIT')}
                         className={`relative z-10 px-8 py-3 rounded-full text-xs font-bold tracking-[0.2em] uppercase transition-all duration-500 flex items-center gap-2 ${activeCategory === 'GIT'
-                                ? 'bg-midnight-navy text-brushed-gold shadow-md'
-                                : 'text-midnight-navy/50 hover:text-midnight-navy hover:bg-gray-50'
+                            ? 'bg-midnight-navy text-brushed-gold shadow-md'
+                            : 'text-midnight-navy/50 hover:text-midnight-navy hover:bg-gray-50'
                             }`}
                     >
                         <span className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${activeCategory === 'GIT' ? 'bg-brushed-gold' : 'bg-midnight-navy/30'}`}></span>
@@ -60,7 +75,7 @@ export default function BrochureGrid() {
 
                             {/* Floating Tag inside image for better space usage on mobile */}
                             <div className="absolute bottom-4 left-4 right-4 flex flex-wrap gap-2 z-20">
-                                {brochure.tags.slice(0, 2).map((tag, idx) => (
+                                {brochure.tags.map((tag, idx) => (
                                     <span key={idx} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-white/95 backdrop-blur-sm shadow-sm">
                                         <tag.icon className={`w-3 h-3 ${tag.color}`} />
                                         <span className="text-[9px] font-bold uppercase tracking-widest text-midnight-navy">{tag.label}</span>
@@ -79,15 +94,13 @@ export default function BrochureGrid() {
                             </div>
 
                             <div className="mt-auto pt-4">
-                                <a
+                                <Link
                                     href={brochure.link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
                                     className="w-full bg-midnight-navy text-white py-4 rounded-sm text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-brushed-gold transition-colors duration-300 flex items-center justify-center gap-2 group-hover:bg-brushed-gold"
                                 >
                                     <ArrowRight className="w-3.5 h-3.5" />
                                     View Collection
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </article>
