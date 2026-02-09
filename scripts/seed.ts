@@ -216,17 +216,24 @@ function parseBrochureHTML(html: string, filename: string): any {
         }
 
         // Pattern 2: Extract div-based activities (older format)
-        // Use ONLY the title, not the description
+        // Combine title + description into full bullet point text
         if (activities.length === 0) {
-            const divRegex = /<div[^>]*flex[^>]*gap[^>]*>\s*<i[^>]*fa-([a-z-]+)[^>]*><\/i>\s*<div>\s*<p[^>]*>([^<]*)<\/p>\s*<p[^>]*>([^<]*)/gis;
+            const divRegex = /<div[^>]*flex[^>]*gap[^>]*>\s*<i[^>]*fa-([a-z-]+)[^>]*><\/i>\s*<div>\s*<p[^>]*>([^<]*)<\/p>\s*<p[^>]*>([\s\S]*?)<\/p>/gis;
             let divMatch;
             while ((divMatch = divRegex.exec(daySection)) !== null) {
                 const iconClass = divMatch[1];
-                // Use only the title as a short bullet point
                 const title = divMatch[2].replace(/&amp;/g, '&').trim();
+                // Clean up description - remove HTML tags and combine with title
+                let desc = divMatch[3]
+                    .replace(/<[^>]*>/g, '')  // Remove HTML tags like <strong>
+                    .replace(/&amp;/g, '&')
+                    .trim();
 
-                if (title) {
-                    activities.push({ icon: mapIcon(iconClass), description: title });
+                // Create full bullet point: "Title - Description" or just "Title" if no desc
+                const fullText = desc ? `${title} - ${desc}` : title;
+
+                if (fullText) {
+                    activities.push({ icon: mapIcon(iconClass), description: fullText });
                 }
             }
         }
