@@ -23,24 +23,64 @@ function extractText(html: string, regex: RegExp, groupIndex = 1): string {
 }
 
 function parseBrochureHTML(html: string, filename: string): any {
-    // === TITLE ===
-    // Match: <h1 class="... hero-text-shadow ...">Osaka, Kyoto & Kobe</h1>
+    // === ORIGINAL TITLE (from HTML) ===
     const titleMatch = html.match(/<h1[^>]*hero-text-shadow[^>]*>(.*?)<\/h1>/is);
-    const title = titleMatch ? titleMatch[1].replace(/&amp;/g, '&').trim() : filename.replace('.html', '');
+    const originalTitle = titleMatch ? titleMatch[1].replace(/&amp;/g, '&').trim() : filename.replace('.html', '');
 
     // === SUBTITLE ===
-    // Match: <p class="text-xl...">5D4N Round FIT Muslim Tour • Summer 2026</p>
     const subtitleMatch = html.match(/<p[^>]*text-xl[^>]*>(.*?)<\/p>/is);
     const subtitle = subtitleMatch ? subtitleMatch[1].trim() : '';
 
-    // === IMAGE ===
-    // Match: url('https://images.unsplash.com/...')
+    // === EXTRACT DURATION AND SEASON ===
+    const durationMatch = subtitle.match(/(\d+D\d+N)/i);
+    const duration = durationMatch ? durationMatch[1].toUpperCase() : '';
+    const isSummer = subtitle.toLowerCase().includes('summer') || filename.toLowerCase().includes('summer');
+    const season = isSummer ? 'Summer 2026' : '';
+
+    // === BUILD DESCRIPTIVE TITLE ===
+    // Format: "Destination Duration [Season] Tour"
+    let title = originalTitle;
+    if (duration && !originalTitle.includes(duration)) {
+        title = `${originalTitle} ${duration}`;
+    }
+    if (season && !originalTitle.toLowerCase().includes('summer')) {
+        title = `${title} ${season}`;
+    }
+
+    // === UNIQUE IMAGES PER BROCHURE ===
+    // Map each brochure to a unique, relevant image
+    const imageMap: Record<string, string> = {
+        // Tokyo packages
+        'fit-tokyo-4d3n-type-2': 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&q=80&w=1920', // Tokyo Tower
+        'git-tokyo-4d3n-type-2': 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&q=80&w=1920', // Tokyo skyline
+        'fittyosummer26': 'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?auto=format&fit=crop&q=80&w=1920', // Mt Fuji with cherry blossoms
+        'gittyosummer26': 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=1920', // Tokyo at night
+
+        // Osaka packages
+        'fit-osaka-4d3n-type-2': 'https://images.unsplash.com/photo-1590559899731-a382839e5549?auto=format&fit=crop&q=80&w=1920', // Osaka Castle
+        'git-osaka-4d34n-type-2': 'https://images.unsplash.com/photo-1589452271712-64b8a66c7b71?auto=format&fit=crop&q=80&w=1920', // Dotonbori
+        'fitosksummer26': 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=1920', // Fushimi Inari
+        'gitosksummer26': 'https://images.unsplash.com/photo-1558862107-d49ef2a04d72?auto=format&fit=crop&q=80&w=1920', // Kinkaku-ji
+
+        // Golden Route (Tokyo-Osaka)
+        'fittyoosksummer26': 'https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?auto=format&fit=crop&q=80&w=1920', // Shinkansen Mt Fuji
+        'gittyoosksummer26': 'https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&q=80&w=1920', // Traditional street
+        'git-golden-route-tokyo-osaka-5d4n': 'https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?auto=format&fit=crop&q=80&w=1920', // Bamboo grove
+
+        // Special packages
+        'fit-tokyo-hakuba-5d4n': 'https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&q=80&w=1920', // Snow mountains
+        'git-hokkaido-ice-breakership-4d34n': 'https://images.unsplash.com/photo-1551009175-8a68da93d5f9?auto=format&fit=crop&q=80&w=1920', // Hokkaido winter
+        'git-fukuoka-nagasaki-4d3n': 'https://images.unsplash.com/photo-1601042879364-f3947d3f9c16?auto=format&fit=crop&q=80&w=1920', // Nagasaki lanterns
+        'git-kyushu-6d5n-round-tour': 'https://images.unsplash.com/photo-1576675466969-38eeae4b41f6?auto=format&fit=crop&q=80&w=1920', // Kyushu nature
+    };
+
+    // Get image from map or fallback to extracted
     const bgImageMatch = html.match(/url\(['"]?(https:\/\/images\.unsplash\.com[^'")\s]+)['"]?\)/);
-    const image = bgImageMatch ? bgImageMatch[1] : '';
+    const id = filename.toLowerCase().replace(/\.html$/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    const image = imageMap[id] || (bgImageMatch ? bgImageMatch[1] : '');
 
     // === ID and SLUG ===
-    let id = filename.toLowerCase().replace(/\.html$/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-    let slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    let slug = originalTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     slug = `${slug}-${id}`;
 
     // === CATEGORY & CITY ===
