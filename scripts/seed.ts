@@ -199,25 +199,16 @@ function parseBrochureHTML(html: string, filename: string): any {
         };
 
         // Pattern 1: Extract list items (newer format)
-        // These have short descriptions already
+        // Keep full descriptions as bullet points
         const liRegex = /<li[^>]*>\s*<i[^>]*fa-([a-z-]+)[^>]*><\/i>\s*(.*?)<\/li>/gis;
         let liMatch;
         while ((liMatch = liRegex.exec(daySection)) !== null) {
             const iconClass = liMatch[1];
             let description = liMatch[2]
                 .replace(/<[^>]*>/g, '') // Remove any HTML tags
-                .replace(/\*\*/g, '')    // Remove markdown bold
+                .replace(/\*\*/g, '')    // Remove markdown bold markers
                 .replace(/&amp;/g, '&')
                 .trim();
-
-            // Extract just the first part (before colon or first sentence)
-            // For bullet point format, keep it short
-            if (description.includes(':')) {
-                description = description.split(':')[0].trim();
-            }
-            if (description.length > 50) {
-                description = description.substring(0, 50).trim() + '...';
-            }
 
             if (description) {
                 activities.push({ icon: mapIcon(iconClass), description });
