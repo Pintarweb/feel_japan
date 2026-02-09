@@ -4,12 +4,15 @@ import { MapPin, Calendar, Utensils, Star, Share2, ArrowRight } from 'lucide-rea
 import Image from 'next/image';
 import { useState } from 'react';
 import Link from 'next/link';
-
-import { brochures } from '@/data/brochures';
+import { Brochure } from '@/types/brochure';
 
 type Category = 'FIT' | 'GIT';
 
-export default function BrochureGrid() {
+interface BrochureGridProps {
+    brochures: Brochure[];
+}
+
+export default function BrochureGrid({ brochures }: BrochureGridProps) {
     const [activeCategory, setActiveCategory] = useState<Category>('FIT');
 
     const filteredBrochures = brochures.filter(b => b.category === activeCategory).map(b => {

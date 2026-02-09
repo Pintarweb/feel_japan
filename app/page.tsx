@@ -5,15 +5,18 @@ import BottomNav from "@/components/layout/BottomNav";
 import BrochureGrid from "@/components/sections/BrochureGrid";
 import Footer from "@/components/layout/Footer";
 import PortfolioHero from "@/components/sections/PortfolioHero";
+import { getBrochures } from "@/lib/services/brochureService";
 
-export default function Home() {
+export default async function Home() {
+  const brochures = await getBrochures();
+
   return (
     <main className="min-h-screen bg-off-white relative">
       <Navbar />
       <Hero />
       <Features />
       <PortfolioHero />
-      <BrochureGrid />
+      <BrochureGrid brochures={brochures} />
       <Footer />
       <BottomNav />
     </main>

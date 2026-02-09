@@ -3,11 +3,21 @@
 import { ChevronDown } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { brochures } from '@/data/brochures';
+import { supabase } from '@/lib/supabaseClient';
+import { Brochure } from '@/types/brochure';
 
-export default function InquiryForm() {
+interface InquiryFormProps {
+    brochures: Brochure[];
+}
+
+export default function InquiryForm({ brochures }: InquiryFormProps) {
     const searchParams = useSearchParams();
     const [selectedPackage, setSelectedPackage] = useState("");
+    const [agencyName, setAgencyName] = useState("");
+    const [pax, setPax] = useState("");
+    const [travelDates, setTravelDates] = useState("");
+    const [newsletterOptin, setNewsletterOptin] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         const pkg = searchParams.get('package');
@@ -16,6 +26,36 @@ export default function InquiryForm() {
         }
     }, [searchParams]);
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        try {
+            const { error } = await supabase.from('inquiries').insert({
+                agency_name: agencyName,
+                pax: parseInt(pax) || 0,
+                travel_dates: travelDates,
+                package_slug: selectedPackage,
+                newsletter_optin: newsletterOptin
+            });
+
+            if (error) throw error;
+
+            alert("Thank you! Your inquiry has been received. We will contact you shortly.");
+            // Reset form
+            setAgencyName("");
+            setPax("");
+            setTravelDates("");
+            setNewsletterOptin(false);
+            setSelectedPackage("");
+        } catch (error: any) {
+            console.error('Error submitting inquiry:', error);
+            alert("Sorry, there was an error submitting your request. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <section id="inquire" className="bg-[#f5f5f5] px-8 py-16 rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] relative z-10 -mt-6">
             <div className="text-center mb-10">
@@ -23,11 +63,14 @@ export default function InquiryForm() {
                 <p className="text-midnight-navy/60 text-xs tracking-widest uppercase">B2B Agent Inquiry</p>
             </div>
 
-            <form className="space-y-5 max-w-md mx-auto">
+            <form onSubmit={handleSubmit} className="space-y-5 max-w-md mx-auto">
                 <div>
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 mb-1.5 ml-1">Agency Name</label>
                     <input
                         type="text"
+                        required
+                        value={agencyName}
+                        onChange={(e) => setAgencyName(e.target.value)}
                         placeholder="Luxury Travels Co."
                         className="w-full bg-white text-midnight-navy border border-midnight-navy/10 rounded-lg px-4 py-4 focus:outline-none focus:ring-1 focus:ring-brushed-gold focus:border-brushed-gold transition-all placeholder:text-midnight-navy/20"
                     />
@@ -37,6 +80,10 @@ export default function InquiryForm() {
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 mb-1.5 ml-1">Pax</label>
                     <input
                         type="number"
+                        required
+                        min="1"
+                        value={pax}
+                        onChange={(e) => setPax(e.target.value)}
                         placeholder="Number of Guests"
                         className="w-full bg-white text-midnight-navy border border-midnight-navy/10 rounded-lg px-4 py-4 focus:outline-none focus:ring-1 focus:ring-brushed-gold focus:border-brushed-gold transition-all placeholder:text-midnight-navy/20"
                     />
@@ -46,6 +93,9 @@ export default function InquiryForm() {
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 mb-1.5 ml-1">Travel Dates</label>
                     <input
                         type="text"
+                        required
+                        value={travelDates}
+                        onChange={(e) => setTravelDates(e.target.value)}
                         placeholder="DD/MM/YYYY - DD/MM/YYYY"
                         className="w-full bg-white text-midnight-navy border border-midnight-navy/10 rounded-lg px-4 py-4 focus:outline-none focus:ring-1 focus:ring-brushed-gold focus:border-brushed-gold transition-all placeholder:text-midnight-navy/20"
                     />
@@ -73,15 +123,26 @@ export default function InquiryForm() {
 
                 <div className="flex items-start gap-3 pt-2">
                     <div className="flex items-center h-5">
-                        <input id="newsletter-optin" name="newsletter-optin" type="checkbox" className="h-5 w-5 rounded border-midnight-navy/20 text-brushed-gold focus:ring-brushed-gold accent-brushed-gold" />
+                        <input
+                            id="newsletter-optin"
+                            name="newsletter-optin"
+                            type="checkbox"
+                            checked={newsletterOptin}
+                            onChange={(e) => setNewsletterOptin(e.target.checked)}
+                            className="h-5 w-5 rounded border-midnight-navy/20 text-brushed-gold focus:ring-brushed-gold accent-brushed-gold"
+                        />
                     </div>
                     <label htmlFor="newsletter-optin" className="text-[11px] leading-tight text-midnight-navy/70 font-medium">
                         Keep me updated on new brochures and exclusive corporate itineraries.
                     </label>
                 </div>
 
-                <button type="submit" className="w-full bg-brushed-gold text-white py-4 mt-2 rounded-lg text-xs font-bold tracking-widest uppercase shadow-xl shadow-brushed-gold/30 hover:shadow-brushed-gold/40 active:scale-[0.98] transition-all">
-                    Submit Inquiry
+                <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-brushed-gold text-white py-4 mt-2 rounded-lg text-xs font-bold tracking-widest uppercase shadow-xl shadow-brushed-gold/30 hover:shadow-brushed-gold/40 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
                 </button>
             </form>
 
