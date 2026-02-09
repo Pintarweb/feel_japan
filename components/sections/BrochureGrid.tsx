@@ -1,63 +1,52 @@
+"use client";
+
 import { MapPin, Calendar, Utensils, Star, Share2, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
 
 import { BROCHURES } from '@/lib/constants';
 
+type Category = 'FIT' | 'GIT';
+
 export default function BrochureGrid() {
+    const [activeCategory, setActiveCategory] = useState<Category>('FIT');
+
+    const filteredBrochures = BROCHURES.filter(b =>
+        b.tags.some(t => t.label === activeCategory)
+    );
+
     return (
-        <section id="collections" className="py-16 bg-off-white">
-            {/* Header */}
-            <div className="px-6 mb-12">
-                <h3 className="text-xs font-bold tracking-[0.5em] text-midnight-navy/40 uppercase mb-3">Portfolio</h3>
-                <h2 className="text-4xl font-serif text-midnight-navy leading-tight">
-                    B2B Private <br /> Collections
-                </h2>
-                <p className="text-[10px] text-midnight-navy/40 mt-3 tracking-[0.25em] uppercase">Feel Japan with K</p>
-            </div>
-
-            {/* Filters (Horizontal Scroll) */}
-            <div className="space-y-10 mb-12">
-                {/* Season Filter */}
-                <div className="px-6">
-                    <div className="flex items-center gap-4 mb-4">
-                        <span className="font-serif text-lg text-midnight-navy">Season</span>
-                        <div className="h-px flex-1 bg-gradient-to-r from-brushed-gold/40 to-transparent"></div>
-                    </div>
-                    <div className="flex gap-8 overflow-x-auto pb-2 no-scrollbar pl-1">
-                        <button className="group flex flex-col items-center space-y-1 min-w-max">
-                            <span className="text-sm font-medium text-midnight-navy">Spring</span>
-                            <span className="w-1 h-1 rounded-full bg-brushed-gold"></span>
-                        </button>
-                        {['Summer', 'Autumn', 'Winter'].map((season) => (
-                            <button key={season} className="group flex flex-col items-center space-y-1 min-w-max">
-                                <span className="text-sm font-light text-midnight-navy/40 group-hover:text-midnight-navy transition-colors">{season}</span>
-                                <span className="w-1 h-1 rounded-full bg-transparent group-hover:bg-brushed-gold/30"></span>
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Region Filter */}
-                <div className="px-6">
-                    <div className="flex items-center gap-4 mb-4">
-                        <span className="font-serif text-lg text-midnight-navy">Region</span>
-                        <div className="h-px flex-1 bg-gradient-to-r from-brushed-gold/40 to-transparent"></div>
-                    </div>
-                    <div className="flex gap-8 overflow-x-auto pb-2 no-scrollbar pl-1">
-                        <button className="group flex flex-col items-center space-y-1 min-w-max">
-                            <span className="text-sm font-medium text-midnight-navy">Kyoto</span>
-                            <span className="w-1 h-1 rounded-full bg-brushed-gold"></span>
-                        </button>
-                        {['Tokyo', 'Osaka', 'Hokkaido'].map((region) => (
-                            <button key={region} className="text-sm font-light text-midnight-navy/40 transition-colors min-w-max">{region}</button>
-                        ))}
-                    </div>
+        <section id="collections" className="py-12 bg-off-white">
+            {/* Filter Toggle - Centered and Clean */}
+            <div className="px-6 mb-12 text-center relative z-20">
+                {/* Main Category Toggle - Luxury Segmented Control */}
+                <div className="inline-flex bg-white p-1.5 rounded-full shadow-[0_4px_20px_-4px_rgba(0,26,51,0.1)] border border-midnight-navy/5 relative">
+                    <button
+                        onClick={() => setActiveCategory('FIT')}
+                        className={`relative z-10 px-8 py-3 rounded-full text-xs font-bold tracking-[0.2em] uppercase transition-all duration-500 flex items-center gap-2 ${activeCategory === 'FIT'
+                                ? 'bg-midnight-navy text-brushed-gold shadow-md'
+                                : 'text-midnight-navy/50 hover:text-midnight-navy hover:bg-gray-50'
+                            }`}
+                    >
+                        <span className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${activeCategory === 'FIT' ? 'bg-brushed-gold' : 'bg-midnight-navy/30'}`}></span>
+                        Private (FIT)
+                    </button>
+                    <button
+                        onClick={() => setActiveCategory('GIT')}
+                        className={`relative z-10 px-8 py-3 rounded-full text-xs font-bold tracking-[0.2em] uppercase transition-all duration-500 flex items-center gap-2 ${activeCategory === 'GIT'
+                                ? 'bg-midnight-navy text-brushed-gold shadow-md'
+                                : 'text-midnight-navy/50 hover:text-midnight-navy hover:bg-gray-50'
+                            }`}
+                    >
+                        <span className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${activeCategory === 'GIT' ? 'bg-brushed-gold' : 'bg-midnight-navy/30'}`}></span>
+                        Group (GIT)
+                    </button>
                 </div>
             </div>
 
             {/* Brochure Cards */}
             <div className="px-6 md:px-12 lg:px-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 xl:gap-12 max-w-7xl mx-auto">
-                {BROCHURES.map((brochure) => (
+                {filteredBrochures.map((brochure) => (
                     <article key={brochure.id} className="flex flex-col group h-full">
                         {/* Image Card */}
                         <div className="relative aspect-[3/4] overflow-hidden rounded-sm shadow-xl hover:shadow-2xl transition-all duration-500 mb-6">
