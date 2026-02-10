@@ -23,7 +23,7 @@ export default function BrochureGrid({ brochures }: BrochureGridProps) {
         return {
             id: b.id,
             title: b.title,
-            description: b.subtitle,
+            description: b.summary || b.subtitle,
             image: b.image,
             link: `/brochures/${encodeURIComponent(b.slug)}`,
             tags: [

@@ -21,6 +21,7 @@ export const getBrochures = async (): Promise<Brochure[]> => {
         city: item.city, // JSONB is automatically parsed
         title: item.title,
         subtitle: item.subtitle,
+        summary: item.summary,
         tags: item.tags,
         highlights: item.highlights,
         itinerary: item.itinerary,
@@ -53,6 +54,7 @@ export const getBrochureBySlug = async (slug: string): Promise<Brochure | null> 
         city: data.city,
         title: data.title,
         subtitle: data.subtitle,
+        summary: data.summary,
         tags: data.tags,
         highlights: data.highlights,
         itinerary: data.itinerary,

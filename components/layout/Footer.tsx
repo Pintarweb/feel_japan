@@ -39,9 +39,6 @@ export default function Footer() {
                         <div className="flex items-center justify-start gap-3 mb-1">
                             <span className="font-serif text-lg tracking-wide text-white">03-7494 6048</span>
                         </div>
-                        <p className="text-[9px] text-white/40 font-bold uppercase tracking-widest">
-                            Bank: Feel Japan with K (Japan)
-                        </p>
                     </div>
                 </div>
             </div>

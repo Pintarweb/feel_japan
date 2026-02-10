@@ -26,6 +26,7 @@ export interface Brochure {
     city: string | string[];
     title: string;
     subtitle: string;
+    summary?: string;
     tags: {
         type: string;
         pax: string;

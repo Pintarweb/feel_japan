@@ -38,14 +38,6 @@ export default function Hero() {
             >
               Explore Private Collections
             </Link>
-
-            {/* Secondary CTA */}
-            <Link
-              href="/inquire"
-              className="bg-transparent border border-white text-white px-8 py-3 rounded-full text-xs font-bold tracking-widest uppercase hover:bg-white hover:text-midnight-navy transition-all duration-300 shadow-lg md:px-10 md:py-4 md:text-sm text-center backdrop-blur-sm"
-            >
-              Request a Bespoke Quote
-            </Link>
           </div>
         </div>
       </div>

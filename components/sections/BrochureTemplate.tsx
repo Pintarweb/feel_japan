@@ -1,3 +1,5 @@
+"use client";
+
 import { MapPin, Calendar, Check, Utensils, Hotel, Bus, Train, Plane, Star, Camera, Mountain, ShoppingBag, Footprints, Droplet, UserCheck, Map } from 'lucide-react';
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -15,6 +17,7 @@ const getIcon = (iconName: string) => {
 
 // Simplified parser for bold text (**text**)
 const parseDescription = (text: string) => {
+    if (!text) return "";
     const parts = text.split(/(\*\*.*?\*\*)/g);
     return parts.map((part, index) => {
         if (part.startsWith('**') && part.endsWith('**')) {
@@ -29,10 +32,13 @@ interface BrochureTemplateProps {
 }
 
 export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
-    if (!brochure) return null;
+    // Rely on parent check to avoid hydration mismatch on early null return
+    // if (!brochure) return null;
+
+    const formattedAdultPrice = new Intl.NumberFormat('en-US').format(brochure.pricing.tiers[0]?.adultPrice || 0);
 
     return (
-        <main className="bg-white min-h-screen">
+        <div className="bg-white min-h-screen">
             <Navbar hideInquiry={true} />
 
             {/* Hero Section */}
@@ -48,10 +54,14 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
 
                 <div className="relative z-10 animate-fade-in-up">
                     <span className="block text-brushed-gold text-sm font-bold tracking-[0.3em] uppercase mb-4">
-                        {brochure.subtitle.split('•')[1]?.trim() || "Season"}
+                        {brochure.subtitle.includes('Summer') ? 'Summer 2026' : (brochure.subtitle.split('•').pop()?.trim() || "Season")}
                     </span>
                     <h2 className="text-2xl md:text-4xl font-bold mb-8 tracking-[0.2em] hero-text-shadow uppercase opacity-95">{brochure.title}</h2>
-                    <p className="text-xl md:text-2xl font-light mb-8 opacity-90 hero-text-shadow tracking-widest">{brochure.subtitle}</p>
+                    <p className="text-xl md:text-2xl font-light mb-8 opacity-90 hero-text-shadow tracking-widest">
+                        {brochure.subtitle.includes('•')
+                            ? brochure.subtitle.split('•').slice(0, -1).join(' • ').trim()
+                            : brochure.subtitle}
+                    </p>
                     <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
                         <span className="bg-japan-red text-white px-8 py-3 rounded-full text-sm font-bold shadow-lg uppercase tracking-widest">{brochure.tags.type}</span>
                         <span className="bg-white text-black px-8 py-3 rounded-full text-sm font-bold shadow-lg uppercase tracking-widest">{brochure.tags.pax}</span>
@@ -69,7 +79,7 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
 
                 <div className="space-y-4">
                     {brochure.itinerary.map((day, index) => (
-                        <div key={day.day} className={`flex flex-col md:flex-row gap-8 group p-8 rounded-3xl transition-colors ${index % 2 === 1 ? 'bg-midnight-navy/5' : 'hover:bg-midnight-navy/5'}`}>
+                        <div key={index} className={`flex flex-col md:flex-row gap-8 group p-8 rounded-3xl transition-colors ${index % 2 === 1 ? 'bg-midnight-navy/5' : 'hover:bg-midnight-navy/5'}`}>
                             <div className="md:w-32 flex-shrink-0">
                                 <div className="sticky top-24">
                                     <span className="block text-brushed-gold font-serif text-4xl leading-none mb-2">{String(day.day).padStart(2, '0')}</span>
@@ -100,10 +110,10 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
                     ))}
                 </div>
 
-                {/* Package Pricing Section */}
+                {/* Estimated Pricing Section */}
                 <section className="mb-20 mt-16">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl font-serif text-midnight-navy mb-4">Package Pricing</h2>
+                        <h2 className="text-3xl font-serif text-midnight-navy mb-4">Estimated Pricing</h2>
                         <div className="h-1 w-20 bg-brushed-gold mx-auto mb-4"></div>
                         <p className="text-midnight-navy/60 font-medium italic text-sm">{brochure.pricing.title}</p>
                     </div>
@@ -122,9 +132,9 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
                                 {brochure.pricing.tiers.map((tier, index) => (
                                     <tr key={index}>
                                         <td className="px-8 py-5">{tier.pax}</td>
-                                        <td className="px-8 py-5 text-brushed-gold font-bold">{tier.adultPrice.toLocaleString()}</td>
-                                        <td className="px-8 py-5">{tier.childPriceWithBed ? tier.childPriceWithBed.toLocaleString() : '--'}</td>
-                                        <td className="px-8 py-5 opacity-40">{tier.childPriceNoBed ? tier.childPriceNoBed.toLocaleString() : '--'}</td>
+                                        <td className="px-8 py-5 text-brushed-gold font-bold">{new Intl.NumberFormat('en-US').format(tier.adultPrice)}</td>
+                                        <td className="px-8 py-5">{tier.childPriceWithBed ? new Intl.NumberFormat('en-US').format(tier.childPriceWithBed) : '--'}</td>
+                                        <td className="px-8 py-5 opacity-40">{tier.childPriceNoBed ? new Intl.NumberFormat('en-US').format(tier.childPriceNoBed) : '--'}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -196,6 +206,6 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
             </a>
 
             <Footer />
-        </main >
+        </div>
     );
 }
