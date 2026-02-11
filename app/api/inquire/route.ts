@@ -92,25 +92,78 @@ export async function POST(req: Request) {
       </div>
     `;
 
-        // 3. Send Email via Resend
+        // 3. Send Emails via Resend
         const resend = getResend();
-        const { data: resendData, error: resendError } = await resend.emails.send({
-            from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
-            to: process.env.SUPPORT_EMAIL || 'admin@pintarweb.com', // Use support email
+        const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+        const supportEmail = process.env.SUPPORT_EMAIL || 'admin@pintarweb.com';
+
+        // 3a. Internal Notification
+        const { data: internalData, error: internalError } = await resend.emails.send({
+            from: fromEmail,
+            to: supportEmail,
             subject: emailSubject,
             html: emailHtml,
         });
 
+        // 3b. Client Acknowledgment (Auto-Reply)
+        const clientSubject = `Inquiry Confirmed: Feel Japan Bespoke (Ref: ${inquiry.id.substring(0, 8)})`;
+        const clientHtml = `
+            <div style="font-family: serif; color: #001F3F; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 40px; border-radius: 20px; line-height: 1.6;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h2 style="color: #C5A059; font-style: italic; margin-bottom: 5px;">Feel Japan</h2>
+                    <p style="font-[10px]; text-transform: uppercase; letter-spacing: 3px; color: #999;">Bespoke Travel Architecture</p>
+                </div>
+                
+                <p>Dear ${name},</p>
+                
+                <p>We wish to formally acknowledge receipt of your bespoke travel request for <strong>${agency_name}</strong>. Your inquiry has been successfully transmitted to our team of travel designers.</p>
+                
+                <p>At Feel Japan, we treat every itinerary as a unique piece of architecture. Due to the high volume of curated requests, our designers respond in chronological order.</p>
+                
+                <p>A member of our team will review your requirements and reach out to you within 24-48 business hours.</p>
+                
+                <div style="margin: 30px 0; padding: 20px; background: #fcfaf5; border-left: 3px solid #C5A059; font-size: 13px;">
+                    <strong>Reference ID:</strong> ${inquiry.id}<br/>
+                    <strong>Package Interest:</strong> ${package_slug || 'Bespoke Arrangement'}
+                </div>
+
+                <p style="font-size: 12px; color: #666; margin-top: 40px;">
+                    Warm regards,<br/>
+                    <strong>The Feel Japan Concierge Team</strong>
+                </p>
+            </div>
+        `;
+
+        const { data: clientResData, error: clientResError } = await resend.emails.send({
+            from: fromEmail,
+            to: email, // Send to the agent
+            subject: clientSubject,
+            html: clientHtml,
+        });
+
         // 4. Log Communication to Supabase
         if (inquiry) {
+            // Log Internal
             await supabase.from('inquiry_communications').insert([{
                 inquiry_id: inquiry.id,
                 type: 'email',
                 subject: emailSubject,
                 content: emailHtml,
-                resend_id: resendData?.id || null,
-                status: resendError ? 'failed' : 'sent',
-                error_message: resendError ? JSON.stringify(resendError) : null
+                resend_id: internalData?.id || null,
+                status: internalError ? 'failed' : 'sent',
+                error_message: internalError ? JSON.stringify(internalError) : null
+            }]);
+
+            // Log Client Acknowledgement
+            await supabase.from('inquiry_communications').insert([{
+                inquiry_id: inquiry.id,
+                type: 'email',
+                direction: 'outbound',
+                subject: clientSubject,
+                content: clientHtml,
+                resend_id: clientResData?.id || null,
+                status: clientResError ? 'failed' : 'sent',
+                error_message: clientResError ? JSON.stringify(clientResError) : null
             }]);
         }
 
