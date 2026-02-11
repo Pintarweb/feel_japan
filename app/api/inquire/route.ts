@@ -2,7 +2,14 @@ import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// We instantiate this inside the handler or via a getter to avoid build-time crashes if the API key is missing
+const getResend = () => {
+    const key = process.env.RESEND_API_KEY;
+    if (!key && process.env.NODE_ENV === 'production') {
+        console.warn("RESEND_API_KEY is missing in production environment");
+    }
+    return new Resend(key || 're_placeholder');
+};
 
 // Server-side Supabase client (using Service Role would be better for internal logs, but Anon works if RLS allows)
 const supabase = createClient(
@@ -86,9 +93,10 @@ export async function POST(req: Request) {
     `;
 
         // 3. Send Email via Resend
+        const resend = getResend();
         const { data: resendData, error: resendError } = await resend.emails.send({
             from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
-            to: process.env.SUPPORT_EMAIL || email, // Send to support or the client for testing
+            to: process.env.SUPPORT_EMAIL || 'admin@pintarweb.com', // Use support email
             subject: emailSubject,
             html: emailHtml,
         });
