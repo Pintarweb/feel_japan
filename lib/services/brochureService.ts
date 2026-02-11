@@ -6,6 +6,8 @@ export const getBrochures = async (): Promise<Brochure[]> => {
     const { data, error } = await supabase
         .from('brochures')
         .select('*')
+        .or('is_archived.eq.false,is_archived.is.null')
+        .or(`campaign_end.is.null,campaign_end.gte.${new Date().toISOString().split('T')[0]}`)
         .order('created_at', { ascending: true });
 
     if (error) {
@@ -28,7 +30,11 @@ export const getBrochures = async (): Promise<Brochure[]> => {
         pricing: item.pricing,
         inclusions: item.inclusions,
         exclusions: item.exclusions,
-        paymentTerms: item.payment_terms // mapped from snake_case
+        paymentTerms: item.payment_terms,
+        created_at: item.created_at,
+        is_archived: item.is_archived,
+        campaign_start: item.campaign_start,
+        campaign_end: item.campaign_end
     }));
 };
 
@@ -61,6 +67,10 @@ export const getBrochureBySlug = async (slug: string): Promise<Brochure | null> 
         pricing: data.pricing,
         inclusions: data.inclusions,
         exclusions: data.exclusions,
-        paymentTerms: data.payment_terms
+        paymentTerms: data.payment_terms,
+        created_at: data.created_at,
+        is_archived: data.is_archived,
+        campaign_start: data.campaign_start,
+        campaign_end: data.campaign_end
     };
 };

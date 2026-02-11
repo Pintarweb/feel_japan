@@ -35,7 +35,10 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
     // Rely on parent check to avoid hydration mismatch on early null return
     // if (!brochure) return null;
 
-    const formattedAdultPrice = new Intl.NumberFormat('en-US').format(brochure.pricing.tiers[0]?.adultPrice || 0);
+    const pricing = brochure.pricing || { title: "", tiers: [], surchargeNote: "" };
+    const tiers = pricing.tiers || [];
+    const formattedAdultPrice = new Intl.NumberFormat('en-US').format(tiers[0]?.adultPrice || 0);
+    const subtitle = brochure.subtitle || "";
 
     return (
         <div className="bg-white min-h-screen">
@@ -54,13 +57,13 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
 
                 <div className="relative z-10 animate-fade-in-up">
                     <span className="block text-brushed-gold text-sm font-bold tracking-[0.3em] uppercase mb-4">
-                        {brochure.subtitle.includes('Summer') ? 'Summer 2026' : (brochure.subtitle.split('•').pop()?.trim() || "Season")}
+                        {subtitle.includes('Summer') ? 'Summer 2026' : (subtitle.split('•').pop()?.trim() || "Season")}
                     </span>
                     <h2 className="text-2xl md:text-4xl font-bold mb-8 tracking-[0.2em] hero-text-shadow uppercase opacity-95">{brochure.title}</h2>
                     <p className="text-xl md:text-2xl font-light mb-8 opacity-90 hero-text-shadow tracking-widest">
-                        {brochure.subtitle.includes('•')
-                            ? brochure.subtitle.split('•').slice(0, -1).join(' • ').trim()
-                            : brochure.subtitle}
+                        {subtitle.includes('•')
+                            ? subtitle.split('•').slice(0, -1).join(' • ').trim()
+                            : subtitle}
                     </p>
                     <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
                         <span className="bg-japan-red text-white px-8 py-3 rounded-full text-sm font-bold shadow-lg uppercase tracking-widest">{brochure.tags.type}</span>
@@ -115,7 +118,7 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
                     <div className="text-center mb-12">
                         <h2 className="text-3xl font-serif text-midnight-navy mb-4">Estimated Pricing</h2>
                         <div className="h-1 w-20 bg-brushed-gold mx-auto mb-4"></div>
-                        <p className="text-midnight-navy/60 font-medium italic text-sm">{brochure.pricing.title}</p>
+                        <p className="text-midnight-navy/60 font-medium italic text-sm">{pricing.title}</p>
                     </div>
 
                     <div className="overflow-x-auto bg-white rounded-lg shadow-xl border border-midnight-navy/5">
@@ -129,10 +132,10 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-midnight-navy/5 font-medium text-sm text-midnight-navy/80">
-                                {brochure.pricing.tiers.map((tier, index) => (
+                                {tiers.map((tier, index) => (
                                     <tr key={index}>
                                         <td className="px-8 py-5">{tier.pax}</td>
-                                        <td className="px-8 py-5 text-brushed-gold font-bold">{new Intl.NumberFormat('en-US').format(tier.adultPrice)}</td>
+                                        <td className="px-8 py-5 text-brushed-gold font-bold">{new Intl.NumberFormat('en-US').format(tier.adultPrice || 0)}</td>
                                         <td className="px-8 py-5">{tier.childPriceWithBed ? new Intl.NumberFormat('en-US').format(tier.childPriceWithBed) : '--'}</td>
                                         <td className="px-8 py-5 opacity-40">{tier.childPriceNoBed ? new Intl.NumberFormat('en-US').format(tier.childPriceNoBed) : '--'}</td>
                                     </tr>
@@ -141,7 +144,7 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
                         </table>
                     </div>
 
-                    <p className="text-center text-[10px] text-midnight-navy/40 mt-4 font-bold uppercase tracking-widest italic">{brochure.pricing.surchargeNote}</p>
+                    <p className="text-center text-[10px] text-midnight-navy/40 mt-4 font-bold uppercase tracking-widest italic">{pricing.surchargeNote}</p>
                 </section>
 
                 {/* Inclusions & Exclusions */}

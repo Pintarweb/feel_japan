@@ -37,6 +37,7 @@ export interface Brochure {
         title: string;
         tiers: PricingTier[];
         surchargeNote: string;
+        displayColumns?: string[];
     };
     inclusions: string[];
     exclusions: string[];
@@ -44,4 +45,8 @@ export interface Brochure {
         deposit: string;
         finalPayment: string;
     };
+    created_at: string;
+    is_archived?: boolean;
+    campaign_start?: string;
+    campaign_end?: string;
 }
