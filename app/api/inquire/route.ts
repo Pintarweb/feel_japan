@@ -66,7 +66,7 @@ export async function POST(req: Request) {
         const emailHtml = `
       <div style="font-family: serif; color: #001F3F; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 40px; border-radius: 20px;">
         <h1 style="color: #C5A059; border-bottom: 2px solid #C5A059; padding-bottom: 10px;">New Inquiry Received</h1>
-        <p>A new high-value lead has been captured via the Feel Japan Portal.</p>
+        <p>A new high-value lead has been captured via the Feel Japan with K Portal.</p>
         
         <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0;">
           <h3 style="margin-top: 0;">Agency Details</h3>
@@ -78,7 +78,7 @@ export async function POST(req: Request) {
 
         <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0;">
           <h3 style="margin-top: 0;">Itinerary Interest</h3>
-          <p><strong>Package:</strong> ${package_slug}</p>
+          <p><strong>Package:</strong> ${package_slug || 'Custom Architecture'}</p>
           <p><strong>Dates:</strong> ${travel_dates}</p>
           <p><strong>Pax:</strong> ${pax} (Adults: ${adults}, Children: ${children_6_11}, Infants: ${infants_under_6})</p>
           <p><strong>Category:</strong> ${room_category}</p>
@@ -87,7 +87,7 @@ export async function POST(req: Request) {
         </div>
 
         <p style="font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 2px; text-align: center; margin-top: 40px;">
-          FEEL JAPAN B2B PORTAL • SECURE TRANSMISSION
+          FEEL JAPAN WITH K • B2B PORTAL • SECURE TRANSMISSION
         </p>
       </div>
     `;
@@ -106,19 +106,19 @@ export async function POST(req: Request) {
         });
 
         // 3b. Client Acknowledgment (Auto-Reply)
-        const clientSubject = `Inquiry Confirmed: Feel Japan Bespoke (Ref: ${inquiry.id.substring(0, 8)})`;
+        const clientSubject = `Inquiry Confirmed: Feel Japan with K Bespoke (Ref: ${inquiry.id.substring(0, 8)})`;
         const clientHtml = `
             <div style="font-family: serif; color: #001F3F; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 40px; border-radius: 20px; line-height: 1.6;">
                 <div style="text-align: center; margin-bottom: 30px;">
-                    <h2 style="color: #C5A059; font-style: italic; margin-bottom: 5px;">Feel Japan</h2>
+                    <h2 style="color: #C5A059; font-style: italic; margin-bottom: 5px;">Feel Japan with K</h2>
                     <p style="font-[10px]; text-transform: uppercase; letter-spacing: 3px; color: #999;">Bespoke Travel Architecture</p>
                 </div>
                 
                 <p>Dear ${name},</p>
                 
-                <p>We wish to formally acknowledge receipt of your bespoke travel request for <strong>${agency_name}</strong>. Your inquiry has been successfully transmitted to our team of travel designers.</p>
+                <p>We wish to formally acknowledge receipt of your bespoke travel request for <strong>${agency_name}</strong>. Your inquiry has been successfully transmitted to our team of travel designers at <strong>Feel Japan with K</strong>.</p>
                 
-                <p>At Feel Japan, we treat every itinerary as a unique piece of architecture. Due to the high volume of curated requests, our designers respond in chronological order.</p>
+                <p>At Feel Japan with K, we treat every itinerary as a unique piece of architecture. Due to the high volume of curated requests, our designers respond in chronological order.</p>
                 
                 <p>A member of our team will review your requirements and reach out to you within 24-48 business hours.</p>
                 
@@ -129,7 +129,7 @@ export async function POST(req: Request) {
 
                 <p style="font-size: 12px; color: #666; margin-top: 40px;">
                     Warm regards,<br/>
-                    <strong>The Feel Japan Concierge Team</strong>
+                    <strong>The Feel Japan with K Concierge Team</strong>
                 </p>
             </div>
         `;
