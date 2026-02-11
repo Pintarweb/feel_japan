@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { Brochure, ItineraryDay, PricingTier } from '@/types/brochure';
@@ -28,7 +28,9 @@ import {
 import Link from 'next/link';
 import Gatekeeper from '@/components/studio/Gatekeeper';
 
-export default function StudioBuilder() {
+export const dynamic = 'force-dynamic';
+
+function StudioBuilderContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const brochureId = searchParams.get('id');
@@ -1010,5 +1012,17 @@ export default function StudioBuilder() {
                 )}
             </div>
         </Gatekeeper>
+    );
+}
+
+export default function StudioBuilder() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-midnight-navy flex items-center justify-center">
+                <div className="w-10 h-10 border-4 border-brushed-gold border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        }>
+            <StudioBuilderContent />
+        </Suspense>
     );
 }

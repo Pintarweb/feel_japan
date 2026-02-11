@@ -49,6 +49,7 @@ export default function Footer() {
                     &copy; 2026 Feel Japan with K. Travel & Tours.
                 </p>
                 <div className="flex gap-6">
+                    <Link href="/manage-studio" className="text-[10px] text-white/40 hover:text-white uppercase tracking-widest transition-colors flex items-center gap-1.5 border-r border-white/10 pr-6">Studio Portal</Link>
                     <Link href="#" className="text-[10px] text-white/40 hover:text-white uppercase tracking-widest transition-colors">Privacy Policy</Link>
                     <Link href="#" className="text-[10px] text-white/40 hover:text-white uppercase tracking-widest transition-colors">Terms of Service</Link>
                 </div>
