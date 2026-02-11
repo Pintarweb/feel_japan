@@ -54,6 +54,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
 
     const [newsletterOptin, setNewsletterOptin] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     // Validation states
     const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -146,13 +147,11 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                 throw new Error(errorData.error || 'Failed to submit inquiry');
             }
 
-            alert("Thank you! Your inquiry has been received. We will contact you shortly.");
+            // Success State
+            setIsSubmitted(true);
 
-            // Reset Form
-            setAgencyName(""); setName(""); setEmail(""); setPhone("");
-            setAdults("2"); setChildren611("0"); setInfantsUnder6("0");
-            setDateFrom(""); setDateTo(""); setRoomCategory(""); setPlacesOfVisit(""); setEstimatedBudget("");
-            setTouched({}); setErrors({});
+            // Note: We don't reset the form immediately so the data doesn't "flicker" out
+            // but we could clear it if they want to submit another one via the Return button.
         } catch (error: any) {
             console.error('Error submitting inquiry:', error);
             alert("Error submitting request. Please try again.");
@@ -174,6 +173,48 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
     `;
 
     const selectedCountry = COUNTRIES.find(c => c.code === countryCode);
+
+    if (isSubmitted) {
+        return (
+            <section id="inquiry-form" className="max-w-4xl mx-auto py-24 px-6">
+                <div className="bg-white rounded-[3rem] border border-midnight-navy/5 shadow-2xl p-16 text-center animate-in fade-in zoom-in duration-700">
+                    <div className="w-20 h-20 bg-brushed-gold/10 rounded-full flex items-center justify-center mx-auto mb-10">
+                        <CheckCircle2 className="w-10 h-10 text-brushed-gold" />
+                    </div>
+
+                    <h2 className="text-4xl font-serif font-bold italic text-midnight-navy mb-6">Request Logged</h2>
+
+                    <div className="max-w-md mx-auto space-y-6">
+                        <p className="text-sm leading-relaxed text-midnight-navy/70">
+                            Your bespoke travel architecture request has been successfully transmitted to our travel designers.
+                        </p>
+
+                        <div className="h-px w-12 bg-brushed-gold/30 mx-auto"></div>
+
+                        <p className="text-[11px] uppercase tracking-[0.2em] font-bold text-midnight-navy/40 leading-loose">
+                            Due to high demand for curated itineraries, requests are processed in chronological order.
+                            You will receive a formal response within 24-48 business hours.
+                        </p>
+                    </div>
+
+                    <div className="mt-12">
+                        <button
+                            onClick={() => {
+                                setIsSubmitted(false);
+                                setAgencyName(""); setName(""); setEmail(""); setPhone("");
+                                setAdults("2"); setChildren611("0"); setInfantsUnder6("0");
+                                setDateFrom(""); setDateTo(""); setRoomCategory(""); setPlacesOfVisit(""); setEstimatedBudget("");
+                                setTouched({}); setErrors({});
+                            }}
+                            className="text-[10px] uppercase tracking-widest font-bold text-brushed-gold hover:text-midnight-navy transition-colors border-b border-brushed-gold/20 pb-1"
+                        >
+                            Log Another Request
+                        </button>
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section id="inquire" className="bg-[#f5f5f5] px-8 py-16 rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] relative z-10 -mt-6">
