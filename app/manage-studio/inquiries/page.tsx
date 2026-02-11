@@ -29,18 +29,18 @@ import Gatekeeper from '@/components/studio/Gatekeeper';
 interface Inquiry {
     id: string;
     created_at: string;
+    agency_name: string;
     name: string;
     email: string;
     phone: string;
-    country: string;
-    travel_from: string;
-    travel_to: string;
     adults: number;
     children_6_11: number;
     infants_under_6: number;
-    budget: string;
+    estimated_budget: string;
     places_of_visit: string;
     room_category: string;
+    package_slug: string;
+    travel_dates: string;
     pax: number;
 }
 
@@ -86,11 +86,15 @@ export default function StudioInquiries() {
         }
     }
 
-    const filteredInquiries = inquiries.filter(i =>
-        i.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        i.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        i.country.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredInquiries = inquiries.filter(i => {
+        const query = searchQuery.toLowerCase();
+        return (
+            (i.name?.toLowerCase().includes(query) ?? false) ||
+            (i.email?.toLowerCase().includes(query) ?? false) ||
+            (i.agency_name?.toLowerCase().includes(query) ?? false) ||
+            (i.package_slug?.toLowerCase().includes(query) ?? false)
+        );
+    });
 
     return (
         <Gatekeeper>
@@ -197,18 +201,20 @@ export default function StudioInquiries() {
                                     >
                                         <div className="flex items-center gap-6">
                                             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-xs ${selectedInquiry?.id === inquiry.id ? 'bg-brushed-gold text-midnight-navy' : 'bg-midnight-navy/5 text-midnight-navy'}`}>
-                                                {inquiry.name.substring(0, 2).toUpperCase()}
+                                                {(inquiry.name || inquiry.agency_name || "??").substring(0, 2).toUpperCase()}
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-3">
-                                                    <span className={`text-sm font-bold ${selectedInquiry?.id === inquiry.id ? 'text-white' : 'text-midnight-navy'}`}>{inquiry.name}</span>
-                                                    <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-tighter ${selectedInquiry?.id === inquiry.id ? 'bg-white/10 text-white/60' : 'bg-midnight-navy/5 text-midnight-navy/40'}`}>
-                                                        {inquiry.country}
-                                                    </span>
+                                                    <span className={`text-sm font-bold ${selectedInquiry?.id === inquiry.id ? 'text-white' : 'text-midnight-navy'}`}>{inquiry.name || inquiry.agency_name}</span>
+                                                    {inquiry.agency_name && (
+                                                        <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-tighter ${selectedInquiry?.id === inquiry.id ? 'bg-white/10 text-white/60' : 'bg-midnight-navy/5 text-midnight-navy/40'}`}>
+                                                            {inquiry.agency_name}
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <div className={`flex items-center gap-4 mt-1 text-[10px] uppercase tracking-widest font-bold ${selectedInquiry?.id === inquiry.id ? 'text-white/40' : 'text-midnight-navy/30'}`}>
                                                     <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(inquiry.created_at).toLocaleDateString()}</span>
-                                                    <span className="flex items-center gap-1"><User className="w-3 h-3" /> {inquiry.pax} PAX</span>
+                                                    <span className="flex items-center gap-1"><User className="w-3 h-3" /> {inquiry.pax || 0} PAX</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -227,12 +233,14 @@ export default function StudioInquiries() {
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-brushed-gold/10 rounded-full -mr-16 -mt-16"></div>
                                     <div className="relative">
                                         <div className="w-16 h-16 bg-brushed-gold text-midnight-navy rounded-3xl flex items-center justify-center font-serif font-bold text-2xl shadow-xl shadow-black/20 mb-6">
-                                            {selectedInquiry.name.substring(0, 1).toUpperCase()}
+                                            {(selectedInquiry.name || selectedInquiry.agency_name || "?").substring(0, 1).toUpperCase()}
                                         </div>
-                                        <h2 className="text-2xl font-serif font-bold italic">{selectedInquiry.name}</h2>
-                                        <div className="flex items-center gap-2 mt-2">
-                                            <span className="text-brushed-gold text-[10px] font-bold uppercase tracking-widest">{selectedInquiry.country} Specialist Agent</span>
-                                        </div>
+                                        <h2 className="text-2xl font-serif font-bold italic">{selectedInquiry.name || selectedInquiry.agency_name}</h2>
+                                        {selectedInquiry.agency_name && (
+                                            <div className="flex items-center gap-2 mt-2">
+                                                <span className="text-brushed-gold text-[10px] font-bold uppercase tracking-widest">{selectedInquiry.agency_name}</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
@@ -262,19 +270,25 @@ export default function StudioInquiries() {
                                                 <div>
                                                     <span className="text-[9px] uppercase font-bold tracking-widest text-midnight-navy/40 block">Travel Period</span>
                                                     <span className="text-sm font-bold text-midnight-navy">
-                                                        {new Date(selectedInquiry.travel_from).toLocaleDateString()} - {new Date(selectedInquiry.travel_to).toLocaleDateString()}
+                                                        {selectedInquiry.travel_dates || "TBD"}
                                                     </span>
                                                 </div>
                                                 <div className="text-right">
                                                     <span className="text-[9px] uppercase font-bold tracking-widest text-midnight-navy/40 block">Total Pax</span>
-                                                    <span className="text-sm font-bold text-midnight-navy">{selectedInquiry.pax} Participants</span>
+                                                    <span className="text-sm font-bold text-midnight-navy">{selectedInquiry.pax || 0} Participants</span>
                                                 </div>
                                             </div>
 
                                             <div className="grid grid-cols-2 gap-6">
                                                 <div>
-                                                    <span className="text-[9px] uppercase font-bold tracking-widest text-midnight-navy/40 block mb-1">Budget</span>
-                                                    <span className="text-xs font-bold text-midnight-navy px-3 py-1 bg-green-500/10 text-green-700 rounded-lg">{selectedInquiry.budget}</span>
+                                                    <span className="text-[9px] uppercase font-bold tracking-widest text-midnight-navy/40 block mb-1">Total Budget (MYR)</span>
+                                                    <span className="text-xs font-bold text-midnight-navy px-3 py-1 bg-green-500/10 text-green-700 rounded-lg">
+                                                        {selectedInquiry.estimated_budget ? (
+                                                            selectedInquiry.estimated_budget.match(/[a-zA-Z]/)
+                                                                ? selectedInquiry.estimated_budget
+                                                                : `MYR ${selectedInquiry.estimated_budget}`
+                                                        ) : "N/A"}
+                                                    </span>
                                                 </div>
                                                 <div>
                                                     <span className="text-[9px] uppercase font-bold tracking-widest text-midnight-navy/40 block mb-1">Room Class</span>

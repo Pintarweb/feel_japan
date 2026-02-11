@@ -109,7 +109,8 @@ export async function POST(req: Request) {
                 subject: emailSubject,
                 content: emailHtml,
                 resend_id: resendData?.id || null,
-                status: resendError ? 'failed' : 'sent'
+                status: resendError ? 'failed' : 'sent',
+                error_message: resendError ? JSON.stringify(resendError) : null
             }]);
         }
 

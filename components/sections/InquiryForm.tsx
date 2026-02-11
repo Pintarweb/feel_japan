@@ -424,14 +424,14 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                             <div>
                                 <div className="flex items-center gap-2 mb-1.5 ml-1">
                                     <Wallet className="w-3 h-3 text-brushed-gold/60" />
-                                    <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40">Est. Budget (Per Pax)</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40">Est. Total Budget (MYR)</label>
                                 </div>
                                 <input
                                     type="text"
                                     name="estimatedBudget"
                                     value={estimatedBudget}
                                     onChange={(e) => setEstimatedBudget(e.target.value)}
-                                    placeholder="e.g. MYR 8,000"
+                                    placeholder="e.g. 15,000"
                                     className={inputClasses('estimatedBudget')}
                                 />
                             </div>
