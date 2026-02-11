@@ -118,7 +118,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
             const numChildren611 = parseInt(children611) || 0;
             const numInfantsUnder6 = parseInt(infantsUnder6) || 0;
 
-            const { error } = await supabase.from('inquiries').insert({
+            const payload = {
                 agency_name: agencyName,
                 name: name,
                 email: email,
@@ -133,11 +133,22 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                 places_of_visit: placesOfVisit,
                 estimated_budget: estimatedBudget,
                 newsletter_optin: newsletterOptin
+            };
+
+            const response = await fetch('/api/inquire', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
             });
 
-            if (error) throw error;
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to submit inquiry');
+            }
 
             alert("Thank you! Your inquiry has been received. We will contact you shortly.");
+
+            // Reset Form
             setAgencyName(""); setName(""); setEmail(""); setPhone("");
             setAdults("2"); setChildren611("0"); setInfantsUnder6("0");
             setDateFrom(""); setDateTo(""); setRoomCategory(""); setPlacesOfVisit(""); setEstimatedBudget("");

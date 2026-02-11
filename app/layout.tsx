@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "Curated luxury travel experiences for discerning agents.",
 };
 
+import WhatsAppButton from "@/components/layout/WhatsAppButton";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,6 +30,7 @@ export default function RootLayout({
         className={`${playfair.variable} ${montserrat.variable} antialiased bg-off-white text-midnight-navy font-sans`}
       >
         {children}
+        <WhatsAppButton />
       </body>
     </html>
   );
