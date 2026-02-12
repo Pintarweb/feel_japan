@@ -19,12 +19,9 @@ export default function PortfolioHero() {
                     Exclusive Access
                 </span>
                 <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white mb-6 tracking-tight animate-fade-in-up delay-100">
-                    B2B Private Collections
+                    Our Range of Packages
                 </h2>
                 <div className="w-24 h-1 bg-brushed-gold mx-auto mb-8 animate-scale-x delay-200 origin-left"></div>
-                <p className="text-white/80 max-w-2xl mx-auto text-sm md:text-base font-light leading-relaxed animate-fade-in-up delay-300">
-                    A curated selection of fully managed itineraries, designed for high-net-worth individuals and demanding corporate groups.
-                </p>
             </div>
 
             {/* Scroll Indicator */}

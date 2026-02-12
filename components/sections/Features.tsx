@@ -2,13 +2,13 @@
 
 const FEATURES = [
     {
-        title: "Private VIP Mobility",
-        description: "Travel in the comfort of a private coach (including premium Alphard or Grand Hiace models) with a dedicated, professional driver-guide.",
+        title: "Private Mobility",
+        description: "Travel in the comfort of a private coach with a dedicated, professional driver-guide.",
         iconSrc: "/icon/alphard.png",
     },
     {
-        title: "Halal Excellence",
-        description: "Indulge in Japan’s finest culinary offerings with strictly vetted Halal, Muslim-friendly, and seafood-focused menus.",
+        title: "Muslim-friendly Hospitality",
+        description: "Indulge in Japan’s well-known culinary offerings with strictly vetted Muslim-friendly and seafood-focused menus.",
         iconSrc: "/icon/cloche.png",
     },
     {

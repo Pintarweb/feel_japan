@@ -22,7 +22,7 @@ export interface Brochure {
     id: string;
     slug: string;
     image: string;
-    category: 'FIT' | 'GIT';
+    category: 'FIT' | 'GIT' | 'Corporate' | 'Seasonal';
     city: string | string[];
     title: string;
     subtitle: string;
