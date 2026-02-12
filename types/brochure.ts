@@ -49,4 +49,5 @@ export interface Brochure {
     is_archived?: boolean;
     campaign_start?: string;
     campaign_end?: string;
+    show_pricing?: boolean;
 }

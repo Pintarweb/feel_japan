@@ -206,7 +206,7 @@ export default function ManageStudioDashboard() {
                             </Link>
                             <Link href="/manage-studio/brochures" className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white">
                                 <FileText className="w-4 h-4" />
-                                <span className="text-sm font-medium tracking-wide">Collections</span>
+                                <span className="text-sm font-medium tracking-wide">Packages</span>
                             </Link>
                             <Link href="/manage-studio/inquiries" className="flex items-center justify-between px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white group">
                                 <div className="flex items-center gap-3">
@@ -268,7 +268,7 @@ export default function ManageStudioDashboard() {
                     <header className="flex justify-between items-center mb-10">
                         <div>
                             <h1 className="text-3xl font-serif font-bold text-midnight-navy italic">Studio Dashboard</h1>
-                            <p className="text-midnight-navy/40 text-[10px] uppercase font-bold tracking-[0.3em] mt-1">Global Collection Management</p>
+                            <p className="text-midnight-navy/40 text-[10px] uppercase font-bold tracking-[0.3em] mt-1">Global Package Management</p>
                         </div>
 
                         <Link
@@ -324,7 +324,7 @@ export default function ManageStudioDashboard() {
                         <div className="p-8 border-b border-midnight-navy/5 flex justify-between items-center bg-white">
                             <div className="flex items-center gap-3">
                                 <div className="h-4 w-1 bg-brushed-gold rounded-full"></div>
-                                <h2 className="text-xl font-serif font-bold text-midnight-navy">Collection Management</h2>
+                                <h2 className="text-xl font-serif font-bold text-midnight-navy">Package Management</h2>
                             </div>
                             <div className="relative">
                                 <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-midnight-navy/30" />
@@ -414,7 +414,7 @@ export default function ManageStudioDashboard() {
                                         <tr>
                                             <td colSpan={5} className="px-8 py-16 text-center">
                                                 <div className="flex flex-col items-center gap-2">
-                                                    <span className="text-midnight-navy/40 text-sm italic">No collections found in this search.</span>
+                                                    <span className="text-midnight-navy/40 text-sm italic">No packages found in this search.</span>
                                                 </div>
                                             </td>
                                         </tr>

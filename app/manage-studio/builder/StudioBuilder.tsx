@@ -67,7 +67,8 @@ export default function StudioBuilder() {
             pax: "Min 2 Pax"
         },
         campaign_start: "",
-        campaign_end: ""
+        campaign_end: "",
+        show_pricing: true
     });
 
     useEffect(() => {
@@ -163,6 +164,7 @@ export default function StudioBuilder() {
                 payment_terms: form.paymentTerms,
                 campaign_start: form.campaign_start || null,
                 campaign_end: form.campaign_end || null,
+                show_pricing: form.show_pricing ?? true,
                 is_archived: false // Explicitly restore/ensure active when deploying from Studio
             };
 
@@ -277,7 +279,7 @@ export default function StudioBuilder() {
                         <div>
                             <div className="flex items-center gap-3">
                                 <h1 className="text-lg font-serif font-bold text-midnight-navy">
-                                    {brochureId ? `Editing: ${form.title}` : "Create New Collection"}
+                                    {brochureId ? `Editing: ${form.title}` : "Create New Package"}
                                 </h1>
                                 <span className={`text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-widest ${form.category === 'FIT' ? 'bg-midnight-navy text-white' : 'bg-brushed-gold text-midnight-navy'}`}>
                                     {form.category}
@@ -613,6 +615,19 @@ export default function StudioBuilder() {
                                                 <div className="h-4 w-1 bg-brushed-gold rounded-full"></div>
                                                 Pricing Tier Matrix
                                             </h2>
+
+                                            <div className="flex bg-midnight-navy/5 p-1 rounded-xl items-center">
+                                                <span className="text-[9px] font-bold uppercase tracking-widest text-midnight-navy/40 px-3">Display Pricing:</span>
+                                                <button
+                                                    onClick={() => setForm({ ...form, show_pricing: !form.show_pricing })}
+                                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${form.show_pricing !== false
+                                                        ? 'bg-green-500 text-white shadow-sm'
+                                                        : 'bg-red-500 text-white shadow-sm'
+                                                        }`}
+                                                >
+                                                    {form.show_pricing !== false ? "Visible" : "Hidden"}
+                                                </button>
+                                            </div>
 
                                             <div className="flex bg-midnight-navy/5 p-1 rounded-xl items-center">
                                                 <span className="text-[9px] font-bold uppercase tracking-widest text-midnight-navy/40 px-3">Columns:</span>

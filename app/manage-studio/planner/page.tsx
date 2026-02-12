@@ -47,7 +47,7 @@ export default function FITPlanner() {
                             </Link>
                             <Link href="/manage-studio/brochures" className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white">
                                 <FileText className="w-4 h-4" />
-                                <span className="text-sm font-medium tracking-wide">Collections</span>
+                                <span className="text-sm font-medium tracking-wide">Packages</span>
                             </Link>
                             <Link href="/manage-studio/inquiries" className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white">
                                 <MessageSquare className="w-4 h-4" />
@@ -103,7 +103,7 @@ export default function FITPlanner() {
                                 <Layout className="w-6 h-6 text-brushed-gold" />
                                 <h3 className="text-sm font-bold uppercase tracking-widest">Mix & Match Architecture</h3>
                                 <p className="text-xs text-midnight-navy/60 leading-relaxed font-serif italic">
-                                    Pull blocks from heritage collections to build unique, one-off specialized departures in seconds.
+                                    Pull blocks from heritage packages to build unique, one-off specialized departures in seconds.
                                 </p>
                             </div>
                             <div className="bg-white p-8 rounded-[2rem] border border-midnight-navy/5 shadow-sm space-y-4">

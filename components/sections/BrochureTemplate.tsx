@@ -80,7 +80,7 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
                     <div className="h-1 w-20 bg-brushed-gold mx-auto"></div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-4 mb-20">
                     {brochure.itinerary.map((day, index) => (
                         <div key={index} className={`flex flex-col md:flex-row gap-8 group p-8 rounded-3xl transition-colors ${index % 2 === 1 ? 'bg-midnight-navy/5' : 'hover:bg-midnight-navy/5'}`}>
                             <div className="md:w-32 flex-shrink-0">
@@ -114,38 +114,40 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
                 </div>
 
                 {/* Estimated Pricing Section */}
-                <section className="mb-20 mt-16">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-serif text-midnight-navy mb-4">Estimated Pricing</h2>
-                        <div className="h-1 w-20 bg-brushed-gold mx-auto mb-4"></div>
-                        <p className="text-midnight-navy/60 font-medium italic text-sm">{pricing.title}</p>
-                    </div>
+                {brochure.show_pricing !== false && (
+                    <section className="mb-20">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl font-serif text-midnight-navy mb-4">Estimated Pricing</h2>
+                            <div className="h-1 w-20 bg-brushed-gold mx-auto mb-4"></div>
+                            <p className="text-midnight-navy/60 font-medium italic text-sm">{pricing.title}</p>
+                        </div>
 
-                    <div className="overflow-x-auto bg-white rounded-lg shadow-xl border border-midnight-navy/5">
-                        <table className="w-full text-left">
-                            <thead className="bg-midnight-navy/5 border-b border-midnight-navy/10">
-                                <tr>
-                                    <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Pax Count</th>
-                                    <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Adult</th>
-                                    <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Child (CWB)</th>
-                                    <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Child (CNB)</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-midnight-navy/5 font-medium text-sm text-midnight-navy/80">
-                                {tiers.map((tier, index) => (
-                                    <tr key={index}>
-                                        <td className="px-8 py-5">{tier.pax}</td>
-                                        <td className="px-8 py-5 text-brushed-gold font-bold">{new Intl.NumberFormat('en-US').format(tier.adultPrice || 0)}</td>
-                                        <td className="px-8 py-5">{tier.childPriceWithBed ? new Intl.NumberFormat('en-US').format(tier.childPriceWithBed) : '--'}</td>
-                                        <td className="px-8 py-5 opacity-40">{tier.childPriceNoBed ? new Intl.NumberFormat('en-US').format(tier.childPriceNoBed) : '--'}</td>
+                        <div className="overflow-x-auto bg-white rounded-lg shadow-xl border border-midnight-navy/5">
+                            <table className="w-full text-left">
+                                <thead className="bg-midnight-navy/5 border-b border-midnight-navy/10">
+                                    <tr>
+                                        <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Pax Count</th>
+                                        <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Adult</th>
+                                        <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Child (CWB)</th>
+                                        <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Child (CNB)</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody className="divide-y divide-midnight-navy/5 font-medium text-sm text-midnight-navy/80">
+                                    {tiers.map((tier, index) => (
+                                        <tr key={index}>
+                                            <td className="px-8 py-5">{tier.pax}</td>
+                                            <td className="px-8 py-5 text-brushed-gold font-bold">{new Intl.NumberFormat('en-US').format(tier.adultPrice || 0)}</td>
+                                            <td className="px-8 py-5">{tier.childPriceWithBed ? new Intl.NumberFormat('en-US').format(tier.childPriceWithBed) : '--'}</td>
+                                            <td className="px-8 py-5 opacity-40">{tier.childPriceNoBed ? new Intl.NumberFormat('en-US').format(tier.childPriceNoBed) : '--'}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
 
-                    <p className="text-center text-[10px] text-midnight-navy/40 mt-4 font-bold uppercase tracking-widest italic">{pricing.surchargeNote}</p>
-                </section>
+                        <p className="text-center text-[10px] text-midnight-navy/40 mt-4 font-bold uppercase tracking-widest italic">{pricing.surchargeNote}</p>
+                    </section>
+                )}
 
                 {/* Inclusions & Exclusions */}
                 <div className="grid md:grid-cols-2 gap-8 mb-20">
@@ -176,9 +178,17 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
                                 What's Excluded
                             </h3>
                             <ul className="space-y-3 text-xs font-bold text-white/60 italic mb-8">
-                                {brochure.exclusions.map((item, index) => (
-                                    <li key={index}>• {item}</li>
-                                ))}
+                                {brochure.exclusions
+                                    .map((item, index) => {
+                                        let displayItem = item;
+                                        if (brochure.show_pricing === false) {
+                                            // Regex to match colons, prices, ranges, and trailing units/details
+                                            const priceRegex = /:?\s*[\d,]+(\s*~\s*[\d,]+)?\s*(Yen|JPY|¥|YEN)(\s*\/[^,.]*)?|(\s*\(Total\s*[\d,]+\s*(Yen|JPY|¥|YEN)\))/gi;
+                                            displayItem = item.replace(priceRegex, '').trim();
+                                        }
+                                        if (!displayItem) return null;
+                                        return <li key={index}>• {displayItem}</li>;
+                                    })}
                             </ul>
 
                             <h3 className="text-lg font-bold mb-4 flex items-center gap-3 text-brushed-gold border-t border-white/10 pt-6 uppercase tracking-tight">

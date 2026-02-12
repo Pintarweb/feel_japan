@@ -132,7 +132,7 @@ export default function StudioCollections() {
                             </Link>
                             <Link href="/manage-studio/brochures" className="flex items-center gap-3 px-4 py-3 bg-white/10 rounded-xl text-brushed-gold">
                                 <FileText className="w-4 h-4" />
-                                <span className="text-sm font-medium tracking-wide">Collections</span>
+                                <span className="text-sm font-medium tracking-wide">Packages</span>
                             </Link>
                             <Link href="/manage-studio/inquiries" className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white">
                                 <MessageSquare className="w-4 h-4" />
@@ -173,7 +173,7 @@ export default function StudioCollections() {
                     <header className="flex justify-between items-end mb-12">
                         <div>
                             <h1 className="text-4xl font-serif font-bold text-midnight-navy italic">Visual Inventory</h1>
-                            <p className="text-midnight-navy/40 text-[10px] uppercase font-bold tracking-[0.4em] mt-2">Manage all brochure assets and digital collections</p>
+                            <p className="text-midnight-navy/40 text-[10px] uppercase font-bold tracking-[0.4em] mt-2">Manage all brochure assets and digital packages</p>
                         </div>
 
                         <div className="flex items-center gap-4">

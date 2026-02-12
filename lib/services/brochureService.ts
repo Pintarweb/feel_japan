@@ -34,7 +34,8 @@ export const getBrochures = async (): Promise<Brochure[]> => {
         created_at: item.created_at,
         is_archived: item.is_archived,
         campaign_start: item.campaign_start,
-        campaign_end: item.campaign_end
+        campaign_end: item.campaign_end,
+        show_pricing: item.show_pricing
     }));
 };
 
@@ -71,6 +72,7 @@ export const getBrochureBySlug = async (slug: string): Promise<Brochure | null> 
         created_at: data.created_at,
         is_archived: data.is_archived,
         campaign_start: data.campaign_start,
-        campaign_end: data.campaign_end
+        campaign_end: data.campaign_end,
+        show_pricing: data.show_pricing
     };
 };

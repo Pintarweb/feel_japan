@@ -124,7 +124,7 @@ export default function StudioInquiries() {
                             </Link>
                             <Link href="/manage-studio/brochures" className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white">
                                 <FileText className="w-4 h-4" />
-                                <span className="text-sm font-medium tracking-wide">Collections</span>
+                                <span className="text-sm font-medium tracking-wide">Packages</span>
                             </Link>
                             <Link href="/manage-studio/inquiries" className="flex items-center justify-between px-4 py-3 bg-white/10 rounded-xl text-brushed-gold group">
                                 <div className="flex items-center gap-3">

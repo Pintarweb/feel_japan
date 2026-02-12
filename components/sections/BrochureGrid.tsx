@@ -189,7 +189,7 @@ export default function BrochureGrid({ brochures }: BrochureGridProps) {
                                                 className="w-full bg-midnight-navy text-white py-4 rounded-sm text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-brushed-gold transition-colors duration-300 flex items-center justify-center gap-2 group-hover:bg-brushed-gold"
                                             >
                                                 <ArrowRight className="w-3.5 h-3.5" />
-                                                View Collection
+                                                View Packages
                                             </Link>
                                         </div>
                                     </div>

@@ -449,7 +449,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                                     onChange={(e) => setSelectedPackage(e.target.value)}
                                     className={inputClasses('selectedPackage') + " appearance-none cursor-pointer"}
                                 >
-                                    <option value="" disabled>Select a collection (Optional)</option>
+                                    <option value="" disabled>Select a package (Optional)</option>
                                     <option value="Corporate">Corporate Services</option>
                                     {brochures.map((b) => (
                                         <option key={b.id} value={b.slug}>[{b.category}] {b.title}</option>

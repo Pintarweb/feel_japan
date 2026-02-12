@@ -127,7 +127,7 @@ export default function StudioArchive() {
                             </Link>
                             <Link href="/manage-studio/brochures" className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white">
                                 <FileText className="w-4 h-4" />
-                                <span className="text-sm font-medium tracking-wide">Collections</span>
+                                <span className="text-sm font-medium tracking-wide">Packages</span>
                             </Link>
                             <Link href="/manage-studio/inquiries" className="flex items-center justify-between px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white group">
                                 <div className="flex items-center gap-3">
@@ -192,7 +192,7 @@ export default function StudioArchive() {
                                 <ShieldAlert className="w-5 h-5 text-red-500" />
                                 <h1 className="text-4xl font-serif font-bold text-midnight-navy italic">Vault Archive</h1>
                             </div>
-                            <p className="text-midnight-navy/40 text-[10px] uppercase font-bold tracking-[0.4em]">Decommissioned heritage assets and retired collections</p>
+                            <p className="text-midnight-navy/40 text-[10px] uppercase font-bold tracking-[0.4em]">Decommissioned heritage assets and retired packages</p>
                         </div>
 
                         <div className="relative">
@@ -216,7 +216,7 @@ export default function StudioArchive() {
                         <div className="flex flex-col items-center justify-center py-32 bg-[#f8f9fa] rounded-[3rem] border border-dashed border-midnight-navy/10 text-center">
                             <Trash2 className="w-12 h-12 text-midnight-navy/10 mb-6" />
                             <h3 className="text-lg font-serif font-bold text-midnight-navy/40">Archive Empty</h3>
-                            <p className="text-xs text-midnight-navy/30 mt-1 max-w-xs">No brochures have been archived yet. Your main collection is clean.</p>
+                            <p className="text-xs text-midnight-navy/30 mt-1 max-w-xs">No brochures have been archived yet. Your main package list is clean.</p>
                         </div>
                     ) : (
                         <div className="space-y-4">
