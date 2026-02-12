@@ -20,7 +20,8 @@ import {
     Edit3,
     Trash2,
     Eye,
-    XCircle
+    XCircle,
+    ShieldCheck
 } from 'lucide-react';
 import Link from 'next/link';
 import Gatekeeper from '@/components/studio/Gatekeeper';
@@ -28,6 +29,7 @@ export default function ManageStudioDashboard() {
     const router = useRouter();
     const [brochures, setBrochures] = useState<Brochure[]>([]);
     const [inquiriesCount, setInquiriesCount] = useState(0);
+    const [unverifiedCount, setUnverifiedCount] = useState(0);
     const [archiveCount, setArchiveCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
@@ -61,6 +63,13 @@ export default function ManageStudioDashboard() {
                 .from('inquiries')
                 .select('*', { count: 'exact', head: true });
 
+            // Fetch Unverified Count
+            const { count: uCount } = await supabase
+                .from('inquiries')
+                .select('*', { count: 'exact', head: true })
+                .eq('motac_verified', false)
+                .not('license_number', 'is', null);
+
             // Fetch Archive Count
             const { count: aCount } = await supabase
                 .from('brochures')
@@ -69,6 +78,7 @@ export default function ManageStudioDashboard() {
 
             if (bData) setBrochures(bData);
             if (iCount !== null) setInquiriesCount(iCount);
+            if (uCount !== null) setUnverifiedCount(uCount);
             if (aCount !== null) setArchiveCount(aCount);
         } catch (error) {
             console.error('Error fetching studio data:', error);
@@ -206,6 +216,17 @@ export default function ManageStudioDashboard() {
                                 {inquiriesCount > 0 && (
                                     <span className="bg-brushed-gold text-midnight-navy text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-md border border-white/20">
                                         {inquiriesCount}
+                                    </span>
+                                )}
+                            </Link>
+                            <Link href="/manage-studio/verify" className="flex items-center justify-between px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white group">
+                                <div className="flex items-center gap-3">
+                                    <ShieldCheck className="w-4 h-4" />
+                                    <span className="text-sm font-medium tracking-wide">Agent Verification</span>
+                                </div>
+                                {unverifiedCount > 0 && (
+                                    <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-md border border-white/20 animate-pulse">
+                                        {unverifiedCount}
                                     </span>
                                 )}
                             </Link>

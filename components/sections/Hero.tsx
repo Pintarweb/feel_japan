@@ -71,7 +71,7 @@ export default function Hero() {
             B2B Exclusive
           </span>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif font-medium leading-tight text-white mb-6 drop-shadow-lg">
-            The Gold Standard in <br /> Muslim-friendly Japan Travel
+            The Trusted Standard in <br /> Muslim-friendly Japan Travel
           </h2>
           <p className="text-sm font-medium leading-relaxed text-white md:text-lg mb-8 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] max-w-2xl">
             We provide seamless private transportation, multilingual driver-guides, and Muslim-friendly dining for a meaningful journey

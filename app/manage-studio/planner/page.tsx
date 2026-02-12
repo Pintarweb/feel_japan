@@ -13,7 +13,8 @@ import {
     Layout,
     Layers,
     Trash2,
-    LogOut
+    LogOut,
+    ShieldCheck
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -51,6 +52,10 @@ export default function FITPlanner() {
                             <Link href="/manage-studio/inquiries" className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white">
                                 <MessageSquare className="w-4 h-4" />
                                 <span className="text-sm font-medium tracking-wide">Inquiries</span>
+                            </Link>
+                            <Link href="/manage-studio/verify" className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white">
+                                <ShieldCheck className="w-4 h-4" />
+                                <span className="text-sm font-medium tracking-wide">Agent Verification</span>
                             </Link>
                             <Link href="/manage-studio/planner" className="flex items-center gap-3 px-4 py-3 bg-white/10 rounded-xl text-brushed-gold">
                                 <Calendar className="w-4 h-4" />

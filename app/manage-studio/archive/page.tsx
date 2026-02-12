@@ -19,7 +19,8 @@ import {
     ShieldAlert,
     LogOut,
     Eye,
-    Edit3
+    Edit3,
+    ShieldCheck
 } from 'lucide-react';
 import Link from 'next/link';
 import Gatekeeper from '@/components/studio/Gatekeeper';
@@ -30,6 +31,7 @@ export default function StudioArchive() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [inquiriesCount, setInquiriesCount] = useState(0);
+    const [unverifiedCount, setUnverifiedCount] = useState(0);
 
     const handleExit = () => {
         if (confirm("Sign out and exit Studio?")) {
@@ -57,6 +59,14 @@ export default function StudioArchive() {
                 .from('inquiries')
                 .select('*', { count: 'exact', head: true });
             if (count !== null) setInquiriesCount(count);
+
+            // Fetch Unverified Count
+            const { count: uCount } = await supabase
+                .from('inquiries')
+                .select('*', { count: 'exact', head: true })
+                .eq('motac_verified', false)
+                .not('license_number', 'is', null);
+            if (uCount !== null) setUnverifiedCount(uCount);
         } catch (err) {
             console.error('Error fetching archive:', err);
         } finally {
@@ -127,6 +137,17 @@ export default function StudioArchive() {
                                 {inquiriesCount > 0 && (
                                     <span className="bg-brushed-gold text-midnight-navy text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-md border border-white/20">
                                         {inquiriesCount}
+                                    </span>
+                                )}
+                            </Link>
+                            <Link href="/manage-studio/verify" className="flex items-center justify-between px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white group">
+                                <div className="flex items-center gap-3">
+                                    <ShieldCheck className="w-4 h-4" />
+                                    <span className="text-sm font-medium tracking-wide">Agent Verification</span>
+                                </div>
+                                {unverifiedCount > 0 && (
+                                    <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-md border border-white/20 animate-pulse">
+                                        {unverifiedCount}
                                     </span>
                                 )}
                             </Link>

@@ -37,6 +37,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
     const searchParams = useSearchParams();
     const [selectedPackage, setSelectedPackage] = useState("");
     const [agencyName, setAgencyName] = useState("");
+    const [licenseNumber, setLicenseNumber] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [countryCode, setCountryCode] = useState("+60");
@@ -93,6 +94,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                 break;
             case 'dateFrom':
             case 'dateTo':
+            case 'licenseNumber':
                 if (!value) error = "Required";
                 break;
         }
@@ -107,7 +109,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (Object.values(errors).some(e => e !== "") || !agencyName || !name || !email || !phone || !dateFrom || !dateTo) {
+        if (Object.values(errors).some(e => e !== "") || !agencyName || !licenseNumber || !name || !email || !phone || !dateFrom || !dateTo) {
             alert("Please check for errors in the form before submitting.");
             return;
         }
@@ -121,6 +123,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
 
             const payload = {
                 agency_name: agencyName,
+                license_number: licenseNumber,
                 name: name,
                 email: email,
                 phone: `${countryCode} ${phone}`,
@@ -201,7 +204,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                         <button
                             onClick={() => {
                                 setIsSubmitted(false);
-                                setAgencyName(""); setName(""); setEmail(""); setPhone("");
+                                setAgencyName(""); setLicenseNumber(""); setName(""); setEmail(""); setPhone("");
                                 setAdults("2"); setChildren611("0"); setInfantsUnder6("0");
                                 setDateFrom(""); setDateTo(""); setRoomCategory(""); setPlacesOfVisit(""); setEstimatedBudget("");
                                 setTouched({}); setErrors({});
@@ -252,6 +255,26 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                                 }}
                                 placeholder="Luxury Travels Co."
                                 className={inputClasses('agencyName')}
+                            />
+                        </div>
+
+                        <div className="relative">
+                            <div className="flex justify-between items-center mb-1.5 ml-1">
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40">Travel Agent License No.</label>
+                                {renderStatus('licenseNumber')}
+                            </div>
+                            <input
+                                type="text"
+                                name="licenseNumber"
+                                required
+                                value={licenseNumber}
+                                onBlur={handleBlur}
+                                onChange={(e) => {
+                                    setLicenseNumber(e.target.value.toUpperCase());
+                                    if (touched.licenseNumber && !e.target.value) validateField('licenseNumber', '');
+                                }}
+                                placeholder="e.g. KPL/LN/1234"
+                                className={inputClasses('licenseNumber')}
                             />
                         </div>
 

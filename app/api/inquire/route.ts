@@ -22,6 +22,7 @@ export async function POST(req: Request) {
         const body = await req.json();
         const {
             agency_name,
+            license_number,
             name,
             email,
             phone,
@@ -42,6 +43,8 @@ export async function POST(req: Request) {
             .from('inquiries')
             .insert([{
                 agency_name,
+                license_number,
+                motac_verified: false,
                 name,
                 email,
                 phone,
@@ -69,9 +72,16 @@ export async function POST(req: Request) {
         <p>A new high-value lead has been captured via the Feel Japan with K Portal.</p>
         
         <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0;">
-          <h3 style="margin-top: 0;">Agency Details</h3>
           <p><strong>Agency:</strong> ${agency_name}</p>
-          <p><strong>Contact:</strong> ${name}</p>
+          <p><strong>License No:</strong> ${license_number}</p>
+          
+          <div style="background: #FFF3CD; padding: 15px; border: 1px solid #FFEEBA; border-radius: 5px; margin-top: 10px;">
+             <strong style="color: #856404; font-size: 12px;">⚠️ ACTION REQUIRED: License Verification</strong>
+             <p style="margin: 5px 0 10px 0; font-size: 11px; color: #856404;">Status: <strong>Unverified</strong>. Please manually validate this license on the MOTAC portal.</p>
+             <a href="https://www.motac.gov.my/en/kategori-semakan-new/travel-agency-tobtab/" target="_blank" style="background: #856404; color: white; padding: 8px 12px; text-decoration: none; font-size: 10px; border-radius: 4px; font-weight: bold; display: inline-block;">Verify on MOTAC Portal &rarr;</a>
+          </div>
+
+          <p style="margin-top: 15px;"><strong>Contact:</strong> ${name}</p>
           <p><strong>Email:</strong> ${email}</p>
           <p><strong>Phone:</strong> ${phone}</p>
         </div>
