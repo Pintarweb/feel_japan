@@ -37,8 +37,20 @@ export default function Navbar({ hideInquiry = false }: NavbarProps) {
                     <Link href="/" className="text-xs font-bold tracking-widest uppercase text-midnight-navy/60 hover:text-midnight-navy transition-colors">
                         Home
                     </Link>
+                    <Link href="/about" className="text-xs font-bold tracking-widest uppercase text-midnight-navy/60 hover:text-midnight-navy transition-colors">
+                        About Us
+                    </Link>
                     <Link href="/#collections" className="text-xs font-bold tracking-widest uppercase text-midnight-navy/60 hover:text-midnight-navy transition-colors">
                         Portfolio
+                    </Link>
+                    <Link href="/bulletin" className="text-xs font-bold tracking-widest uppercase text-midnight-navy/60 hover:text-midnight-navy transition-colors">
+                        Bulletin
+                    </Link>
+                    <Link href="/reviews" className="text-xs font-bold tracking-widest uppercase text-midnight-navy/60 hover:text-midnight-navy transition-colors">
+                        Review
+                    </Link>
+                    <Link href="/contact" className="text-xs font-bold tracking-widest uppercase text-midnight-navy/60 hover:text-midnight-navy transition-colors">
+                        Contact
                     </Link>
                 </div>
 
@@ -64,8 +76,20 @@ export default function Navbar({ hideInquiry = false }: NavbarProps) {
                     <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">
                         Home
                     </Link>
+                    <Link href="/about" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">
+                        About Us
+                    </Link>
                     <Link href="/#collections" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">
                         Portfolio
+                    </Link>
+                    <Link href="/bulletin" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">
+                        Bulletin
+                    </Link>
+                    <Link href="/reviews" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">
+                        Review
+                    </Link>
+                    <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">
+                        Contact
                     </Link>
                     {!hideInquiry && (
                         <Link href="/inquire" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">
