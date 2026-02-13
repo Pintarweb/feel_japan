@@ -68,7 +68,7 @@ export default function Navbar({ }: NavbarProps) {
                     <Link href="/bulletin" className="text-xs font-bold tracking-widest uppercase text-midnight-navy/85 hover:text-midnight-navy transition-colors">
                         Bulletin
                     </Link>
-                    <Link href="/reviews" className="text-xs font-bold tracking-widest uppercase text-midnight-navy/85 hover:text-midnight-navy transition-colors">
+                    <Link href="/review" className="text-xs font-bold tracking-widest uppercase text-midnight-navy/85 hover:text-midnight-navy transition-colors">
                         Review
                     </Link>
                     <Link href="/contact" className="text-xs font-bold tracking-widest uppercase text-midnight-navy/85 hover:text-midnight-navy transition-colors">
@@ -138,7 +138,7 @@ export default function Navbar({ }: NavbarProps) {
                     <Link href="/bulletin" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">
                         Bulletin
                     </Link>
-                    <Link href="/reviews" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">
+                    <Link href="/review" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">
                         Review
                     </Link>
                     <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="text-3xl font-serif text-off-white hover:text-brushed-gold transition-colors">

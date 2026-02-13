@@ -21,11 +21,6 @@ export async function POST(req: Request) {
     try {
         const body = await req.json();
         const {
-            agency_name,
-            license_number,
-            name,
-            email,
-            phone,
             pax,
             adults,
             children_6_11,
@@ -38,16 +33,28 @@ export async function POST(req: Request) {
             newsletter_optin
         } = body;
 
-        // 1. Save Inquiry to Supabase
+        // 0. Get Authenticated User from Session
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) {
+            return NextResponse.json({ error: 'Unauthorized: Agent session required' }, { status: 401 });
+        }
+
+        // 0a. Fetch Agent Profile
+        const { data: agentProfile, error: profileError } = await supabase
+            .from('agent_profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+        if (profileError || !agentProfile) {
+            return NextResponse.json({ error: 'Agent profile not found' }, { status: 404 });
+        }
+
+        // 1. Save Inquiry to Supabase with agent_id link
         const { data: inquiry, error: inquiryError } = await supabase
             .from('inquiries')
             .insert([{
-                agency_name,
-                license_number,
-                motac_verified: false,
-                name,
-                email,
-                phone,
+                agent_id: user.id,
                 pax,
                 adults,
                 children_6_11,
@@ -64,26 +71,32 @@ export async function POST(req: Request) {
 
         if (inquiryError) throw inquiryError;
 
-        // 2. Prepare Email Content
-        const emailSubject = `New B2B Inquiry: ${agency_name} - ${name}`;
+        // 2. Prepare Email Content using Profile Data
+        const agentName = agentProfile.full_name || 'Valued Partner';
+        const agencyName = agentProfile.agency_name || 'Independent Agent';
+        const licenseNo = agentProfile.license_number || 'N/A';
+        const agentEmail = agentProfile.email || user.email;
+        const agentPhone = agentProfile.phone || 'N/A';
+
+        const emailSubject = `New B2B Inquiry: ${agencyName} - ${agentName}`;
         const emailHtml = `
       <div style="font-family: serif; color: #001F3F; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 40px; border-radius: 20px;">
         <h1 style="color: #C5A059; border-bottom: 2px solid #C5A059; padding-bottom: 10px;">New Inquiry Received</h1>
-        <p>A new high-value lead has been captured via the Feel Japan with K Portal.</p>
+        <p>A new lead has been captured via the Feel Japan with K B2B Portal (Linked to Agent Profile).</p>
         
         <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0;">
-          <p><strong>Agency:</strong> ${agency_name}</p>
-          <p><strong>License No:</strong> ${license_number}</p>
+          <p><strong>Agency:</strong> ${agencyName}</p>
+          <p><strong>License No:</strong> ${licenseNo}</p>
           
-          <div style="background: #FFF3CD; padding: 15px; border: 1px solid #FFEEBA; border-radius: 5px; margin-top: 10px;">
-             <strong style="color: #856404; font-size: 12px;">⚠️ ACTION REQUIRED: License Verification</strong>
-             <p style="margin: 5px 0 10px 0; font-size: 11px; color: #856404;">Status: <strong>Unverified</strong>. Please manually validate this license on the MOTAC portal.</p>
-             <a href="https://www.motac.gov.my/en/kategori-semakan-new/travel-agency-tobtab/" target="_blank" style="background: #856404; color: white; padding: 8px 12px; text-decoration: none; font-size: 10px; border-radius: 4px; font-weight: bold; display: inline-block;">Verify on MOTAC Portal &rarr;</a>
+          <div style="background: ${agentProfile.is_verified ? '#D4EDDA' : '#FFF3CD'}; padding: 15px; border: 1px solid ${agentProfile.is_verified ? '#C3E6CB' : '#FFEEBA'}; border-radius: 5px; margin-top: 10px;">
+             <strong style="color: ${agentProfile.is_verified ? '#155724' : '#856404'}; font-size: 12px;">${agentProfile.is_verified ? '✅ VERIFIED PARTNER' : '⚠️ UNVERIFIED PARTNER'}</strong>
+             <p style="margin: 5px 0 10px 0; font-size: 11px; color: ${agentProfile.is_verified ? '#155724' : '#856404'};">Status: ${agentProfile.is_verified ? 'Partner is pre-verified in the portal.' : 'Please manually validate this agent license if needed.'}</p>
           </div>
 
-          <p style="margin-top: 15px;"><strong>Contact:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Phone:</strong> ${phone}</p>
+          <p style="margin-top: 15px;"><strong>Agent Name:</strong> ${agentName}</p>
+          <p><strong>Email:</strong> ${agentEmail}</p>
+          <p><strong>Phone:</strong> ${agentPhone}</p>
+          <p><strong>Agent ID:</strong> ${user.id}</p>
         </div>
 
         <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0;">
@@ -124,11 +137,11 @@ export async function POST(req: Request) {
                     <p style="font-[10px]; text-transform: uppercase; letter-spacing: 3px; color: #999;">Bespoke Travel Architecture</p>
                 </div>
                 
-                <p>Dear ${name},</p>
+                <p>Dear ${agentName},</p>
                 
-                <p>We wish to formally acknowledge receipt of your bespoke travel request for <strong>${agency_name}</strong>. Your inquiry has been successfully transmitted to our team of travel designers at <strong>Feel Japan with K</strong>.</p>
+                <p>We wish to formally acknowledge receipt of your bespoke travel request for <strong>${agencyName}</strong>. Your inquiry has been successfully transmitted to our team of travel designers at <strong>Feel Japan with K</strong>.</p>
                 
-                <p>At Feel Japan with K, we treat every itinerary as a unique piece of architecture. Due to the high volume of curated requests, our designers respond in chronological order.</p>
+                <p>At Feel Japan with K, we treat every itinerary as a unique piece of architecture. Your request has been linked to your professional profile.</p>
                 
                 <p>A member of our team will review your requirements and reach out to you within 24-48 business hours.</p>
                 
@@ -146,7 +159,7 @@ export async function POST(req: Request) {
 
         const { data: clientResData, error: clientResError } = await resend.emails.send({
             from: fromEmail,
-            to: email, // Send to the agent
+            to: agentEmail, // Send to the agent
             subject: clientSubject,
             html: clientHtml,
         });

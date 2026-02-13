@@ -283,7 +283,10 @@ export default function StudioBuilder() {
                                 <h1 className="text-lg font-serif font-bold text-midnight-navy">
                                     {brochureId ? `Editing: ${form.title}` : "Create New Package"}
                                 </h1>
-                                <span className={`text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-widest ${form.category === 'FIT' ? 'bg-midnight-navy text-white' : 'bg-brushed-gold text-midnight-navy'}`}>
+                                <span className={`text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-widest ${form.category === 'FIT' ? 'bg-midnight-navy text-white' :
+                                    form.category === 'GIT' ? 'bg-brushed-gold text-midnight-navy' :
+                                        'bg-[#C5A059] text-white'
+                                    }`}>
                                     {form.category}
                                 </span>
                             </div>
@@ -392,6 +395,7 @@ export default function StudioBuilder() {
                                                 >
                                                     <option value="FIT">FIT (Bespoke)</option>
                                                     <option value="GIT">GIT (Group)</option>
+                                                    <option value="Seasonal">Seasonal (Festive)</option>
                                                 </select>
                                             </div>
                                             <div className="space-y-1">
@@ -402,9 +406,24 @@ export default function StudioBuilder() {
                                                         value={form.image}
                                                         onChange={(e) => setForm({ ...form, image: e.target.value })}
                                                         placeholder="Unsplash URL"
-                                                        className="w-full bg-white border border-midnight-navy/10 rounded-xl pl-11 pr-5 py-4 focus:ring-2 focus:ring-brushed-gold/30 transition-all text-xs shadow-sm"
+                                                        className="w-full bg-white border border-midnight-navy/10 rounded-xl pl-11 pr-5 py-4 focus:ring-2 focus:ring-brushed-gold/30 transition-all text-xs shadow-sm mb-2"
                                                     />
                                                 </div>
+                                                {form.image && (
+                                                    <div className="mt-2 relative h-32 w-full rounded-xl overflow-hidden border border-midnight-navy/5 bg-midnight-navy/5">
+                                                        <img
+                                                            src={form.image}
+                                                            alt="Preview"
+                                                            className="w-full h-full object-cover"
+                                                            onError={(e) => {
+                                                                (e.target as HTMLImageElement).style.display = 'none';
+                                                            }}
+                                                        />
+                                                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                                            <span className="text-[8px] font-bold uppercase tracking-widest text-midnight-navy/20">Live Preview</span>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </section>

@@ -188,7 +188,7 @@ export default function ReviewsPage() {
                         <p className="text-midnight-navy/85 mb-10 max-w-xl mx-auto text-lg font-light">
                             Become a part of the anthology. We provide the expertise, you provide the guests—together we create Japan's finest Muslim-friendly journeys.
                         </p>
-                        <a href="/inquire" className="inline-block bg-midnight-navy text-white px-12 py-5 rounded-full text-xs font-bold uppercase tracking-[0.3em] shadow-2xl hover:bg-brushed-gold transition-all duration-500">
+                        <a href="/agent/signup" className="inline-block bg-midnight-navy text-white px-12 py-5 rounded-full text-xs font-bold uppercase tracking-[0.3em] shadow-2xl hover:bg-brushed-gold transition-all duration-500">
                             Apply for Partnership
                         </a>
                     </div>
