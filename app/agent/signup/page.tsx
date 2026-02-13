@@ -23,45 +23,27 @@ export default function AgentSignupPage() {
         setMessage(null);
 
         try {
-            const { error } = await supabase.auth.signInWithOtp({
-                email,
-                options: {
-                    emailRedirectTo: `${window.location.origin}/auth/callback`,
-                    data: {
-                        agency_name: agencyName,
-                        license_number: licenseNumber,
-                        address: address,
-                        full_name: fullName,
-                        designation: designation,
-                        phone: phone,
-                    }
-                },
+            // we delegate user creation and link generation to the secure backend API
+            const response = await fetch('/api/auth/signup-notification', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    agency_name: agencyName,
+                    license_number: licenseNumber,
+                    address: address,
+                    full_name: fullName,
+                    designation: designation,
+                    phone: phone,
+                    email: email
+                })
             });
 
-            if (error) throw error;
-
-            // 2. Trigger Notifications (Welcome Email + Admin Alert)
-            try {
-                await fetch('/api/auth/signup-notification', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        agency_name: agencyName,
-                        license_number: licenseNumber,
-                        address: address,
-                        full_name: fullName,
-                        designation: designation,
-                        phone: phone,
-                        email: email
-                    })
-                });
-            } catch (notifyErr) {
-                console.error("Notification failed:", notifyErr);
-            }
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || "Signup failed");
 
             setMessage({
                 type: 'success',
-                text: "Success! We've sent your Login Link and a Welcome Email to your inbox. Please check your email to complete your partner profile."
+                text: "Success! Welcome to the Feel Japan with K Partner Network. We've sent your access invitation to your inbox. Please check your email to complete your profile setup."
             });
         } catch (err: any) {
             setMessage({ type: 'error', text: err.message || "An error occurred during sign up." });

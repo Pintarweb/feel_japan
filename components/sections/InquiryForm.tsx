@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, CheckCircle2, ShieldCheck, AlertCircle, PlaneTakeoff, MapPin, Wallet, BedDouble } from 'lucide-react';
+import { ChevronDown, CheckCircle2, ShieldCheck, AlertCircle, PlaneTakeoff, MapPin, Wallet, BedDouble, Loader2 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -408,7 +408,8 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                         </div>
                     </form>
                 </>
-            )}
-        </section>
+            )
+            }
+        </section >
     );
 }

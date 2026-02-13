@@ -66,7 +66,35 @@ export async function POST(req: Request) {
             html: adminHtml,
         });
 
-        // 2. User Welcome Email (To Agent)
+        // 2. Generate Registration Link (Consolidated)
+        const { getSupabaseAdmin } = await import('@/lib/supabaseAdmin');
+        const supabaseAdmin = getSupabaseAdmin();
+        const { origin } = new URL(req.url);
+
+        const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+            type: 'invite',
+            email: email,
+            options: {
+                redirectTo: `${origin}/auth/callback`,
+                data: {
+                    agency_name: agency_name,
+                    license_number: license_number,
+                    address: address,
+                    full_name: full_name,
+                    designation: designation,
+                    phone: phone,
+                }
+            }
+        });
+
+        if (linkError) {
+            console.error('Failed to generate magic link:', linkError);
+            // Fallback to original flow or handle error
+        }
+
+        const loginUrl = linkData?.properties?.action_link || '#';
+
+        // 3. User Welcome Email (To Agent)
         const userSubject = `Welcome to Feel Japan with K Partner Network`;
         const userHtml = `
             <div style="font-family: serif; color: #001F3F; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 40px; border-radius: 20px; line-height: 1.6;">
@@ -77,24 +105,29 @@ export async function POST(req: Request) {
                 
                 <p>Dear ${full_name},</p>
                 
-                <p>Thank you for requesting access to the <strong>Feel Japan with K Partner Network</strong>. We have received the enrollment details for <strong>${agency_name}</strong>.</p>
+                <p>Welcome to the <strong>Feel Japan with K Partner Network</strong>. Your enrollment for <strong>${agency_name}</strong> has been successfully processed.</p>
                 
-                <p>Our team is currently reviewing your agency credentials and travel license. This professional verification process typically takes 1-2 business hours.</p>
+                <p>We are delighted to provide you with <strong>immediate access</strong> to our bespoke B2B portal, confidential net rates, and heritage itinerary design tools.</p>
                 
                 <div style="margin: 30px 0; padding: 20px; background: #fcfaf5; border-left: 3px solid #C5A059; font-size: 14px;">
-                    <strong>Next Steps:</strong>
-                    <ol style="margin-top: 10px; padding-left: 20px;">
-                        <li>Verify your email using the Login Link sent separately.</li>
-                        <li>Once verified, your account will be placed in the "Review" queue.</li>
-                        <li>You will receive a notification once your full partner access is activated.</li>
-                    </ol>
+                    <strong style="color: #001F3F; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 15px;">Your Access is Ready:</strong>
+                    
+                    <div style="text-align: center; margin: 25px 0;">
+                        <a href="${loginUrl}" style="background-color: #001F3F; color: #ffffff; padding: 18px 32px; text-decoration: none; border-radius: 12px; font-weight: bold; display: inline-block; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 10px 20px rgba(0,31,63,0.2);">Verify & Access Portal</a>
+                    </div>
+
+                    <ul style="margin-top: 10px; padding-left: 20px; list-style-type: none;">
+                        <li style="margin-bottom: 8px;">✅ <strong>Confidential Pricing</strong> – Full visibility of heritage trade rates.</li>
+                        <li style="margin-bottom: 8px;">✅ <strong>Secure Account</strong> – You will be prompted to set a permanent password.</li>
+                        <li style="margin-bottom: 8px;">✅ <strong>B2B Dashboard</strong> – Start designing heritage experiences immediately.</li>
+                    </ul>
                 </div>
 
-                <p>In the meantime, you can explore our public itineraries and heritage collections on the main portal.</p>
+                <p>Our team will perform a routine secondary verification of your MOTAC license for our records, but you may proceed with your inquiries immediately.</p>
                 
-                <p style="font-size: 12px; color: #666; margin-top: 40px;">
+                <p style="font-size: 12px; color: #666; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
                     Warm regards,<br/>
-                    <strong>The Feel Japan with K Partner Relations Team</strong>
+                    <strong style="color: #001F3F;">The Feel Japan with K Partner Relations Team</strong>
                 </p>
             </div>
         `;

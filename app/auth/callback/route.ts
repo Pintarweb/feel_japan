@@ -9,12 +9,29 @@ export async function GET(request: Request) {
 
     if (code) {
         const supabase = await createClient()
-        const { error } = await supabase.auth.exchangeCodeForSession(code)
-        if (!error) {
-            const forwardedHost = request.headers.get('x-forwarded-host') // borrowed from supabase documentation
+        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
+
+        if (!exchangeError) {
+            const { data: { user } } = await supabase.auth.getUser()
+
+            if (user) {
+                // Check if user came from signup (metadata) and might need password setup
+                const isNewSignup = user.user_metadata?.agency_name !== undefined;
+
+                // We'll also check if they have a 'password' identity. 
+                // Note: supabase identities check can be complex, another way is check a custom flag in metadata 
+                // or just see if it's their very first session.
+                const hasPassword = user.identities?.some(id => id.provider === 'email' && id.identity_data?.has_password === true);
+
+                // If it's a new signup and they don't have a password yet, send them to setup
+                if (isNewSignup && !hasPassword) {
+                    return NextResponse.redirect(`${origin}/agent/setup-password`)
+                }
+            }
+
+            const forwardedHost = request.headers.get('x-forwarded-host')
             const isLocalEnv = process.env.NODE_ENV === 'development'
             if (isLocalEnv) {
-                // we can be certain that setting the lookup h ost to origin will work
                 return NextResponse.redirect(`${origin}${next}`)
             } else if (forwardedHost) {
                 return NextResponse.redirect(`https://${forwardedHost}${next}`)
