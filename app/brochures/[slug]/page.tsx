@@ -9,8 +9,15 @@ export async function generateStaticParams() {
     }));
 }
 
-export default async function BrochurePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function BrochurePage({
+    params,
+    searchParams
+}: {
+    params: Promise<{ slug: string }>,
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
     const { slug } = await params;
+    const { view } = await searchParams;
     const decodedSlug = decodeURIComponent(slug);
     const brochure = await getBrochureBySlug(decodedSlug);
 
@@ -18,5 +25,5 @@ export default async function BrochurePage({ params }: { params: Promise<{ slug:
         notFound();
     }
 
-    return <BrochureTemplate brochure={brochure} />;
+    return <BrochureTemplate brochure={brochure} forceShowPricing={view === 'full'} />;
 }

@@ -7,6 +7,7 @@ import { Brochure, ItineraryDay, PricingTier } from '@/types/brochure';
 import {
     ArrowLeft,
     Save,
+    Rocket,
     Plus,
     Trash2,
     GripVertical,
@@ -23,7 +24,8 @@ import {
     Utensils,
     Soup,
     ChevronDown,
-    ChevronUp
+    ChevronUp,
+    Copy
 } from 'lucide-react';
 import Link from 'next/link';
 import Gatekeeper from '@/components/studio/Gatekeeper';
@@ -627,6 +629,19 @@ export default function StudioBuilder() {
                                                 >
                                                     {form.show_pricing !== false ? "Visible" : "Hidden"}
                                                 </button>
+                                                {form.show_pricing === false && form.slug && (
+                                                    <button
+                                                        onClick={() => {
+                                                            const fullUrl = `${window.location.origin}/brochures/${form.slug}?view=full`;
+                                                            navigator.clipboard.writeText(fullUrl);
+                                                            alert("Private Access Link Copied to Clipboard!");
+                                                        }}
+                                                        className="ml-2 p-1.5 hover:bg-midnight-navy/5 rounded-lg text-midnight-navy/40 hover:text-midnight-navy transition-all"
+                                                        title="Copy Private Access Link"
+                                                    >
+                                                        <Copy className="w-3.5 h-3.5" />
+                                                    </button>
+                                                )}
                                             </div>
 
                                             <div className="flex bg-midnight-navy/5 p-1 rounded-xl items-center">

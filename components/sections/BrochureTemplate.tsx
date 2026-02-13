@@ -29,9 +29,10 @@ const parseDescription = (text: string) => {
 
 interface BrochureTemplateProps {
     brochure: Brochure;
+    forceShowPricing?: boolean;
 }
 
-export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
+export default function BrochureTemplate({ brochure, forceShowPricing = false }: BrochureTemplateProps) {
     // Rely on parent check to avoid hydration mismatch on early null return
     // if (!brochure) return null;
 
@@ -114,7 +115,7 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
                 </div>
 
                 {/* Estimated Pricing Section */}
-                {brochure.show_pricing !== false && (
+                {(brochure.show_pricing !== false || forceShowPricing) && (
                     <section className="mb-20">
                         <div className="text-center mb-12">
                             <h2 className="text-3xl font-serif text-midnight-navy mb-4">Estimated Pricing</h2>
@@ -181,7 +182,7 @@ export default function BrochureTemplate({ brochure }: BrochureTemplateProps) {
                                 {brochure.exclusions
                                     .map((item, index) => {
                                         let displayItem = item;
-                                        if (brochure.show_pricing === false) {
+                                        if (brochure.show_pricing === false && !forceShowPricing) {
                                             // Regex to match colons, prices, ranges, and trailing units/details
                                             const priceRegex = /:?\s*[\d,]+(\s*~\s*[\d,]+)?\s*(Yen|JPY|¥|YEN)(\s*\/[^,.]*)?|(\s*\(Total\s*[\d,]+\s*(Yen|JPY|¥|YEN)\))/gi;
                                             displayItem = item.replace(priceRegex, '').trim();
