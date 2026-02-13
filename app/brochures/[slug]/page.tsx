@@ -1,13 +1,7 @@
 import BrochureTemplate from '@/components/sections/BrochureTemplate';
 import { notFound } from 'next/navigation';
-import { getBrochures, getBrochureBySlug } from '@/lib/services/brochureService';
-
-export async function generateStaticParams() {
-    const brochures = await getBrochures();
-    return brochures.map((brochure) => ({
-        slug: brochure.slug,
-    }));
-}
+import { getBrochureBySlug } from '@/lib/services/brochureService';
+import { createClient } from '@/lib/supabaseServer';
 
 export default async function BrochurePage({
     params,
@@ -25,5 +19,19 @@ export default async function BrochurePage({
         notFound();
     }
 
-    return <BrochureTemplate brochure={brochure} forceShowPricing={view === 'full'} />;
+    // Auth Check: Is this a verified agent?
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    let isAgent = false;
+    if (user) {
+        const { data: profile } = await supabase
+            .from('agent_profiles')
+            .select('id')
+            .eq('id', user.id)
+            .single();
+        isAgent = !!profile;
+    }
+
+    return <BrochureTemplate brochure={brochure} isAgent={isAgent} />;
 }

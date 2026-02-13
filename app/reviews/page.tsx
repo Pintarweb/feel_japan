@@ -120,7 +120,7 @@ export default function ReviewsPage() {
 
             {/* Hero Section */}
             <section className="relative h-[60vh] flex items-center justify-center overflow-hidden bg-midnight-navy">
-                <div className="absolute inset-0 bg-black/50 z-10"></div>
+                <div className="absolute inset-0 bg-black/70 z-10"></div>
                 <Image
                     src="/reviews/kyoto_07.jpg"
                     alt="Japan Gallery"
@@ -132,7 +132,7 @@ export default function ReviewsPage() {
                     <h1 className="text-5xl md:text-7xl font-serif text-white font-medium mb-6 leading-tight animate-fade-in-up delay-100 italic">
                         The Global <br /> <span className="text-white/90 underline decoration-brushed-gold/30 underline-offset-8">Guest Anthology</span>
                     </h1>
-                    <p className="text-white/60 text-sm md:text-base font-light tracking-widest uppercase max-w-xl mx-auto animate-fade-in-up delay-200">
+                    <p className="text-white/85 text-sm md:text-base font-light tracking-widest uppercase max-w-xl mx-auto animate-fade-in-up delay-200">
                         Bridging continents and cultures through impeccably curated Japanese experiences.
                     </p>
                 </div>
@@ -143,7 +143,7 @@ export default function ReviewsPage() {
                 <div className="text-center mb-20">
                     <h2 className="text-3xl md:text-4xl font-serif text-midnight-navy mb-4">A Portfolio of Trusted Journeys</h2>
                     <div className="w-12 h-1 bg-brushed-gold mx-auto mb-6"></div>
-                    <p className="text-midnight-navy/60 max-w-2xl mx-auto text-lg font-light leading-relaxed">
+                    <p className="text-midnight-navy/85 max-w-2xl mx-auto text-lg font-light leading-relaxed">
                         Every image is a verification of our service quality. From the prayer-friendly routes of Kyoto to the Halal delicacies of Osaka, we deliver on every promise.
                     </p>
                 </div>
@@ -167,7 +167,7 @@ export default function ReviewsPage() {
                                     <span className="px-3 py-1 bg-brushed-gold text-[9px] font-bold text-white uppercase tracking-widest rounded-lg">
                                         {moment.tag}
                                     </span>
-                                    <span className="text-white/60 text-[10px] uppercase font-bold tracking-[0.2em] flex items-center gap-1">
+                                    <span className="text-white/85 text-[10px] uppercase font-bold tracking-[0.2em] flex items-center gap-1">
                                         <svg className="w-3 h-3 text-brushed-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                         {moment.location}
                                     </span>
@@ -185,7 +185,7 @@ export default function ReviewsPage() {
                     <div className="absolute -top-10 -right-10 w-48 h-48 bg-brushed-gold/5 rounded-full blur-3xl"></div>
                     <div className="relative z-10">
                         <h3 className="text-3xl md:text-5xl font-serif text-midnight-navy mb-6">Join Our <span className="italic text-brushed-gold">Partner Network</span></h3>
-                        <p className="text-midnight-navy/60 mb-10 max-w-xl mx-auto text-lg font-light">
+                        <p className="text-midnight-navy/85 mb-10 max-w-xl mx-auto text-lg font-light">
                             Become a part of the anthology. We provide the expertise, you provide the guests—together we create Japan's finest Muslim-friendly journeys.
                         </p>
                         <a href="/inquire" className="inline-block bg-midnight-navy text-white px-12 py-5 rounded-full text-xs font-bold uppercase tracking-[0.3em] shadow-2xl hover:bg-brushed-gold transition-all duration-500">

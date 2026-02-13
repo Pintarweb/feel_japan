@@ -1,16 +1,20 @@
 "use client";
 
-import { ChevronDown, CheckCircle2, AlertCircle, User, PlaneTakeoff, MapPin, Wallet, BedDouble } from 'lucide-react';
+import { ChevronDown, CheckCircle2, ShieldCheck, AlertCircle, User, PlaneTakeoff, MapPin, Wallet, BedDouble } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { Brochure } from '@/types/brochure';
 
 interface InquiryFormProps {
     brochures: Brochure[];
+    isAgent?: boolean;
+    agentProfile?: any;
 }
 
 const COUNTRIES = [
+    // ... existing countries ...
     { code: "+60", label: "MY", iso: "my" },
     { code: "+65", label: "SG", iso: "sg" },
     { code: "+62", label: "ID", iso: "id" },
@@ -33,15 +37,15 @@ const ROOM_CATEGORIES = [
     "Luxury Villa"
 ];
 
-export default function InquiryForm({ brochures }: InquiryFormProps) {
+export default function InquiryForm({ brochures, isAgent = false, agentProfile }: InquiryFormProps) {
     const searchParams = useSearchParams();
     const [selectedPackage, setSelectedPackage] = useState("");
-    const [agencyName, setAgencyName] = useState("");
-    const [licenseNumber, setLicenseNumber] = useState("");
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
+    const [agencyName, setAgencyName] = useState(agentProfile?.agency_name || "");
+    const [licenseNumber, setLicenseNumber] = useState(agentProfile?.license_number || "");
+    const [name, setName] = useState(agentProfile?.full_name || "");
+    const [email, setEmail] = useState(agentProfile?.email || "");
     const [countryCode, setCountryCode] = useState("+60");
-    const [phone, setPhone] = useState("");
+    const [phone, setPhone] = useState(agentProfile?.phone?.replace(/^\+\d+\s/, '') || "");
 
     // Travel Details state
     const [adults, setAdults] = useState("2");
@@ -194,7 +198,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
 
                         <div className="h-px w-12 bg-brushed-gold/30 mx-auto"></div>
 
-                        <p className="text-[11px] uppercase tracking-[0.2em] font-bold text-midnight-navy/40 leading-loose">
+                        <p className="text-[11px] uppercase tracking-[0.2em] font-bold text-midnight-navy/70 leading-loose">
                             Due to high demand for curated itineraries, requests are processed in chronological order.
                             You will receive a formal response within 24-48 business hours.
                         </p>
@@ -222,8 +226,37 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
     return (
         <section id="inquire" className="bg-[#f5f5f5] px-8 py-16 rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] relative z-10 -mt-6">
             <div className="text-center mb-10">
-                <h4 className="text-midnight-navy text-3xl font-serif font-bold mb-3 italic">B2B Agent Inquiry</h4>
-                <p className="text-midnight-navy/50 text-xs tracking-[0.3em] uppercase mb-1">Request a Bespoke Corporate Itinerary</p>
+                {isAgent ? (
+                    <div className="inline-block bg-midnight-navy/5 px-6 py-2 rounded-full mb-4">
+                        <div className="flex items-center gap-2">
+                            <ShieldCheck className="w-4 h-4 text-brushed-gold" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/85">B2B Member: {agentProfile?.agency_name}</span>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="max-w-xl mx-auto bg-white p-6 rounded-2xl border border-dashed border-brushed-gold/30 mb-10 group hover:border-brushed-gold transition-all">
+                        <h4 className="text-[11px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-3">Are you a Travel Agent?</h4>
+                        <p className="text-xs text-midnight-navy/70 mb-4">Register as a partner to unlock <span className="text-brushed-gold font-bold italic underline underline-offset-4 decoration-brushed-gold/20">confidential net rates</span> and client-ready presentation features.</p>
+                        <Link href="/agent/signup" className="inline-flex items-center gap-2 text-white bg-brushed-gold px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-midnight-navy transition-all shadow-lg shadow-brushed-gold/20 group-hover:shadow-brushed-gold/70">
+                            Become a Partner
+                        </Link>
+                    </div>
+                )}
+
+                <h4 className="text-midnight-navy text-3xl font-serif font-bold mb-3 italic">
+                    {isAgent ? "Request Trip Architecture" : "B2B Service Inquiry"}
+                </h4>
+                <div className="flex justify-center gap-4 mb-4">
+                    <p className="text-midnight-navy/70 text-[10px] uppercase font-bold tracking-[0.3em]">
+                        {isAgent ? "Exclusive Member Pricing Available" : "Bespoke Travel Architecture"}
+                    </p>
+                    {!isAgent && (
+                        <>
+                            <span className="text-midnight-navy/10">•</span>
+                            <Link href="/agent/login" className="text-brushed-gold text-[10px] uppercase font-bold tracking-[0.3em] hover:text-midnight-navy transition-colors">Partner Login</Link>
+                        </>
+                    )}
+                </div>
                 <div className="h-0.5 w-16 bg-brushed-gold mx-auto mt-4"></div>
             </div>
 
@@ -239,13 +272,14 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                     <div className="space-y-6">
                         <div className="relative">
                             <div className="flex justify-between items-center mb-1.5 ml-1">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40">Agency Name</label>
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70">Agency Name</label>
                                 {renderStatus('agencyName')}
                             </div>
                             <input
                                 type="text"
                                 name="agencyName"
                                 required
+                                readOnly={isAgent && !!agentProfile?.agency_name}
                                 value={agencyName}
                                 onBlur={handleBlur}
                                 onChange={(e) => {
@@ -254,34 +288,37 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                                     if (touched.agencyName) validateField('agencyName', val);
                                 }}
                                 placeholder="Luxury Travels Co."
-                                className={inputClasses('agencyName')}
+                                className={inputClasses('agencyName') + (isAgent ? " bg-midnight-navy/5 opacity-80 cursor-not-allowed" : "")}
                             />
                         </div>
 
-                        <div className="relative">
-                            <div className="flex justify-between items-center mb-1.5 ml-1">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40">Travel Agent License No.</label>
-                                {renderStatus('licenseNumber')}
+                        {!isAgent && (
+                            <div className="relative">
+                                <div className="flex justify-between items-center mb-1.5 ml-1">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70">Travel Agent License No.</label>
+                                    {renderStatus('licenseNumber')}
+                                </div>
+                                <input
+                                    type="text"
+                                    name="licenseNumber"
+                                    required
+                                    value={licenseNumber}
+                                    onBlur={handleBlur}
+                                    onChange={(e) => {
+                                        setLicenseNumber(e.target.value.toUpperCase());
+                                        if (touched.licenseNumber && !e.target.value) validateField('licenseNumber', '');
+                                    }}
+                                    placeholder="e.g. KPL/LN/1234"
+                                    className={inputClasses('licenseNumber')}
+                                />
+                                <p className="mt-2 text-[9px] text-midnight-navy/30 italic">Not a partner? <Link href="/agent/signup" className="text-brushed-gold underline">Register here</Link> to skip license entry in the future.</p>
                             </div>
-                            <input
-                                type="text"
-                                name="licenseNumber"
-                                required
-                                value={licenseNumber}
-                                onBlur={handleBlur}
-                                onChange={(e) => {
-                                    setLicenseNumber(e.target.value.toUpperCase());
-                                    if (touched.licenseNumber && !e.target.value) validateField('licenseNumber', '');
-                                }}
-                                placeholder="e.g. KPL/LN/1234"
-                                className={inputClasses('licenseNumber')}
-                            />
-                        </div>
+                        )}
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="relative">
                                 <div className="flex justify-between items-center mb-1.5 ml-1">
-                                    <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40">Your Full Name</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70">Your Full Name</label>
                                     {renderStatus('name')}
                                 </div>
                                 <input
@@ -302,7 +339,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
 
                             <div className="relative">
                                 <div className="flex justify-between items-center mb-1.5 ml-1">
-                                    <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40">Email Address</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70">Email Address</label>
                                     {renderStatus('email')}
                                 </div>
                                 <input
@@ -323,7 +360,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
 
                         <div className="relative">
                             <div className="flex justify-between items-center mb-1.5 ml-1">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40">Contact Number</label>
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70">Contact Number</label>
                                 {renderStatus('phone')}
                             </div>
                             <div className="flex gap-0 shadow-sm rounded-lg overflow-hidden border border-midnight-navy/10 focus-within:ring-1 focus-within:ring-brushed-gold transition-all">
@@ -336,7 +373,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                                         />
                                     )}
                                     <span className="text-sm font-bold text-midnight-navy/70">{countryCode}</span>
-                                    <ChevronDown className="w-3 h-3 text-midnight-navy/40" />
+                                    <ChevronDown className="w-3 h-3 text-midnight-navy/70" />
                                     <select
                                         className="absolute inset-0 opacity-0 cursor-pointer w-full"
                                         value={countryCode}
@@ -376,7 +413,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                     <div className="space-y-6">
                         <div className="grid grid-cols-2 gap-6">
                             <div className="relative" onClick={(e) => (e.currentTarget.querySelector('input') as any)?.showPicker()}>
-                                <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 mb-1.5 ml-1">Travel From</label>
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Travel From</label>
                                 <input
                                     type="date"
                                     name="dateFrom"
@@ -389,7 +426,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                                 />
                             </div>
                             <div className="relative" onClick={(e) => (e.currentTarget.querySelector('input') as any)?.showPicker()}>
-                                <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 mb-1.5 ml-1">Travel To</label>
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Travel To</label>
                                 <input
                                     type="date"
                                     name="dateTo"
@@ -405,7 +442,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
-                                <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 mb-1.5 ml-1">Adults (12y+)</label>
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Adults (12y+)</label>
                                 <input
                                     type="number"
                                     required
@@ -417,7 +454,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                                 />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 mb-1.5 ml-1">Children (6-11y)</label>
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Children (6-11y)</label>
                                 <input
                                     type="number"
                                     min="0"
@@ -428,7 +465,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                                 />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 mb-1.5 ml-1">Infants (Under 6y)</label>
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Infants (Under 6y)</label>
                                 <input
                                     type="number"
                                     min="0"
@@ -441,7 +478,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                         </div>
 
                         <div>
-                            <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 mb-1.5 ml-1">Brochure Selection</label>
+                            <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Brochure Selection</label>
                             <div className="relative">
                                 <select
                                     value={selectedPackage}
@@ -465,8 +502,8 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <div className="flex items-center gap-2 mb-1.5 ml-1">
-                                    <BedDouble className="w-3 h-3 text-brushed-gold/60" />
-                                    <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40">Room Category</label>
+                                    <BedDouble className="w-3 h-3 text-brushed-gold/85" />
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70">Room Category</label>
                                 </div>
                                 <div className="relative">
                                     <select
@@ -480,7 +517,7 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                                             <option key={cat} value={cat}>{cat}</option>
                                         ))}
                                     </select>
-                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-brushed-gold/40">
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-brushed-gold/70">
                                         <ChevronDown className="w-4 h-4" />
                                     </div>
                                 </div>
@@ -488,8 +525,8 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
 
                             <div>
                                 <div className="flex items-center gap-2 mb-1.5 ml-1">
-                                    <Wallet className="w-3 h-3 text-brushed-gold/60" />
-                                    <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40">Est. Total Budget (MYR)</label>
+                                    <Wallet className="w-3 h-3 text-brushed-gold/85" />
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70">Est. Total Budget (MYR)</label>
                                 </div>
                                 <input
                                     type="text"
@@ -504,8 +541,8 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
 
                         <div>
                             <div className="flex items-center gap-2 mb-1.5 ml-1">
-                                <MapPin className="w-3 h-3 text-brushed-gold/60" />
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40">Tentative Places of Visit</label>
+                                <MapPin className="w-3 h-3 text-brushed-gold/85" />
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70">Tentative Places of Visit</label>
                             </div>
                             <textarea
                                 name="placesOfVisit"
@@ -539,9 +576,9 @@ export default function InquiryForm({ brochures }: InquiryFormProps) {
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full bg-brushed-gold text-white py-5 rounded-xl text-sm font-bold tracking-[0.2em] uppercase shadow-2xl shadow-brushed-gold/30 hover:shadow-brushed-gold/40 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-brushed-gold text-white py-5 rounded-xl text-sm font-bold tracking-[0.2em] uppercase shadow-2xl shadow-brushed-gold/30 hover:shadow-brushed-gold/70 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {isSubmitting ? 'Processing Submission...' : 'Send B2B Service Request'}
+                        {isSubmitting ? 'Processing Submission...' : (isAgent ? 'Submit Trip Design Request' : 'Send B2B Service Request')}
                     </button>
                     <p className="text-[10px] text-center text-midnight-navy/30 uppercase tracking-widest mt-4">
                         Secure B2B Portal • 24h Response Guarantee

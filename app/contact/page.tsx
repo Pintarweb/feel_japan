@@ -9,7 +9,7 @@ export default function ContactPage() {
 
             {/* Hero Section */}
             <section className="relative h-[60vh] flex items-center justify-center overflow-hidden bg-midnight-navy">
-                <div className="absolute inset-0 bg-black/40 z-10"></div>
+                <div className="absolute inset-0 bg-black/70 z-10"></div>
                 <div className="relative z-20 text-center max-w-4xl px-6">
                     <span className="text-brushed-gold text-xs font-bold uppercase tracking-[0.4em] mb-4 block animate-fade-in-up">Start the Conversation</span>
                     <h1 className="text-5xl md:text-7xl font-serif text-white font-medium mb-8 leading-tight animate-fade-in-up delay-100">
@@ -24,7 +24,7 @@ export default function ContactPage() {
                     <div className="space-y-12">
                         <div>
                             <h2 className="text-4xl font-serif text-midnight-navy mb-2">Office Headquarters</h2>
-                            <p className="text-midnight-navy/60 leading-relaxed max-w-md">Our concierge team is available Monday to Friday, 9:00 AM to 6:00 PM (JST).</p>
+                            <p className="text-midnight-navy/85 leading-relaxed max-w-md">Our concierge team is available Monday to Friday, 9:00 AM to 6:00 PM (JST).</p>
                         </div>
 
                         <div className="space-y-8">
@@ -69,15 +69,15 @@ export default function ContactPage() {
                         <h3 className="text-2xl font-serif font-bold text-midnight-navy mb-8 relative z-10">Send us a message</h3>
                         <form className="space-y-6 relative z-10">
                             <div>
-                                <label className="block text-xs font-bold uppercase tracking-widest text-midnight-navy/60 mb-2">Full Name</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest text-midnight-navy/85 mb-2">Full Name</label>
                                 <input type="text" className="w-full bg-[#f8f9fa] border-none rounded-xl px-4 py-3 text-midnight-navy focus:ring-2 focus:ring-brushed-gold/20 outline-none transition-all" placeholder="Enter your name" />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold uppercase tracking-widest text-midnight-navy/60 mb-2">Email Address</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest text-midnight-navy/85 mb-2">Email Address</label>
                                 <input type="email" className="w-full bg-[#f8f9fa] border-none rounded-xl px-4 py-3 text-midnight-navy focus:ring-2 focus:ring-brushed-gold/20 outline-none transition-all" placeholder="Enter your email" />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold uppercase tracking-widest text-midnight-navy/60 mb-2">Message</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest text-midnight-navy/85 mb-2">Message</label>
                                 <textarea className="w-full bg-[#f8f9fa] border-none rounded-xl px-4 py-3 text-midnight-navy focus:ring-2 focus:ring-brushed-gold/20 outline-none transition-all h-32 resize-none" placeholder="How can we assist you?"></textarea>
                             </div>
                             <button className="w-full bg-midnight-navy text-white text-xs font-bold uppercase tracking-widest py-4 rounded-xl hover:bg-midnight-navy/90 transition-all shadow-xl shadow-midnight-navy/20">

@@ -17,8 +17,8 @@ export default function BrochureGrid({ brochures }: BrochureGridProps) {
 
     const filteredBrochures = brochures.filter(b => b.category === activeCategory).map(b => {
         const cityTags = Array.isArray(b.city)
-            ? b.city.map(c => ({ label: c, icon: MapPin, color: 'text-midnight-navy/60' }))
-            : [{ label: b.city as string, icon: MapPin, color: 'text-midnight-navy/60' }];
+            ? b.city.map(c => ({ label: c, icon: MapPin, color: 'text-midnight-navy/85' }))
+            : [{ label: b.city as string, icon: MapPin, color: 'text-midnight-navy/85' }];
 
         // Determine icon based on category
         let CategoryIcon = Star;
@@ -106,7 +106,7 @@ export default function BrochureGrid({ brochures }: BrochureGridProps) {
 
                             {/* Content Side */}
                             <div className="flex flex-col justify-center p-8 lg:p-16 bg-white relative">
-                                <div className="absolute top-8 right-8 text-brushed-gold/10">
+                                <div className="absolute top-8 right-8 text-brushed-gold/40">
                                     <Briefcase className="w-32 h-32" />
                                 </div>
                                 <div className="relative z-10">
@@ -178,7 +178,7 @@ export default function BrochureGrid({ brochures }: BrochureGridProps) {
                                     <div className="flex flex-col flex-grow space-y-4">
                                         <div>
                                             <h3 className="text-2xl lg:text-3xl font-serif text-midnight-navy leading-tight mb-2 group-hover:text-brushed-gold transition-colors">{brochure.title}</h3>
-                                            <p className="text-sm text-midnight-navy/60 leading-relaxed font-light line-clamp-3">
+                                            <p className="text-sm text-midnight-navy/85 leading-relaxed font-light line-clamp-3">
                                                 {brochure.description}
                                             </p>
                                         </div>
@@ -197,7 +197,7 @@ export default function BrochureGrid({ brochures }: BrochureGridProps) {
                             ))
                         ) : (
                             <div className="col-span-full py-20 text-center">
-                                <p className="text-midnight-navy/40 font-serif italic text-lg">
+                                <p className="text-midnight-navy/70 font-serif italic text-lg">
                                     No brochures available for this category yet.
                                 </p>
                             </div>

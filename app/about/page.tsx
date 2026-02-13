@@ -8,7 +8,7 @@ export default function AboutPage() {
 
             {/* Hero Section */}
             <section className="relative h-[60vh] flex items-center justify-center overflow-hidden bg-midnight-navy">
-                <div className="absolute inset-0 bg-black/40 z-10"></div>
+                <div className="absolute inset-0 bg-black/70 z-10"></div>
                 <div className="relative z-20 text-center max-w-4xl px-6">
                     <span className="text-brushed-gold text-xs font-bold uppercase tracking-[0.4em] mb-4 block animate-fade-in-up">Our Philosophy</span>
                     <h1 className="text-5xl md:text-7xl font-serif text-white font-medium mb-8 leading-tight animate-fade-in-up delay-100">

@@ -1,10 +1,10 @@
 "use client";
 
-import { MapPin, Calendar, Check, Utensils, Hotel, Bus, Train, Plane, Star, Camera, Mountain, ShoppingBag, Footprints, Droplet, UserCheck, Map } from 'lucide-react';
+import { MapPin, Calendar, Check, Utensils, Hotel, Bus, Train, Plane, Star, Camera, Mountain, ShoppingBag, Footprints, Droplet, UserCheck, Map, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Brochure, Activity } from '@/types/brochure';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Icon mapping helper
 const getIcon = (iconName: string) => {
@@ -29,21 +29,29 @@ const parseDescription = (text: string) => {
 
 interface BrochureTemplateProps {
     brochure: Brochure;
-    forceShowPricing?: boolean;
+    isAgent?: boolean;
 }
 
-export default function BrochureTemplate({ brochure, forceShowPricing = false }: BrochureTemplateProps) {
-    // Rely on parent check to avoid hydration mismatch on early null return
-    // if (!brochure) return null;
+export default function BrochureTemplate({ brochure, isAgent = false }: BrochureTemplateProps) {
+    const [showNetRates, setShowNetRates] = useState(false);
+
+    // Initialize toggle state based on agent status
+    useEffect(() => {
+        if (isAgent) {
+            setShowNetRates(true);
+        }
+    }, [isAgent]);
 
     const pricing = brochure.pricing || { title: "", tiers: [], surchargeNote: "" };
     const tiers = pricing.tiers || [];
-    const formattedAdultPrice = new Intl.NumberFormat('en-US').format(tiers[0]?.adultPrice || 0);
     const subtitle = brochure.subtitle || "";
+
+    // Combined logic: Show pricing if (Public & show_pricing is true) OR (Agent & showNetRates is true)
+    const displayPricing = isAgent ? showNetRates : (brochure.show_pricing !== false);
 
     return (
         <div className="bg-white min-h-screen">
-            <Navbar hideInquiry={true} />
+            <Navbar />
 
             {/* Hero Section */}
             <header className="relative h-[60vh] flex flex-col items-center justify-center text-center text-white px-4">
@@ -53,7 +61,7 @@ export default function BrochureTemplate({ brochure, forceShowPricing = false }:
                         alt={brochure.title}
                         className="h-full w-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/40"></div>
+                    <div className="absolute inset-0 bg-black/70"></div>
                 </div>
 
                 <div className="relative z-10 animate-fade-in-up">
@@ -87,23 +95,23 @@ export default function BrochureTemplate({ brochure, forceShowPricing = false }:
                             <div className="md:w-32 flex-shrink-0">
                                 <div className="sticky top-24">
                                     <span className="block text-brushed-gold font-serif text-4xl leading-none mb-2">{String(day.day).padStart(2, '0')}</span>
-                                    <span className="text-xs font-bold text-midnight-navy/40 uppercase tracking-widest">Day</span>
+                                    <span className="text-xs font-bold text-midnight-navy/70 uppercase tracking-widest">Day</span>
                                 </div>
                             </div>
                             <div className="flex-grow border-l border-midnight-navy/10 pl-8 pb-4 relative group-last:border-l-0">
                                 {/* Dot */}
                                 <div className={`absolute -left-1.5 top-2 w-3 h-3 rounded-full ring-4 ring-white transition-all ${index % 2 === 1 ? 'bg-midnight-navy/20 group-hover:bg-brushed-gold' : 'bg-brushed-gold group-hover:ring-transparent'}`}></div>
 
-                                <h3 className={`text-xl font-bold uppercase tracking-wide mb-2 ${index === brochure.itinerary.length - 1 ? 'text-midnight-navy/60' : 'text-midnight-navy'}`}>{day.title}</h3>
-                                <p className={`text-xs font-bold uppercase tracking-widest mb-6 ${index === brochure.itinerary.length - 1 ? 'text-midnight-navy/40' : 'text-brushed-gold'}`}>{day.meals}</p>
+                                <h3 className={`text-xl font-bold uppercase tracking-wide mb-2 ${index === brochure.itinerary.length - 1 ? 'text-midnight-navy/85' : 'text-midnight-navy'}`}>{day.title}</h3>
+                                <p className={`text-xs font-bold uppercase tracking-widest mb-6 ${index === brochure.itinerary.length - 1 ? 'text-midnight-navy/70' : 'text-brushed-gold'}`}>{day.meals}</p>
 
                                 {day.description && (
-                                    <p className="text-sm font-semibold text-midnight-navy/60 mb-4 italic">{day.description}</p>
+                                    <p className="text-sm font-semibold text-midnight-navy/85 mb-4 italic">{day.description}</p>
                                 )}
 
                                 <ul className="space-y-4">
                                     {day.activities.map((activity, actIndex) => (
-                                        <li key={actIndex} className={`flex gap-4 text-sm leading-relaxed ${activity.description.includes('End of Service') ? 'text-midnight-navy/60 italic' : 'text-midnight-navy/80'}`}>
+                                        <li key={actIndex} className={`flex gap-4 text-sm leading-relaxed ${activity.description.includes('End of Service') ? 'text-midnight-navy/85 italic' : 'text-midnight-navy/80'}`}>
                                             {getIcon(activity.icon)}
                                             <span>{parseDescription(activity.description)}</span>
                                         </li>
@@ -115,12 +123,32 @@ export default function BrochureTemplate({ brochure, forceShowPricing = false }:
                 </div>
 
                 {/* Estimated Pricing Section */}
-                {(brochure.show_pricing !== false || forceShowPricing) && (
+                {displayPricing && (
                     <section className="mb-20">
+                        {isAgent && (
+                            <div className="flex justify-center mb-8">
+                                <button
+                                    onClick={() => setShowNetRates(!showNetRates)}
+                                    className="bg-midnight-navy text-brushed-gold px-6 py-3 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-3 border border-brushed-gold/30 hover:bg-brushed-gold hover:text-midnight-navy transition-all shadow-xl group"
+                                >
+                                    {showNetRates ? (
+                                        <>
+                                            <EyeOff className="w-4 h-4" />
+                                            Switch to Client-Ready View
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Eye className="w-4 h-4" />
+                                            Reveal Agent Net Rates
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        )}
                         <div className="text-center mb-12">
                             <h2 className="text-3xl font-serif text-midnight-navy mb-4">Estimated Pricing</h2>
                             <div className="h-1 w-20 bg-brushed-gold mx-auto mb-4"></div>
-                            <p className="text-midnight-navy/60 font-medium italic text-sm">{pricing.title}</p>
+                            <p className="text-midnight-navy/85 font-medium italic text-sm">{pricing.title}</p>
                         </div>
 
                         <div className="overflow-x-auto bg-white rounded-lg shadow-xl border border-midnight-navy/5">
@@ -146,7 +174,7 @@ export default function BrochureTemplate({ brochure, forceShowPricing = false }:
                             </table>
                         </div>
 
-                        <p className="text-center text-[10px] text-midnight-navy/40 mt-4 font-bold uppercase tracking-widest italic">{pricing.surchargeNote}</p>
+                        <p className="text-center text-[10px] text-midnight-navy/70 mt-4 font-bold uppercase tracking-widest italic">{pricing.surchargeNote}</p>
                     </section>
                 )}
 
@@ -178,11 +206,11 @@ export default function BrochureTemplate({ brochure, forceShowPricing = false }:
                             <h3 className="text-2xl font-serif mb-6 flex items-center gap-3">
                                 What's Excluded
                             </h3>
-                            <ul className="space-y-3 text-xs font-bold text-white/60 italic mb-8">
+                            <ul className="space-y-3 text-xs font-bold text-white/85 italic mb-8">
                                 {brochure.exclusions
                                     .map((item, index) => {
                                         let displayItem = item;
-                                        if (brochure.show_pricing === false && !forceShowPricing) {
+                                        if (!displayPricing) {
                                             // Regex to match colons, prices, ranges, and trailing units/details
                                             const priceRegex = /:?\s*[\d,]+(\s*~\s*[\d,]+)?\s*(Yen|JPY|¥|YEN)(\s*\/[^,.]*)?|(\s*\(Total\s*[\d,]+\s*(Yen|JPY|¥|YEN)\))/gi;
                                             displayItem = item.replace(priceRegex, '').trim();
@@ -218,6 +246,17 @@ export default function BrochureTemplate({ brochure, forceShowPricing = false }:
                 <MapPin className="w-4 h-4" />
                 <span>Request Quote</span>
             </a>
+
+            {/* Floating Agent Toggle - Persistent presence if agent is unrevealed */}
+            {isAgent && !displayPricing && (
+                <button
+                    onClick={() => setShowNetRates(true)}
+                    className="fixed bottom-32 right-8 z-50 flex items-center gap-3 bg-midnight-navy text-brushed-gold px-6 py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-brushed-gold hover:text-midnight-navy transition-all shadow-2xl border-2 border-brushed-gold/30 animate-bounce-slow"
+                >
+                    <Eye className="w-4 h-4" />
+                    Reveal Net Rates
+                </button>
+            )}
 
             <Footer />
         </div>

@@ -1,118 +1,98 @@
 "use client";
 
-export const dynamic = 'force-dynamic';
-
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import {
-    MessageSquare,
-    Search,
-    TrendingUp,
-    FileText,
-    LogOut,
-    ExternalLink,
-    ShieldCheck,
-    CheckCircle2,
-    XCircle,
-    Copy,
-    Trash2,
-    Calendar,
-    ChevronRight,
-    AlertTriangle
+    ShieldCheck, TrendingUp, FileText, MessageSquare,
+    Calendar, Trash2, ExternalLink, LogOut, Search,
+    ChevronRight, CheckCircle2, AlertTriangle, Copy,
+    XCircle, UserCheck, Briefcase, Landmark
 } from 'lucide-react';
 import Link from 'next/link';
 import Gatekeeper from '@/components/studio/Gatekeeper';
 
-interface Inquiry {
-    id: string;
-    created_at: string;
-    agency_name: string;
-    name: string;
-    email: string;
-    phone: string;
-    license_number: string;
-    motac_verified: boolean;
-    adults: number;
-    children_6_11: number;
-    infants_under_6: number;
-    estimated_budget: string;
-    places_of_visit: string;
-    room_category: string;
-    package_slug: string;
-    travel_dates: string;
-    pax: number;
-}
-
 export default function StudioVerification() {
     const router = useRouter();
-    const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+    const [inquiries, setInquiries] = useState<any[]>([]);
+    const [profiles, setProfiles] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [selectedItem, setSelectedItem] = useState<any>(null);
+    const [itemType, setItemType] = useState<'inquiry' | 'profile'>('profile');
     const [searchQuery, setSearchQuery] = useState("");
+    const [activeTab, setActiveTab] = useState<'agents' | 'inquiries'>('agents');
     const [archiveCount, setArchiveCount] = useState(0);
     const [inquiriesCount, setInquiriesCount] = useState(0);
-    const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
 
     const handleExit = () => {
         if (confirm("Sign out and exit Studio?")) {
-            sessionStorage.removeItem('studio_authorized');
+            sessionStorage.removeItem("studio_auth");
             router.push('/');
         }
     };
 
     useEffect(() => {
-        fetchInquiries();
+        fetchData();
     }, []);
 
-    async function fetchInquiries() {
+    async function fetchData() {
         setLoading(true);
         try {
-            const { data, error } = await supabase
-                .from('inquiries')
-                .select('*')
-                .not('license_number', 'is', null) // Only fetch inquiries with license number
-                .order('created_at', { ascending: false });
+            const [inqRes, profRes] = await Promise.all([
+                supabase.from('inquiries').select('*').not('license_number', 'is', null).order('created_at', { ascending: false }),
+                supabase.from('agent_profiles').select('*').order('created_at', { ascending: false })
+            ]);
 
-            if (data) setInquiries(data);
+            if (inqRes.error) throw inqRes.error;
+            if (profRes.error) throw profRes.error;
 
-            // Fetch General Inquiries Count for sidebar
-            const { count: iCount } = await supabase
-                .from('inquiries')
-                .select('*', { count: 'exact', head: true });
+            setInquiries(inqRes.data || []);
+            setProfiles(profRes.data || []);
+
+            if (profRes.data?.length > 0) {
+                setSelectedItem(profRes.data[0]);
+                setItemType('profile');
+            } else if (inqRes.data?.length > 0) {
+                setSelectedItem(inqRes.data[0]);
+                setItemType('inquiry');
+            }
+
+            // Fetch metadata for sidebar
+            const { count: iCount } = await supabase.from('inquiries').select('*', { count: 'exact', head: true }).eq('is_archived', false);
             if (iCount !== null) setInquiriesCount(iCount);
 
-            // Fetch Archive Count
-            const { count: aCount } = await supabase
-                .from('brochures')
-                .select('*', { count: 'exact', head: true })
-                .eq('is_archived', true);
+            const { count: aCount } = await supabase.from('inquiries').select('*', { count: 'exact', head: true }).eq('is_archived', true);
             if (aCount !== null) setArchiveCount(aCount);
+
         } catch (err) {
-            console.error('Error fetching inquiries:', err);
+            console.error('Error fetching data:', err);
         } finally {
             setLoading(false);
         }
     }
 
-    async function toggleVerification(id: string, currentStatus: boolean) {
-        // If currently verified, we are un-verifying. If not, we are verifying.
+    async function toggleVerification(id: string, currentStatus: boolean, type: 'inquiry' | 'profile') {
         const newStatus = !currentStatus;
         const action = newStatus ? "VERIFY" : "REVOKE";
 
-        if (!confirm(`Are you sure you want to ${action} this agent license?`)) return;
+        if (!confirm(`Are you sure you want to ${action} this agent?`)) return;
 
         try {
             const { error } = await supabase
-                .from('inquiries')
-                .update({ motac_verified: newStatus })
+                .from(type === 'inquiry' ? 'inquiries' : 'agent_profiles')
+                .update(type === 'inquiry' ? { motac_verified: newStatus } : { is_verified: newStatus })
                 .eq('id', id);
 
             if (error) throw error;
 
-            // Update local state
-            setInquiries(inquiries.map(i => i.id === id ? { ...i, motac_verified: newStatus } : i));
-            if (selectedInquiry?.id === id) {
-                setSelectedInquiry({ ...selectedInquiry, motac_verified: newStatus });
+            if (type === 'inquiry') {
+                setInquiries(inquiries.map(i => i.id === id ? { ...i, motac_verified: newStatus } : i));
+            } else {
+                setProfiles(profiles.map(p => p.id === id ? { ...p, is_verified: newStatus } : p));
+            }
+
+            if (selectedItem?.id === id && itemType === type) {
+                setSelectedItem({ ...selectedItem, [type === 'inquiry' ? 'motac_verified' : 'is_verified']: newStatus });
             }
         } catch (err) {
             console.error('Error updating verification:', err);
@@ -120,16 +100,19 @@ export default function StudioVerification() {
         }
     }
 
-    const filteredInquiries = inquiries.filter(i => {
+    const filteredItems = (activeTab === 'agents' ? profiles : inquiries).filter(item => {
         const query = searchQuery.toLowerCase();
         return (
-            (i.name?.toLowerCase().includes(query) ?? false) ||
-            (i.license_number?.toLowerCase().includes(query) ?? false) ||
-            (i.agency_name?.toLowerCase().includes(query) ?? false)
+            (item.agency_name?.toLowerCase().includes(query) ?? false) ||
+            (item.license_number?.toLowerCase().includes(query) ?? false) ||
+            (item.name?.toLowerCase().includes(query) ?? false) ||
+            (item.email?.toLowerCase().includes(query) ?? false)
         );
     });
 
-    const unverifiedCount = inquiries.filter(i => !i.motac_verified).length;
+    const unverifiedProfileCount = profiles.filter(p => !p.is_verified).length;
+    const unverifiedInquiryCount = inquiries.filter(i => !i.motac_verified).length;
+    const totalUnverified = unverifiedProfileCount + unverifiedInquiryCount;
 
     return (
         <Gatekeeper>
@@ -157,7 +140,7 @@ export default function StudioVerification() {
                                     <span className="text-sm font-medium tracking-wide">Inquiries</span>
                                 </div>
                                 {inquiriesCount > 0 && (
-                                    <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg group-hover:bg-brushed-gold group-hover:text-midnight-navy transition-colors shadow-sm border border-white/20">
+                                    <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg group-hover:bg-brushed-gold group-hover:text-midnight-navy transition-colors">
                                         {inquiriesCount}
                                     </span>
                                 )}
@@ -167,39 +150,21 @@ export default function StudioVerification() {
                                     <ShieldCheck className="w-4 h-4" />
                                     <span className="text-sm font-medium tracking-wide">Agent Verification</span>
                                 </div>
-                                {unverifiedCount > 0 && (
-                                    <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-md border border-white/20 animate-pulse">
-                                        {unverifiedCount}
-                                    </span>
-                                )}
-                            </Link>
-                            <Link href="/manage-studio/planner" className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white">
-                                <Calendar className="w-4 h-4" />
-                                <span className="text-sm font-medium tracking-wide">FIT Planner</span>
-                            </Link>
-                            <Link href="/manage-studio/archive" className="flex items-center justify-between px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/70 hover:text-white group">
-                                <div className="flex items-center gap-3">
-                                    <Trash2 className="w-4 h-4" />
-                                    <span className="text-sm font-medium tracking-wide">Archive</span>
-                                </div>
-                                {archiveCount > 0 && (
-                                    <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg group-hover:bg-red-500 group-hover:text-white transition-colors shadow-sm">
-                                        {archiveCount}
+                                {totalUnverified > 0 && (
+                                    <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-md animate-pulse">
+                                        {totalUnverified}
                                     </span>
                                 )}
                             </Link>
                         </nav>
                     </div>
 
-                    <div className="mt-auto p-8 space-y-1">
+                    <div className="mt-auto p-8 border-t border-white/5 space-y-1">
                         <Link href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition-colors text-white/40 hover:text-white">
                             <ExternalLink className="w-4 h-4" />
                             <span className="text-sm font-medium tracking-wide">Visit Site</span>
                         </Link>
-                        <button
-                            onClick={handleExit}
-                            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-500/10 rounded-xl transition-colors text-white/40 hover:text-red-400"
-                        >
+                        <button onClick={handleExit} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-500/10 rounded-xl transition-colors text-white/40 hover:text-red-400">
                             <LogOut className="w-4 h-4" />
                             <span className="text-sm font-medium tracking-wide">Exit Studio</span>
                         </button>
@@ -208,183 +173,186 @@ export default function StudioVerification() {
 
                 {/* Main Content */}
                 <main className="flex-1 ml-64 p-10 flex gap-10">
-                    {/* Inquiry List */}
                     <div className="flex-1 space-y-8">
-                        <header className="flex justify-between items-center">
+                        <header className="flex justify-between items-end">
                             <div>
                                 <h1 className="text-3xl font-serif font-bold text-midnight-navy italic">Agent Licensing</h1>
-                                <p className="text-midnight-navy/40 text-[10px] uppercase font-bold tracking-[0.3em] mt-1">MOTAC Verification Portal</p>
+                                <p className="text-midnight-navy/40 text-[10px] uppercase font-bold tracking-[0.3em] mt-1">MOTAC Verification HUB</p>
                             </div>
 
-                            <div className="relative">
-                                <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-midnight-navy/30" />
-                                <input
-                                    type="text"
-                                    placeholder="Find agency or license no..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-11 pr-6 py-3 bg-white border border-midnight-navy/5 rounded-xl text-xs font-medium focus:ring-2 focus:ring-brushed-gold/20 transition-all w-72 shadow-sm"
-                                />
+                            <div className="flex items-center gap-4">
+                                <div className="bg-white p-1 rounded-2xl border border-midnight-navy/5 shadow-sm flex">
+                                    <button
+                                        onClick={() => setActiveTab('agents')}
+                                        className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'agents' ? 'bg-midnight-navy text-white shadow-lg' : 'text-midnight-navy/40 hover:text-midnight-navy'}`}
+                                    >
+                                        Agent Accounts {unverifiedProfileCount > 0 && <span className="ml-2 text-brushed-gold">•</span>}
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab('inquiries')}
+                                        className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'inquiries' ? 'bg-midnight-navy text-white shadow-lg' : 'text-midnight-navy/40 hover:text-midnight-navy'}`}
+                                    >
+                                        Direct Inquiries {unverifiedInquiryCount > 0 && <span className="ml-2 text-brushed-gold">•</span>}
+                                    </button>
+                                </div>
+                                <div className="relative">
+                                    <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-midnight-navy/30" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search agents..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-11 pr-6 py-3.5 bg-white border border-midnight-navy/5 rounded-2xl text-xs font-medium focus:ring-2 focus:ring-brushed-gold/20 transition-all w-64 shadow-sm"
+                                    />
+                                </div>
                             </div>
                         </header>
 
                         <div className="space-y-4">
                             {loading ? (
-                                <div className="text-center py-20 bg-white rounded-[2rem] border border-midnight-navy/5 shadow-sm">
-                                    <div className="w-6 h-6 border-2 border-brushed-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                                    <span className="text-[10px] uppercase tracking-widest font-bold text-midnight-navy/40">Syncing License Data...</span>
+                                <div className="text-center py-20 bg-white rounded-[3rem] border border-midnight-navy/5 shadow-sm space-y-4">
+                                    <div className="w-8 h-8 border-2 border-brushed-gold border-t-transparent rounded-full animate-spin mx-auto"></div>
+                                    <span className="text-[10px] uppercase tracking-widest font-bold text-midnight-navy/40">Syncing Secure Data...</span>
                                 </div>
-                            ) : filteredInquiries.length === 0 ? (
-                                <div className="text-center py-20 bg-white rounded-[2rem] border border-midnight-navy/5 shadow-sm">
-                                    <span className="text-midnight-navy/40 text-sm italic">No unverified agents found.</span>
+                            ) : filteredItems.length === 0 ? (
+                                <div className="text-center py-20 bg-white rounded-[3rem] border border-midnight-navy/5 shadow-sm opacity-60">
+                                    <ShieldCheck className="w-12 h-12 text-midnight-navy/10 mx-auto mb-4" />
+                                    <p className="text-midnight-navy/40 text-sm italic">All agents in this category are up to date.</p>
                                 </div>
                             ) : (
-                                filteredInquiries.map((inquiry) => (
+                                filteredItems.map((item) => (
                                     <button
-                                        key={inquiry.id}
-                                        onClick={() => setSelectedInquiry(inquiry)}
-                                        className={`w-full text-left p-6 rounded-[2rem] border transition-all flex items-center justify-between group ${selectedInquiry?.id === inquiry.id ? 'bg-midnight-navy border-midnight-navy shadow-xl shadow-midnight-navy/20' : 'bg-white border-midnight-navy/5 hover:border-brushed-gold shadow-sm hover:shadow-md'}`}
+                                        key={item.id}
+                                        onClick={() => {
+                                            setSelectedItem(item);
+                                            setItemType(activeTab === 'agents' ? 'profile' : 'inquiry');
+                                        }}
+                                        className={`w-full text-left p-6 rounded-[2.5rem] border transition-all flex items-center justify-between group ${selectedItem?.id === item.id ? 'bg-midnight-navy border-midnight-navy shadow-2xl shadow-midnight-navy/20' : 'bg-white border-midnight-navy/5 hover:border-brushed-gold/50 shadow-sm hover:shadow-md'}`}
                                     >
                                         <div className="flex items-center gap-6">
-                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-xs relative ${selectedInquiry?.id === inquiry.id ? 'bg-brushed-gold text-midnight-navy' : 'bg-midnight-navy/5 text-midnight-navy'}`}>
-                                                {(inquiry.name || inquiry.agency_name || "??").substring(0, 2).toUpperCase()}
-                                                {inquiry.motac_verified && (
-                                                    <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-0.5 border-2 border-white">
+                                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-serif font-bold text-lg relative ${selectedItem?.id === item.id ? 'bg-brushed-gold text-midnight-navy' : 'bg-[#f8f9fa] text-midnight-navy/20'}`}>
+                                                {(item.agency_name || item.name || "??").substring(0, 1).toUpperCase()}
+                                                {(activeTab === 'agents' ? item.is_verified : item.motac_verified) && (
+                                                    <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-1 border-2 border-white">
                                                         <CheckCircle2 className="w-3 h-3 text-white" />
                                                     </div>
                                                 )}
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-3">
-                                                    <span className={`text-sm font-bold ${selectedInquiry?.id === inquiry.id ? 'text-white' : 'text-midnight-navy'}`}>{inquiry.agency_name}</span>
-                                                    <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-tighter ${inquiry.motac_verified
-                                                        ? 'bg-green-500/10 text-green-600 border border-green-500/20'
-                                                        : 'bg-yellow-500/10 text-yellow-600 border border-yellow-500/20'}`}>
-                                                        {inquiry.license_number}
+                                                    <span className={`text-base font-bold ${selectedItem?.id === item.id ? 'text-white' : 'text-midnight-navy'}`}>{item.agency_name || item.name}</span>
+                                                    <span className={`text-[10px] px-2.5 py-0.5 rounded-full uppercase tracking-tighter font-mono ${selectedItem?.id === item.id ? 'bg-white/10 text-brushed-gold' : 'bg-midnight-navy/5 text-midnight-navy/60'}`}>
+                                                        {item.license_number}
                                                     </span>
                                                 </div>
-                                                <div className={`flex items-center gap-4 mt-1 text-[10px] uppercase tracking-widest font-bold ${selectedInquiry?.id === inquiry.id ? 'text-white/40' : 'text-midnight-navy/30'}`}>
-                                                    <span className="flex items-center gap-1">Status: {inquiry.motac_verified ? 'Verified' : 'Pending Verification'}</span>
+                                                <div className={`flex items-center gap-4 mt-1.5 text-[10px] uppercase tracking-widest font-bold ${selectedItem?.id === item.id ? 'text-white/40' : 'text-midnight-navy/30'}`}>
+                                                    <span className="flex items-center gap-1.5"><Briefcase className="w-3 h-3" /> {item.email}</span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <ChevronRight className={`w-5 h-5 transition-transform group-hover:translate-x-1 ${selectedInquiry?.id === inquiry.id ? 'text-brushed-gold' : 'text-midnight-navy/20'}`} />
+                                        <ChevronRight className={`w-5 h-5 transition-transform group-hover:translate-x-1 ${selectedItem?.id === item.id ? 'text-brushed-gold' : 'text-midnight-navy/10'}`} />
                                     </button>
                                 ))
                             )}
                         </div>
                     </div>
 
-                    {/* Verification Details Panel */}
+                    {/* Details Panel */}
                     <div className="w-[450px] sticky top-10 h-[calc(100vh-80px)]">
-                        {selectedInquiry ? (
-                            <div className="bg-white rounded-[2.5rem] border border-midnight-navy/5 shadow-2xl h-full flex flex-col overflow-hidden animate-in fade-in slide-in-from-right-4 duration-500">
-                                <div className={`p-10 text-white relative transition-colors duration-500 ${selectedInquiry.motac_verified ? 'bg-green-600' : 'bg-midnight-navy'}`}>
+                        {selectedItem ? (
+                            <div className="bg-white rounded-[3rem] border border-midnight-navy/5 shadow-[0_32px_64px_-16px_rgba(0,26,51,0.1)] h-full flex flex-col overflow-hidden animate-in fade-in slide-in-from-right-8 duration-700">
+                                <div className={`p-10 text-white relative transition-colors duration-500 ${(itemType === 'profile' ? selectedItem.is_verified : selectedItem.motac_verified) ? 'bg-green-600' : 'bg-midnight-navy'}`}>
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
                                     <div className="relative">
                                         <div className="w-16 h-16 bg-white text-midnight-navy rounded-3xl flex items-center justify-center font-serif font-bold text-2xl shadow-xl shadow-black/20 mb-6">
-                                            {selectedInquiry.motac_verified
-                                                ? <CheckCircle2 className="w-8 h-8 text-green-600" />
+                                            {(itemType === 'profile' ? selectedItem.is_verified : selectedItem.motac_verified)
+                                                ? <UserCheck className="w-8 h-8 text-green-600" />
                                                 : <AlertTriangle className="w-8 h-8 text-yellow-600" />
                                             }
                                         </div>
                                         <h2 className="text-2xl font-serif font-bold italic">
-                                            {selectedInquiry.motac_verified ? 'License Verified' : 'Action Required'}
+                                            {(itemType === 'profile' ? selectedItem.is_verified : selectedItem.motac_verified) ? 'Agent Authorized' : 'Pending Review'}
                                         </h2>
-                                        <div className="flex items-center gap-2 mt-2">
-                                            <span className="text-white/60 text-[10px] font-bold uppercase tracking-widest">
-                                                {selectedInquiry.motac_verified ? 'Agent is authorized' : 'Verify with MOTAC'}
-                                            </span>
-                                        </div>
+                                        <p className="text-white/60 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">
+                                            {itemType === 'profile' ? 'Persistent Partner Account' : 'Direct Inquiry Lead'}
+                                        </p>
                                     </div>
                                 </div>
 
-                                <div className="flex-1 overflow-y-auto p-10 space-y-10">
+                                <div className="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar">
                                     <section>
-                                        <h3 className="text-[10px] uppercase font-bold tracking-[0.2em] text-midnight-navy/40 mb-4 flex items-center gap-2">
-                                            <ShieldCheck className="w-3 h-3" /> License Details
+                                        <h3 className="text-[10px] uppercase font-bold tracking-[0.2em] text-midnight-navy/40 mb-5 flex items-center gap-2">
+                                            <Landmark className="w-3 h-3" /> MOTAC Registration
                                         </h3>
-                                        <div className="bg-[#f8f9fa] border border-midnight-navy/5 rounded-[2rem] p-6 shadow-sm space-y-6">
+                                        <div className="bg-[#f8f9fa] rounded-[2rem] p-8 space-y-6">
                                             <div className="flex justify-between items-center pb-6 border-b border-midnight-navy/5">
                                                 <div>
-                                                    <span className="text-[9px] uppercase font-bold tracking-widest text-midnight-navy/40 block">License Number</span>
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-lg font-bold text-midnight-navy font-mono">
-                                                            {selectedInquiry.license_number}
-                                                        </span>
-                                                        <button
-                                                            onClick={() => navigator.clipboard.writeText(selectedInquiry.license_number)}
-                                                            className="text-midnight-navy/30 hover:text-midnight-navy transition-colors"
-                                                            title="Copy License No"
-                                                        >
-                                                            <Copy className="w-3 h-3" />
+                                                    <span className="text-[9px] uppercase font-bold tracking-widest text-midnight-navy/40 block mb-1">License No</span>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-xl font-bold text-midnight-navy font-mono">{selectedItem.license_number}</span>
+                                                        <button onClick={() => navigator.clipboard.writeText(selectedItem.license_number)} className="text-midnight-navy/20 hover:text-midnight-navy transition-colors">
+                                                            <Copy className="w-3.5 h-3.5" />
                                                         </button>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div>
-                                                <span className="text-[9px] uppercase font-bold tracking-widest text-midnight-navy/40 block mb-2">Verification Action</span>
+                                            <div className="space-y-4">
                                                 <a
-                                                    href="https://www.motac.gov.my/en/kategori-semakan-new/travel-agency-tobtab/"
+                                                    href={`https://www.motac.gov.my/en/kategori-semakan-new/travel-agency-tobtab/`}
                                                     target="_blank"
-                                                    className="w-full bg-[#E8F0FE] text-[#1967D2] py-3 rounded-xl text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#D2E3FC] transition-colors"
+                                                    className="w-full bg-white text-midnight-navy py-4 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 border border-midnight-navy/5 hover:bg-midnight-navy hover:text-white transition-all shadow-sm"
                                                 >
-                                                    Open MOTAC Portal <ExternalLink className="w-3 h-3" />
+                                                    Verify on MOTAC Portal <ExternalLink className="w-3 h-3" />
                                                 </a>
-                                                <p className="text-[10px] text-midnight-navy/40 mt-3 leading-relaxed text-center">
-                                                    External link to Ministry of Tourism, Arts and Culture Malaysia
+                                                <p className="text-[10px] text-midnight-navy/30 leading-relaxed text-center italic">
+                                                    Manual verification required via Malaysian Ministry criteria.
                                                 </p>
                                             </div>
                                         </div>
                                     </section>
 
                                     <section>
-                                        <h3 className="text-[10px] uppercase font-bold tracking-[0.2em] text-midnight-navy/40 mb-4 flex items-center gap-2">
-                                            <FileText className="w-3 h-3" /> Agency Profile
+                                        <h3 className="text-[10px] uppercase font-bold tracking-[0.2em] text-midnight-navy/40 mb-5 flex items-center gap-2">
+                                            <Briefcase className="w-3 h-3" /> Contact Info
                                         </h3>
-                                        <div className="grid grid-cols-1 gap-4">
-                                            <div className="flex justify-between items-center p-4 bg-white border border-midnight-navy/5 rounded-2xl">
-                                                <span className="text-xs font-bold text-midnight-navy/50">Agency Name</span>
-                                                <span className="text-sm font-bold text-midnight-navy">{selectedInquiry.agency_name}</span>
+                                        <div className="space-y-4">
+                                            <div className="flex justify-between items-center p-5 bg-[#f8f9fa] rounded-2xl">
+                                                <span className="text-[10px] font-bold text-midnight-navy/40 uppercase">Agency</span>
+                                                <span className="text-xs font-bold text-midnight-navy">{selectedItem.agency_name || selectedItem.name}</span>
                                             </div>
-                                            <div className="flex justify-between items-center p-4 bg-white border border-midnight-navy/5 rounded-2xl">
-                                                <span className="text-xs font-bold text-midnight-navy/50">Contact Person</span>
-                                                <span className="text-sm font-bold text-midnight-navy">{selectedInquiry.name}</span>
+                                            <div className="flex justify-between items-center p-5 bg-[#f8f9fa] rounded-2xl">
+                                                <span className="text-[10px] font-bold text-midnight-navy/40 uppercase">Email</span>
+                                                <span className="text-xs font-bold text-midnight-navy">{selectedItem.email}</span>
                                             </div>
                                         </div>
                                     </section>
+                                </div>
 
-                                    <div className="pt-6">
-                                        <button
-                                            onClick={() => toggleVerification(selectedInquiry.id, selectedInquiry.motac_verified)}
-                                            className={`w-full py-5 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-xl transition-all flex items-center justify-center gap-3 ${selectedInquiry.motac_verified
-                                                ? 'bg-red-50 text-red-600 hover:bg-red-100 shadow-red-500/10'
-                                                : 'bg-green-600 text-white hover:bg-green-700 shadow-green-600/30'
-                                                }`}
-                                        >
-                                            {selectedInquiry.motac_verified ? (
-                                                <>
-                                                    <XCircle className="w-4 h-4" />
-                                                    Revoke Verification
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <CheckCircle2 className="w-4 h-4" />
-                                                    Confirm Valid License
-                                                </>
-                                            )}
-                                        </button>
-                                    </div>
+                                <div className="p-10 pt-0">
+                                    <button
+                                        onClick={() => toggleVerification(selectedItem.id, itemType === 'profile' ? selectedItem.is_verified : selectedItem.motac_verified, itemType)}
+                                        className={`w-full py-6 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-3 shadow-2xl ${(itemType === 'profile' ? selectedItem.is_verified : selectedItem.motac_verified)
+                                            ? 'bg-red-50 text-red-600 hover:bg-red-100 shadow-red-500/10'
+                                            : 'bg-green-600 text-white hover:bg-green-700 shadow-green-600/30'}`}
+                                    >
+                                        {(itemType === 'profile' ? selectedItem.is_verified : selectedItem.motac_verified) ? (
+                                            <>
+                                                <XCircle className="w-4 h-4" /> Revoke Partner Access
+                                            </>
+                                        ) : (
+                                            <>
+                                                <CheckCircle2 className="w-4 h-4" /> Grant Partner Access
+                                            </>
+                                        )}
+                                    </button>
                                 </div>
                             </div>
                         ) : (
-                            <div className="h-full border-2 border-dashed border-midnight-navy/5 rounded-[2.5rem] flex flex-col items-center justify-center p-12 text-center opacity-40">
-                                <div className="w-16 h-16 bg-midnight-navy/5 rounded-3xl flex items-center justify-center mb-6">
-                                    <ShieldCheck className="w-8 h-8" />
-                                </div>
-                                <h3 className="text-lg font-serif font-bold mb-2">License Verification</h3>
-                                <p className="text-xs leading-relaxed">Select an agent inquiry to verify their MOTAC license credentials.</p>
+                            <div className="h-full border-2 border-dashed border-midnight-navy/5 rounded-[3rem] flex flex-col items-center justify-center p-12 text-center opacity-30">
+                                <ShieldCheck className="w-16 h-16 text-midnight-navy mb-6" />
+                                <h3 className="text-lg font-serif font-bold mb-2">Integrity Shield</h3>
+                                <p className="text-xs leading-relaxed max-w-xs">Select a partner profile or inquiry to manage confidential access tiers and B2B pricing visibility.</p>
                             </div>
                         )}
                     </div>

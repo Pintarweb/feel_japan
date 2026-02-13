@@ -629,18 +629,8 @@ export default function StudioBuilder() {
                                                 >
                                                     {form.show_pricing !== false ? "Visible" : "Hidden"}
                                                 </button>
-                                                {form.show_pricing === false && form.slug && (
-                                                    <button
-                                                        onClick={() => {
-                                                            const fullUrl = `${window.location.origin}/brochures/${form.slug}?view=full`;
-                                                            navigator.clipboard.writeText(fullUrl);
-                                                            alert("Private Access Link Copied to Clipboard!");
-                                                        }}
-                                                        className="ml-2 p-1.5 hover:bg-midnight-navy/5 rounded-lg text-midnight-navy/40 hover:text-midnight-navy transition-all"
-                                                        title="Copy Private Access Link"
-                                                    >
-                                                        <Copy className="w-3.5 h-3.5" />
-                                                    </button>
+                                                {form.show_pricing === false && (
+                                                    <span className="ml-3 text-[9px] font-bold text-red-500/60 uppercase">Hidden for Clients</span>
                                                 )}
                                             </div>
 
