@@ -30,24 +30,27 @@ const parseDescription = (text: string) => {
 interface BrochureTemplateProps {
     brochure: Brochure;
     isAgent?: boolean;
+    agentProfile?: any;
 }
 
-export default function BrochureTemplate({ brochure, isAgent = false }: BrochureTemplateProps) {
+export default function BrochureTemplate({ brochure, isAgent = false, agentProfile }: BrochureTemplateProps) {
     const [showNetRates, setShowNetRates] = useState(false);
 
     // Initialize toggle state based on agent status
     useEffect(() => {
-        if (isAgent) {
+        if (agentProfile?.is_admin) {
             setShowNetRates(true);
         }
-    }, [isAgent]);
+    }, [agentProfile]);
 
     const pricing = brochure.pricing || { title: "", tiers: [], surchargeNote: "" };
     const tiers = pricing.tiers || [];
     const subtitle = brochure.subtitle || "";
 
     // Combined logic: Show pricing if (Public & show_pricing is true) OR (Agent & showNetRates is true)
-    const displayPricing = isAgent ? showNetRates : (brochure.show_pricing !== false);
+    // Selective Launch: Only show if admin
+    const isAdmin = agentProfile?.is_admin === true;
+    const displayPricing = isAdmin;
 
     return (
         <div className="bg-white min-h-screen">
@@ -207,17 +210,9 @@ export default function BrochureTemplate({ brochure, isAgent = false }: Brochure
                                 What's Excluded
                             </h3>
                             <ul className="space-y-3 text-xs font-bold text-white/85 italic mb-8">
-                                {brochure.exclusions
-                                    .map((item, index) => {
-                                        let displayItem = item;
-                                        if (!displayPricing) {
-                                            // Regex to match colons, prices, ranges, and trailing units/details
-                                            const priceRegex = /:?\s*[\d,]+(\s*~\s*[\d,]+)?\s*(Yen|JPY|¥|YEN)(\s*\/[^,.]*)?|(\s*\(Total\s*[\d,]+\s*(Yen|JPY|¥|YEN)\))/gi;
-                                            displayItem = item.replace(priceRegex, '').trim();
-                                        }
-                                        if (!displayItem) return null;
-                                        return <li key={index}>• {displayItem}</li>;
-                                    })}
+                                {brochure.exclusions.map((item, index) => (
+                                    <li key={index}>• {item}</li>
+                                ))}
                             </ul>
 
                             <h3 className="text-lg font-bold mb-4 flex items-center gap-3 text-brushed-gold border-t border-white/10 pt-6 uppercase tracking-tight">
@@ -247,8 +242,8 @@ export default function BrochureTemplate({ brochure, isAgent = false }: Brochure
                 <span>Request Quote</span>
             </a>
 
-            {/* Floating Agent Toggle - Persistent presence if agent is unrevealed */}
-            {isAgent && !displayPricing && (
+            {/* Floating Agent Toggle - Persistent presence if admin hasn't revealed */}
+            {isAdmin && !showNetRates && (
                 <button
                     onClick={() => setShowNetRates(true)}
                     className="fixed bottom-32 right-8 z-50 flex items-center gap-3 bg-midnight-navy text-brushed-gold px-6 py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-brushed-gold hover:text-midnight-navy transition-all shadow-2xl border-2 border-brushed-gold/30 animate-bounce-slow"

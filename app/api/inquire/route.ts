@@ -33,50 +33,60 @@ export async function POST(req: Request) {
             newsletter_optin
         } = body;
 
-        // 0. Get Authenticated User from Session
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-        if (authError || !user) {
-            return NextResponse.json({ error: 'Unauthorized: Agent session required' }, { status: 401 });
+        // 0. Get Authenticated User from Session (Optional for Selective Launch)
+        const { data: { user } } = await supabase.auth.getUser();
+        let agentProfile = null;
+
+        if (user) {
+            // 0a. Fetch Agent Profile
+            const { data: profile } = await supabase
+                .from('agent_profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+            agentProfile = profile;
         }
 
-        // 0a. Fetch Agent Profile
-        const { data: agentProfile, error: profileError } = await supabase
-            .from('agent_profiles')
-            .select('*')
-            .eq('id', user.id)
-            .single();
+        const numChildren611 = children_6_11 ? parseInt(String(children_6_11)) : 0;
+        const numInfantsUnder6 = infants_under_6 ? parseInt(String(infants_under_6)) : 0;
 
-        if (profileError || !agentProfile) {
-            return NextResponse.json({ error: 'Agent profile not found' }, { status: 404 });
-        }
+        // 1. Save Inquiry to Supabase
+        const inquiryData: any = {
+            pax,
+            adults,
+            children_6_11: numChildren611,
+            infants_under_6: numInfantsUnder6,
+            travel_dates,
+            package_slug,
+            room_category,
+            places_of_visit,
+            estimated_budget,
+            newsletter_optin,
+            // Link to agent if logged in
+            agent_id: user?.id || null,
+            // Save guest details if not logged in
+            guest_full_name: user ? null : body.guest_full_name,
+            guest_email: user ? null : body.guest_email,
+            guest_agency_name: user ? null : body.guest_agency_name,
+            guest_license_number: user ? null : body.guest_license_number,
+            guest_phone: user ? null : body.guest_phone
+        };
 
-        // 1. Save Inquiry to Supabase with agent_id link
         const { data: inquiry, error: inquiryError } = await supabase
             .from('inquiries')
-            .insert([{
-                agent_id: user.id,
-                pax,
-                adults,
-                children_6_11,
-                infants_under_6,
-                travel_dates,
-                package_slug,
-                room_category,
-                places_of_visit,
-                estimated_budget,
-                newsletter_optin
-            }])
+            .insert([inquiryData])
             .select()
             .single();
 
         if (inquiryError) throw inquiryError;
 
-        // 2. Prepare Email Content using Profile Data
-        const agentName = agentProfile.full_name || 'Valued Partner';
-        const agencyName = agentProfile.agency_name || 'Independent Agent';
-        const licenseNo = agentProfile.license_number || 'N/A';
-        const agentEmail = agentProfile.email || user.email;
-        const agentPhone = agentProfile.phone || 'N/A';
+        // 2. Prepare Email Content
+        const agentName = agentProfile?.full_name || body.guest_full_name || 'Guest User';
+        const agencyName = agentProfile?.agency_name || body.guest_agency_name || 'Independent/Guest';
+        const licenseNo = agentProfile?.license_number || body.guest_license_number || 'N/A';
+        const agentEmail = agentProfile?.email || body.guest_email || 'N/A';
+        const agentPhone = agentProfile?.phone || body.guest_phone || 'N/A';
+        const isVerified = agentProfile?.is_verified || false;
 
         const emailSubject = `New B2B Inquiry: ${agencyName} - ${agentName}`;
         const emailHtml = `
@@ -88,15 +98,15 @@ export async function POST(req: Request) {
           <p><strong>Agency:</strong> ${agencyName}</p>
           <p><strong>License No:</strong> ${licenseNo}</p>
           
-          <div style="background: ${agentProfile.is_verified ? '#D4EDDA' : '#FFF3CD'}; padding: 15px; border: 1px solid ${agentProfile.is_verified ? '#C3E6CB' : '#FFEEBA'}; border-radius: 5px; margin-top: 10px;">
-             <strong style="color: ${agentProfile.is_verified ? '#155724' : '#856404'}; font-size: 12px;">${agentProfile.is_verified ? '✅ VERIFIED PARTNER' : '⚠️ UNVERIFIED PARTNER'}</strong>
-             <p style="margin: 5px 0 10px 0; font-size: 11px; color: ${agentProfile.is_verified ? '#155724' : '#856404'};">Status: ${agentProfile.is_verified ? 'Partner is pre-verified in the portal.' : 'Please manually validate this agent license if needed.'}</p>
+          <div style="background: ${isVerified ? '#D4EDDA' : '#FFF3CD'}; padding: 15px; border: 1px solid ${isVerified ? '#C3E6CB' : '#FFEEBA'}; border-radius: 5px; margin-top: 10px;">
+             <strong style="color: ${isVerified ? '#155724' : '#856404'}; font-size: 12px;">${isVerified ? '✅ VERIFIED PARTNER' : '⚠️ UNVERIFIED/GUEST'}</strong>
+             <p style="margin: 5px 0 10px 0; font-size: 11px; color: ${isVerified ? '#155724' : '#856404'};">Status: ${isVerified ? 'Partner is pre-verified in the portal.' : 'Manual validation required for guest/unverified submission.'}</p>
           </div>
 
           <p style="margin-top: 15px;"><strong>Agent Name:</strong> ${agentName}</p>
           <p><strong>Email:</strong> ${agentEmail}</p>
           <p><strong>Phone:</strong> ${agentPhone}</p>
-          <p><strong>Agent ID:</strong> ${user.id}</p>
+          <p><strong>User Type:</strong> ${user ? `Partner (${user.id})` : 'Guest'}</p>
         </div>
 
         <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0;">
@@ -120,13 +130,27 @@ export async function POST(req: Request) {
         const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
         const supportEmail = process.env.SUPPORT_EMAIL || 'admin@pintarweb.com';
 
-        // 3a. Internal Notification
+        // 3a. Internal Notification (Email)
         const { data: internalData, error: internalError } = await resend.emails.send({
             from: fromEmail,
             to: supportEmail,
             subject: emailSubject,
             html: emailHtml,
         });
+
+        // 3b. Internal Notification (WhatsApp - Optional)
+        try {
+            if (isVerified || !user) {
+                const message = `New Inquiry: ${agencyName} (${agentName})\n` +
+                    `- Dates: ${travel_dates}\n` +
+                    `- Pax: ${pax}\n` +
+                    `- Destinations: ${places_of_visit || 'N/A'}`;
+
+                await fetch(`https://api.whatsapp.com/send?phone=${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}`);
+            }
+        } catch (waError) {
+            console.error('WhatsApp notification failed:', waError);
+        }
 
         // 3b. Client Acknowledgment (Auto-Reply)
         const clientSubject = `Inquiry Confirmed: Feel Japan with K Bespoke (Ref: ${inquiry.id.substring(0, 8)})`;

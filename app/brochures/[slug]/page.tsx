@@ -23,15 +23,15 @@ export default async function BrochurePage({
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
-    let isAgent = false;
+    let agentProfile = null;
     if (user) {
         const { data: profile } = await supabase
             .from('agent_profiles')
-            .select('id')
+            .select('*')
             .eq('id', user.id)
             .single();
-        isAgent = !!profile;
+        agentProfile = profile;
     }
 
-    return <BrochureTemplate brochure={brochure} isAgent={isAgent} />;
+    return <BrochureTemplate brochure={brochure} isAgent={!!agentProfile} agentProfile={agentProfile} />;
 }

@@ -96,22 +96,7 @@ export default function Navbar({ }: NavbarProps) {
                                         Logout
                                     </button>
                                 </div>
-                            ) : (
-                                <div className="flex items-center gap-8">
-                                    <Link
-                                        href="/agent/login"
-                                        className="text-[10px] font-bold text-midnight-navy/70 uppercase tracking-[0.2em] hover:text-midnight-navy transition-all"
-                                    >
-                                        Member Login
-                                    </Link>
-                                    <Link
-                                        href="/agent/signup"
-                                        className="text-[10px] font-bold text-white bg-brushed-gold px-6 py-3 rounded-full uppercase tracking-[0.2em] hover:bg-midnight-navy transition-all shadow-lg shadow-brushed-gold/20"
-                                    >
-                                        Become a Partner
-                                    </Link>
-                                </div>
-                            )}
+                            ) : null}
                         </div>
                     )}
                 </div>
@@ -146,16 +131,7 @@ export default function Navbar({ }: NavbarProps) {
                     </Link>
 
                     <div className="flex flex-col gap-6 pt-12 items-center">
-                        {!user ? (
-                            <>
-                                <Link href="/agent/login" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-[0.3em] text-white/70 hover:text-brushed-gold transition-colors">
-                                    Member Login
-                                </Link>
-                                <Link href="/agent/signup" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-[0.3em] text-brushed-gold hover:text-white transition-colors">
-                                    Become a Partner
-                                </Link>
-                            </>
-                        ) : (
+                        {!user ? null : (
                             <div className="flex flex-col items-center gap-4">
                                 <span className="text-[10px] font-bold text-brushed-gold uppercase tracking-[0.4em]">Partner Account</span>
                                 <span className="text-xl font-serif text-off-white italic">{user.email}</span>
