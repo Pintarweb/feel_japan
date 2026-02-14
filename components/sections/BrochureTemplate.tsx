@@ -236,6 +236,8 @@ export default function BrochureTemplate({ brochure, isAgent = false, agentProfi
             {/* Floating Inquiry CTA */}
             <a
                 href={`/inquire?package=${encodeURIComponent(brochure.slug)}`}
+                data-umami-event="request-quote-click"
+                data-umami-event-package={brochure.slug}
                 className="fixed bottom-52 right-8 z-50 inline-flex items-center gap-3 bg-brushed-gold text-white px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-white hover:text-midnight-navy transition-colors shadow-2xl hover:shadow-brushed-gold/20 transform hover:-translate-y-1 border-2 border-white/10"
             >
                 <MapPin className="w-4 h-4" />

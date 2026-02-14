@@ -133,7 +133,10 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
     if (isSubmitted) {
         return (
             <section id="inquiry-form" className="max-w-4xl mx-auto py-24 px-6">
-                <div className="bg-white rounded-[3rem] border border-midnight-navy/5 shadow-2xl p-16 text-center animate-in fade-in zoom-in duration-700">
+                <div
+                    className="bg-white rounded-[3rem] border border-midnight-navy/5 shadow-2xl p-16 text-center animate-in fade-in zoom-in duration-700"
+                    data-umami-event="inquiry-success"
+                >
                     <div className="w-20 h-20 bg-brushed-gold/10 rounded-full flex items-center justify-center mx-auto mb-10">
                         <CheckCircle2 className="w-10 h-10 text-brushed-gold" />
                     </div>
@@ -319,6 +322,8 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                         name="selectedPackage"
                                         onChange={(e) => setSelectedPackage(e.target.value)}
                                         className={inputClasses('selectedPackage') + " appearance-none cursor-pointer"}
+                                        data-umami-event="brochure-selection"
+                                        data-umami-event-package={selectedPackage}
                                     >
                                         <option value="" disabled>Select a package (Optional)</option>
                                         <option value="Corporate">Corporate Services</option>
@@ -411,6 +416,7 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                             type="submit"
                             disabled={isSubmitting}
                             className="w-full bg-brushed-gold text-white py-5 rounded-xl text-sm font-bold tracking-[0.2em] uppercase shadow-2xl shadow-brushed-gold/30 hover:shadow-brushed-gold/70 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            data-umami-event="submit-inquiry-form"
                         >
                             {isSubmitting ? 'Processing Submission...' : 'Submit Trip Design Request'}
                         </button>

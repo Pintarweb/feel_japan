@@ -26,6 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="c48cd15a-2535-414b-91ab-697f71ead818"></script>
+      </head>
       <body
         className={`${playfair.variable} ${montserrat.variable} antialiased bg-off-white text-midnight-navy font-sans`}
       >
