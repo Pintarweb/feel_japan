@@ -45,14 +45,30 @@ export default function Navbar({ }: NavbarProps) {
                     </button>
                 </div>
 
-                {/* Logo */}
-                <Link href="/" className="flex items-center justify-center h-full">
-                    <img
-                        src="/logo_transparent.png"
-                        alt="Feel Japan with K"
-                        className="h-[140%] w-auto object-contain mt-2"
-                    />
-                </Link>
+                {/* Logo Section */}
+                <div className="flex items-center gap-6 h-full">
+                    <Link href="/" className="flex items-center gap-4 h-full group">
+                        <img
+                            src="/logo_transparent.png"
+                            alt="Feel Japan with K"
+                            className="h-[120%] md:h-[135%] w-auto object-contain transition-transform group-hover:scale-105 mt-2"
+                        />
+                        <div className="flex flex-col border-l border-midnight-navy/10 pl-4 py-1">
+                            <span className="text-lg md:text-xl font-serif font-bold tracking-tight text-midnight-navy">Feel Japan with K</span>
+                            <div className="flex items-center gap-3 opacity-60">
+                                <span className="text-[8px] md:text-[9px] font-bold uppercase tracking-widest leading-none whitespace-nowrap">An affiliated company of</span>
+                                <div className="flex items-center gap-2">
+                                    <img
+                                        src="/arkalliance_transparent_logo.png"
+                                        alt="Ark Alliance"
+                                        className="h-9 md:h-10 w-auto object-contain"
+                                    />
+                                    <span className="text-[10px] md:text-[12px] font-bold uppercase tracking-widest text-midnight-navy">Ark Alliance</span>
+                                </div>
+                            </div>
+                        </div>
+                    </Link>
+                </div>
 
                 {/* Desktop Navigation Links */}
                 <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
