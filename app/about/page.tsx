@@ -9,16 +9,7 @@ export default function AboutPage() {
 
             {/* Hero Section */}
             <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 z-0">
-                    <Image
-                        src="/hero_faith.jpeg"
-                        alt="About Feel Japan"
-                        fill
-                        className="object-cover object-center"
-                        priority
-                    />
-                    <div className="absolute inset-0 bg-midnight-navy/40 mix-blend-multiply"></div>
-                </div>
+                <div className="absolute inset-0 z-0 bg-midnight-navy"></div>
 
                 <div className="relative z-10 text-center px-6 max-w-4xl mx-auto mt-20">
                     <span className="text-brushed-gold text-xs md:text-sm font-bold uppercase tracking-[0.3em] mb-4 block animate-in fade-in slide-in-from-bottom-4 duration-700">
