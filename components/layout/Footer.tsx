@@ -39,8 +39,9 @@ export default function Footer() {
                     {/* Contact */}
                     <div>
                         <p className="text-[10px] font-bold text-brushed-gold uppercase tracking-[0.2em] mb-1">Contact Specialist</p>
-                        <div className="flex items-center justify-start gap-3 mb-1">
-                            <span className="font-serif text-lg tracking-wide text-white">03-7494 6048</span>
+                        <div className="flex flex-col items-start gap-0.5">
+                            <span className="font-serif text-base tracking-wide text-white">013-702 3981</span>
+                            <span className="font-serif text-base tracking-wide text-white">019-655 6243</span>
                         </div>
                     </div>
                 </div>

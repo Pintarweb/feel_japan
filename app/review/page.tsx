@@ -141,10 +141,10 @@ export default function ReviewsPage() {
             {/* Gallery Section */}
             <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
                 <div className="text-center mb-20">
-                    <h2 className="text-3xl md:text-4xl font-serif text-midnight-navy mb-4">A Portfolio of Trusted Journeys</h2>
+                    <h2 className="text-3xl md:text-4xl font-serif text-midnight-navy mb-4">A Portfolio of Inspired Travels</h2>
                     <div className="w-12 h-1 bg-brushed-gold mx-auto mb-6"></div>
                     <p className="text-midnight-navy/85 max-w-2xl mx-auto text-lg font-light leading-relaxed">
-                        Every image is a verification of our service quality. From the prayer-friendly routes of Kyoto to the Halal delicacies of Osaka, we deliver on every promise.
+                        Every image is a testament to our local expertise. From the prayer-friendly routes of Kyoto to the Halal delicacies of Osaka, we bring the best of Japan to your itinerary
                     </p>
                 </div>
 
