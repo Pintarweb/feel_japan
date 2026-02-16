@@ -33,5 +33,11 @@ export default async function BrochurePage({
         agentProfile = profile;
     }
 
+    // Allow PDF Generator to bypass auth check
+    const { print_pricing } = await searchParams; // Check if we are generating a PDF with pricing
+    if (print_pricing === 'true') {
+        agentProfile = { is_admin: true };
+    }
+
     return <BrochureTemplate brochure={brochure} isAgent={!!agentProfile} agentProfile={agentProfile} />;
 }

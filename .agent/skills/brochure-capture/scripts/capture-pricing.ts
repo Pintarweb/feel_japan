@@ -11,10 +11,10 @@ dotenv.config({ path: '.env.local' });
 
 // Configuration
 const BASE_URL = 'https://feel-japan.vercel.app';
-const OUTPUT_DIR = path.join(process.cwd(), 'dist', 'brochures');
+const OUTPUT_DIR = path.join(process.cwd(), 'dist', 'brochures-pricing');
 const ITINERARIES_PATH = path.join(process.cwd(), 'itineraries.json');
 const LOGO_PATH = path.join(process.cwd(), 'public', 'logo_transparent.png');
-const BUCKET_NAME = 'brochures';
+const BUCKET_NAME = 'brochures-pricing';
 const FORCE_CAPTURE = process.argv.includes('--force');
 
 // Supabase Setup
@@ -177,11 +177,6 @@ async function main() {
     }
 
     console.log(`Starting capture for ${itineraries.length} itineraries...`);
-    if (!fs.existsSync(OUTPUT_DIR)) {
-        fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-    }
-
-
 
     // Clean output directory (Gentle approach)
     if (fs.existsSync(OUTPUT_DIR)) {
@@ -202,11 +197,6 @@ async function main() {
         fs.mkdirSync(OUTPUT_DIR, { recursive: true });
     }
 
-    // Empty Supabase Bucket (Optional - careful with this!)
-    // For now, we will just count on overwriting or new names. 
-    // If you explicitly want to delete ALL files in bucket first, we can add that logic.
-    // Let's stick to renaming for now.
-
     const browser = await chromium.launch();
     const page = await browser.newPage();
 
@@ -215,11 +205,9 @@ async function main() {
         // Normalize format
         if (!relativeSlug.startsWith('/')) relativeSlug = '/' + relativeSlug;
 
-        const fullUrl = `${BASE_URL}${relativeSlug}`;
+        const fullUrl = `${BASE_URL}${relativeSlug}?print_pricing=true`;
 
         // Extract Category from Slug
-        // Common patterns: "git-", "fit-", or assuming based on tags if available (but we only have slug here).
-        // Let's look for known keywords in the slug string.
         let category = 'general';
         const lowerSlug = relativeSlug.toLowerCase();
 
@@ -229,9 +217,7 @@ async function main() {
             category = 'fit';
         }
 
-        // Clean filename: remove 'brochures-' prefix if it ends up there from URL structure
-        // The slug usually is /brochures/some-name. 
-        // We want the part AFTER /brochures/
+        // Clean filename
         const baseName = relativeSlug.replace(/^\/brochures\//, '').replace(/\//g, '-');
 
         // Final Filename: category_filename.pdf
@@ -253,7 +239,6 @@ async function main() {
                     const nav = document.querySelector('nav');
                     if (nav) {
                         const linkContainer = document.createElement('div');
-                        // Position safely on the right side
                         linkContainer.style.cssText = 'position: absolute; right: 30px; top: 50%; transform: translateY(-50%); z-index: 60; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;';
 
                         const ctaText = document.createElement('span');
@@ -271,13 +256,13 @@ async function main() {
 
                         const link = document.createElement('a');
                         link.href = 'https://feel-japan.vercel.app';
-                        link.innerText = 'feel-japan.vercel.app'; // Clean URL text
+                        link.innerText = 'feel-japan.vercel.app';
                         link.style.cssText = `
-                            color: #B49543; /* Brushed Gold color */
+                            color: #B49543; 
                             font-size: 14px;
                             font-weight: 700;
                             text-transform: uppercase;
-                            letter-spacing: 0.1em;
+                            letter-spacing: 1.1em;
                             text-decoration: none;
                             font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
                         `;
@@ -289,10 +274,8 @@ async function main() {
                 });
 
                 // HIDE UI ELEMENTS
-                // Request Quote button, WhatsApp button, Agent toggles
                 await page.addStyleTag({
                     content: `
-                    /* Hide Floating Elements (CTAs, Agent Tools) */
                     a[href^="/inquire"],
                     a[href*="wa.me"],
                     button:has(svg.lucide-eye),
@@ -303,23 +286,17 @@ async function main() {
                     .fixed.z-50.bottom-32,
                     #whatsapp-button,
 
-                    /* Hide Navigation Tabs in Navbar (Centered Links) */
                     nav .absolute.left-1\\/2,
                     nav .hidden.md\\:flex.items-center.gap-8
                     { display: none !important; }
                     
-                    /* Ensure Header/Footer remain visible */
                     nav, footer { display: flex !important; }
-                    /* But hide any 'Request Quote' in footer if exists */
 
-                    /* REDUCE HERO HEIGHT for PDF */
-                    /* Targeted selector for the Hero Header which has h-[60vh] by default */
                     header.relative.h-\\[60vh\\] { 
                         height: 400px !important; 
                         min-height: 0 !important;
                     }
 
-                    /* Hide Footer Links (Studio Portal, Privacy, Terms) */
                     footer a[href="/manage-studio"],
                     footer a[href="/privacy"],
                     footer a[href="/terms"] {
@@ -328,20 +305,15 @@ async function main() {
                 `
                 });
 
-                // Calculate exact content height by finding the bottom of the footer
+                // Calculate exact content height
                 height = await page.evaluate(() => {
                     const footer = document.querySelector('footer');
                     if (footer) {
-                        // Get exact bottom of footer
                         return footer.getBoundingClientRect().bottom + 2;
                     }
                     return document.documentElement.scrollHeight;
                 });
 
-                // Generate "Continuous" PDF by setting custom page size
-                // Width: Standard A4 width approx 210mm ~ 800px or higher for resolution. 
-                // Let's use 1200px width for high quality, and full height.
-                // Note: 'format' option overrides width/height, so we omit it.
                 await page.pdf({
                     path: outputPath,
                     width: '1200px',
@@ -357,7 +329,7 @@ async function main() {
 
             } catch (err: any) {
                 if (err.code === 'EBUSY') {
-                    console.warn(`File ${filename} is locked (open in viewer?). Saving as ${filename.replace('.pdf', '-new.pdf')} instead.`);
+                    console.warn(`File ${filename} is locked. Saving as ${filename.replace('.pdf', '-new.pdf')} instead.`);
                     const newFilename = filename.replace('.pdf', '-new.pdf');
                     const newOutputPath = path.join(OUTPUT_DIR, newFilename);
 
@@ -379,8 +351,6 @@ async function main() {
             }
         } else {
             console.log(`Skipping ${filename} (exists). Uploading existing...`);
-            // If skipped capture, we might be uploading an old version. 
-            // With --force, we always recapture.
             await uploadToSupabase(outputPath, filename);
         }
     }
