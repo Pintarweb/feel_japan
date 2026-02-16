@@ -254,7 +254,7 @@ async function main() {
                     if (nav) {
                         const linkContainer = document.createElement('div');
                         // Position safely on the right side
-                        linkContainer.style.cssText = 'position: absolute; right: 30px; top: 50%; transform: translateY(-50%); z-index: 60; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;';
+                        linkContainer.style.cssText = 'position: absolute; right: 30px; top: 50%; transform: translateY(-50%); z-index: 60; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; white-space: nowrap;';
 
                         const ctaText = document.createElement('span');
                         ctaText.innerText = "Check out our full collection at";

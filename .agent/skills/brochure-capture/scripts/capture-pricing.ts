@@ -239,7 +239,8 @@ async function main() {
                     const nav = document.querySelector('nav');
                     if (nav) {
                         const linkContainer = document.createElement('div');
-                        linkContainer.style.cssText = 'position: absolute; right: 30px; top: 50%; transform: translateY(-50%); z-index: 60; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;';
+                        // Position safely on the right side
+                        linkContainer.style.cssText = 'position: absolute; right: 30px; top: 50%; transform: translateY(-50%); z-index: 60; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; white-space: nowrap;';
 
                         const ctaText = document.createElement('span');
                         ctaText.innerText = "Check out our full collection at";
@@ -256,13 +257,13 @@ async function main() {
 
                         const link = document.createElement('a');
                         link.href = 'https://feel-japan.vercel.app';
-                        link.innerText = 'feel-japan.vercel.app';
+                        link.innerText = 'feel-japan.vercel.app'; // Clean URL text
                         link.style.cssText = `
-                            color: #B49543; 
+                            color: #B49543; /* Brushed Gold color */
                             font-size: 14px;
                             font-weight: 700;
                             text-transform: uppercase;
-                            letter-spacing: 1.1em;
+                            letter-spacing: 0.1em;
                             text-decoration: none;
                             font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
                         `;
