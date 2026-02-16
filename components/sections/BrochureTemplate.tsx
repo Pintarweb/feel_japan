@@ -238,9 +238,9 @@ export default function BrochureTemplate({ brochure, isAgent = false, agentProfi
                 href={`/inquire?package=${encodeURIComponent(brochure.slug)}`}
                 data-umami-event="request-quote-click"
                 data-umami-event-package={brochure.slug}
-                className="fixed bottom-52 right-8 z-50 inline-flex items-center gap-3 bg-brushed-gold text-white px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-white hover:text-midnight-navy transition-colors shadow-2xl hover:shadow-brushed-gold/20 transform hover:-translate-y-1 border-2 border-white/10"
+                className="fixed bottom-24 right-4 md:bottom-12 md:right-28 z-40 inline-flex items-center gap-2 md:gap-3 bg-brushed-gold text-white px-5 py-3 md:px-8 md:py-4 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:bg-white hover:text-midnight-navy transition-colors shadow-2xl hover:shadow-brushed-gold/20 transform hover:-translate-y-1 border-2 border-white/10"
             >
-                <MapPin className="w-4 h-4" />
+                <MapPin className="w-3 h-3 md:w-4 md:h-4" />
                 <span>Request Quote</span>
             </a>
 
