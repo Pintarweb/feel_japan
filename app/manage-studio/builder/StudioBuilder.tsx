@@ -25,7 +25,11 @@ import {
     Soup,
     ChevronDown,
     ChevronUp,
-    Copy
+    Copy,
+    Settings,
+    AlertCircle,
+    FileCheck,
+    RefreshCw
 } from 'lucide-react';
 import Link from 'next/link';
 import Gatekeeper from '@/components/studio/Gatekeeper';
@@ -40,6 +44,8 @@ export default function StudioBuilder() {
     const [showPreview, setShowPreview] = useState(false);
     const [activeTab, setActiveTab] = useState<'details' | 'itinerary' | 'pricing' | 'terms'>('details');
     const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
+    const [showColumnDropdown, setShowColumnDropdown] = useState(false);
+
 
     // Builder State
     const [form, setForm] = useState<Partial<Brochure>>({
@@ -60,6 +66,7 @@ export default function StudioBuilder() {
         },
         inclusions: [],
         exclusions: [],
+        optional: [],
         paymentTerms: {
             deposit: "50% non-refundable deposit required to secure booking.",
             finalPayment: "Final balance due 30 days prior to arrival."
@@ -72,6 +79,12 @@ export default function StudioBuilder() {
         campaign_end: "",
         show_pricing: true
     });
+
+    // PDF Generation Status
+    const isPdfOutdated = brochureId && (
+        !form.pdf_last_generated_at ||
+        (form.updated_at && new Date(form.updated_at) > new Date(form.pdf_last_generated_at))
+    );
 
     useEffect(() => {
         if (brochureId) {
@@ -128,6 +141,7 @@ export default function StudioBuilder() {
                 // Map snake_case from DB to camelCase for component state
                 const mappedData: Partial<Brochure> = {
                     ...data,
+                    optional: data.optional || [],
                     paymentTerms: data.payment_terms || {
                         deposit: "",
                         finalPayment: ""
@@ -162,6 +176,7 @@ export default function StudioBuilder() {
                 pricing: form.pricing,
                 inclusions: form.inclusions,
                 exclusions: form.exclusions,
+                optional: form.optional,
                 tags: form.tags,
                 payment_terms: form.paymentTerms,
                 campaign_start: form.campaign_start || null,
@@ -196,7 +211,19 @@ export default function StudioBuilder() {
             }
 
             console.log("Studio: Deployment successful.");
-            alert("Heritage Asset Deployed Successfully!");
+
+            // Trigger background PDF regeneration for both Client and Agent versions
+            // This happens in the background to avoid blocking the UI
+            if (form.slug) {
+                console.log("Studio: Triggering PDF regeneration for slug:", form.slug);
+                fetch('/api/brochure/capture', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ slug: form.slug })
+                }).catch(err => console.error("PDF Regeneration Trigger Failed:", err));
+            }
+
+            alert("Heritage Asset Deployed & PDF Regeneration Triggered!");
             setShowPreview(false);
             window.location.href = '/manage-studio';
         } catch (err: any) {
@@ -246,18 +273,36 @@ export default function StudioBuilder() {
 
     const addPricingTier = () => {
         const newTiers = [...(form.pricing?.tiers || [])];
-        newTiers.push({ pax: "", adultPrice: 0, childPriceWithBed: 0, childPriceNoBed: 0 });
+        newTiers.push({ pax: "", adultPrice: 0, childPriceWithBed: 0, childPriceNoBed: 0, singlePrice: 0, vehicle: "" });
         setForm({ ...form, pricing: { ...form.pricing!, tiers: newTiers } });
     };
 
     const updatePricingTier = (index: number, updates: Partial<PricingTier>) => {
         const newTiers = [...(form.pricing?.tiers || [])];
         // Ensure numbers are actually numbers or 0, avoiding NaN
-        if ('adultPrice' in updates) {
-            updates.adultPrice = isNaN(updates.adultPrice as any) ? 0 : Number(updates.adultPrice);
-        }
+        if ('adultPrice' in updates) updates.adultPrice = isNaN(updates.adultPrice as any) ? 0 : Number(updates.adultPrice);
+        if ('childPriceWithBed' in updates) updates.childPriceWithBed = isNaN(updates.childPriceWithBed as any) ? 0 : Number(updates.childPriceWithBed);
+        if ('childPriceNoBed' in updates) updates.childPriceNoBed = isNaN(updates.childPriceNoBed as any) ? 0 : Number(updates.childPriceNoBed);
+        if ('singlePrice' in updates) updates.singlePrice = isNaN(updates.singlePrice as any) ? 0 : Number(updates.singlePrice);
+
         newTiers[index] = { ...newTiers[index], ...updates };
         setForm({ ...form, pricing: { ...form.pricing!, tiers: newTiers } });
+    };
+
+    // New helpers for reordering and removing items
+    const moveItem = (listName: 'inclusions' | 'exclusions' | 'optional', index: number, direction: 'up' | 'down') => {
+        const list = [...(form[listName] || [])];
+        const newIndex = direction === 'up' ? index - 1 : index + 1;
+        if (newIndex < 0 || newIndex >= list.length) return;
+
+        [list[index], list[newIndex]] = [list[newIndex], list[index]];
+        setForm({ ...form, [listName]: list });
+    };
+
+    const removeItem = (listName: 'inclusions' | 'exclusions' | 'optional', index: number) => {
+        const list = [...(form[listName] || [])];
+        list.splice(index, 1);
+        setForm({ ...form, [listName]: list });
     };
 
     if (loading) return (
@@ -558,16 +603,36 @@ export default function StudioBuilder() {
                                                                 { id: 'L', label: 'Lunch', icon: Utensils },
                                                                 { id: 'D', label: 'Dinner', icon: Soup }
                                                             ].map((meal) => {
-                                                                const isSelected = day.meals?.split(' / ').includes(meal.id);
+                                                                // Normalize parsing: handle various separators and spaces
+                                                                const mealParts = (day.meals || "- / - / -").split(/[\/,]/).map(s => s.trim());
+                                                                const isSelected = mealParts.includes(meal.id);
                                                                 const Icon = meal.icon;
+
                                                                 return (
                                                                     <button
                                                                         key={meal.id}
                                                                         onClick={() => {
-                                                                            const currentMeals = day.meals ? day.meals.split(' / ') : ['-', '-', '-'];
-                                                                            const mealIdx = meal.id === 'B' ? 0 : meal.id === 'L' ? 1 : 2;
-                                                                            currentMeals[mealIdx] = currentMeals[mealIdx] === meal.id ? '-' : meal.id;
-                                                                            updateDay(idx, { meals: currentMeals.join(' / ') });
+                                                                            // Parse current state into 3 clean slots [B, L, D]
+                                                                            const current = (day.meals || "").split(/[\/,]/).map(s => s.trim());
+                                                                            const hasB = current.includes('B');
+                                                                            const hasL = current.includes('L');
+                                                                            const hasD = current.includes('D');
+
+                                                                            let nextB = hasB;
+                                                                            let nextL = hasL;
+                                                                            let nextD = hasD;
+
+                                                                            if (meal.id === 'B') nextB = !hasB;
+                                                                            if (meal.id === 'L') nextL = !hasL;
+                                                                            if (meal.id === 'D') nextD = !hasD;
+
+                                                                            const newVal = [
+                                                                                nextB ? 'B' : '-',
+                                                                                nextL ? 'L' : '-',
+                                                                                nextD ? 'D' : '-'
+                                                                            ].join(' / ');
+
+                                                                            updateDay(idx, { meals: newVal });
                                                                         }}
                                                                         className={`flex-1 flex items-center justify-center gap-3 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${isSelected
                                                                             ? 'bg-midnight-navy text-white shadow-lg shadow-midnight-navy/10'
@@ -653,31 +718,54 @@ export default function StudioBuilder() {
                                                 )}
                                             </div>
 
-                                            <div className="flex bg-midnight-navy/5 p-1 rounded-xl items-center">
-                                                <span className="text-[9px] font-bold uppercase tracking-widest text-midnight-navy/40 px-3">Columns:</span>
-                                                {[
-                                                    { id: 'adult', label: 'Adult' },
-                                                    { id: 'cwb', label: 'CWB' },
-                                                    { id: 'cnb', label: 'CNB' }
-                                                ].map(col => (
-                                                    <button
-                                                        key={col.id}
-                                                        onClick={() => {
-                                                            const current = form.pricing?.displayColumns || ['adult', 'cwb', 'cnb'];
-                                                            const next = current.includes(col.id)
-                                                                ? current.filter(c => c !== col.id)
-                                                                : [...current, col.id];
-                                                            if (next.length === 0) return; // Must show at least one
-                                                            setForm({ ...form, pricing: { ...form.pricing!, displayColumns: next } });
-                                                        }}
-                                                        className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${(form.pricing?.displayColumns || ['adult', 'cwb', 'cnb']).includes(col.id)
-                                                            ? 'bg-midnight-navy text-white shadow-sm'
-                                                            : 'text-midnight-navy/30 hover:text-midnight-navy'
-                                                            }`}
-                                                    >
-                                                        {col.label}
-                                                    </button>
-                                                ))}
+                                            <div className="relative">
+                                                <button
+                                                    onClick={() => setShowColumnDropdown(!showColumnDropdown)}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-midnight-navy/5 rounded-xl text-[10px] font-bold uppercase tracking-widest text-midnight-navy/60 hover:bg-midnight-navy/10 transition-all border border-midnight-navy/5"
+                                                >
+                                                    <Settings className="w-3.5 h-3.5" />
+                                                    Configure Columns
+                                                </button>
+
+                                                {showColumnDropdown && (
+                                                    <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-midnight-navy/5 rounded-2xl shadow-2xl p-4 z-40 animate-in fade-in zoom-in-95 duration-200">
+                                                        <div className="flex items-center justify-between mb-3 pb-2 border-b border-midnight-navy/5">
+                                                            <span className="text-[9px] font-bold uppercase tracking-widest text-midnight-navy/40">Visible Columns</span>
+                                                            <button onClick={() => setShowColumnDropdown(false)} className="text-[9px] font-bold uppercase text-brushed-gold">Done</button>
+                                                        </div>
+                                                        <div className="space-y-3">
+                                                            {[
+                                                                { id: 'adult', label: 'Adult Price' },
+                                                                { id: 'cwb', label: 'Child with Bed' },
+                                                                { id: 'cnb', label: 'Child no Bed' },
+                                                                { id: 'single', label: 'Single Supp' },
+                                                                { id: 'vehicle', label: 'Transport Vehicle' }
+                                                            ].map(col => {
+                                                                const isChecked = (form.pricing?.displayColumns || ['adult', 'cwb', 'cnb']).includes(col.id);
+                                                                return (
+                                                                    <label key={col.id} className="flex items-center gap-3 cursor-pointer group">
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            checked={isChecked}
+                                                                            onChange={() => {
+                                                                                const current = form.pricing?.displayColumns || ['adult', 'cwb', 'cnb'];
+                                                                                const next = current.includes(col.id)
+                                                                                    ? current.filter(c => c !== col.id)
+                                                                                    : [...current, col.id];
+                                                                                if (next.length === 0) return; // Must show at least one
+                                                                                setForm({ ...form, pricing: { ...form.pricing!, displayColumns: next } });
+                                                                            }}
+                                                                            className="w-4 h-4 rounded border-midnight-navy/10 text-midnight-navy focus:ring-brushed-gold/30"
+                                                                        />
+                                                                        <span className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${isChecked ? 'text-midnight-navy' : 'text-midnight-navy/40 group-hover:text-midnight-navy/60'}`}>
+                                                                            {col.label}
+                                                                        </span>
+                                                                    </label>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
 
                                             <button
@@ -697,6 +785,8 @@ export default function StudioBuilder() {
                                                         {(form.pricing?.displayColumns || ['adult', 'cwb', 'cnb']).includes('adult') && <th className="px-8 py-4 text-center">Adult Price</th>}
                                                         {(form.pricing?.displayColumns || ['adult', 'cwb', 'cnb']).includes('cwb') && <th className="px-8 py-4 text-center">CWB</th>}
                                                         {(form.pricing?.displayColumns || ['adult', 'cwb', 'cnb']).includes('cnb') && <th className="px-8 py-4 text-center">CNB</th>}
+                                                        {(form.pricing?.displayColumns || ['adult', 'cwb', 'cnb']).includes('single') && <th className="px-8 py-4 text-center">Single</th>}
+                                                        {(form.pricing?.displayColumns || ['adult', 'cwb', 'cnb']).includes('vehicle') && <th className="px-8 py-4 text-center">Vehicle</th>}
                                                         <th className="px-8 py-4 text-right">Action</th>
                                                     </tr>
                                                 </thead>
@@ -750,6 +840,29 @@ export default function StudioBuilder() {
                                                                     </div>
                                                                 </td>
                                                             )}
+                                                            {(form.pricing?.displayColumns || ['adult', 'cwb', 'cnb']).includes('single') && (
+                                                                <td className="px-8 py-6 text-center">
+                                                                    <div className="flex items-center gap-2 justify-center">
+                                                                        <span className="text-midnight-navy/30 font-mono text-xs">¥</span>
+                                                                        <input
+                                                                            type="number"
+                                                                            value={tier.singlePrice || 0}
+                                                                            onChange={(e) => updatePricingTier(idx, { singlePrice: parseInt(e.target.value) })}
+                                                                            className="bg-transparent border-none p-0 text-sm font-bold text-midnight-navy w-24 text-center"
+                                                                        />
+                                                                    </div>
+                                                                </td>
+                                                            )}
+                                                            {(form.pricing?.displayColumns || ['adult', 'cwb', 'cnb']).includes('vehicle') && (
+                                                                <td className="px-8 py-6">
+                                                                    <input
+                                                                        value={tier.vehicle || ''}
+                                                                        onChange={(e) => updatePricingTier(idx, { vehicle: e.target.value })}
+                                                                        placeholder="e.g. Alphard"
+                                                                        className="bg-transparent border-none p-0 text-sm font-bold text-midnight-navy w-full text-center placeholder:text-midnight-navy/10"
+                                                                    />
+                                                                </td>
+                                                            )}
                                                             <td className="px-8 py-6 text-right">
                                                                 <button
                                                                     onClick={() => {
@@ -800,10 +913,18 @@ export default function StudioBuilder() {
                                                         <Plus className="w-3.5 h-3.5" />
                                                     </button>
                                                 </div>
-                                                <div className="space-y-2">
+                                                <div className="space-y-4">
                                                     {form.inclusions?.map((inc, i) => (
-                                                        <div key={i} className="flex gap-2">
-                                                            <CheckCircle2 className="w-3.5 h-3.5 mt-1.5 text-green-500 shrink-0" />
+                                                        <div key={i} className="flex gap-3 group/item bg-white p-3 rounded-xl border border-midnight-navy/5 hover:border-brushed-gold/30 transition-all shadow-sm">
+                                                            <div className="flex flex-col gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity">
+                                                                <button onClick={() => moveItem('inclusions', i, 'up')} className="p-0.5 hover:bg-midnight-navy/5 rounded text-midnight-navy/20 hover:text-midnight-navy">
+                                                                    <ChevronUp className="w-3 h-3" />
+                                                                </button>
+                                                                <button onClick={() => moveItem('inclusions', i, 'down')} className="p-0.5 hover:bg-midnight-navy/5 rounded text-midnight-navy/20 hover:text-midnight-navy">
+                                                                    <ChevronDown className="w-3 h-3" />
+                                                                </button>
+                                                            </div>
+                                                            <CheckCircle2 className="w-3.5 h-3.5 mt-1 text-green-500 shrink-0" />
                                                             <textarea
                                                                 value={inc}
                                                                 onChange={(e) => {
@@ -812,8 +933,14 @@ export default function StudioBuilder() {
                                                                     setForm({ ...form, inclusions: newList });
                                                                 }}
                                                                 rows={1}
-                                                                className="w-full bg-transparent border-none p-0 text-sm text-midnight-navy/70 resize-none h-auto"
+                                                                className="flex-1 bg-transparent border-none p-0 text-sm text-midnight-navy/70 resize-none h-auto focus:ring-0"
                                                             />
+                                                            <button
+                                                                onClick={() => removeItem('inclusions', i)}
+                                                                className="opacity-0 group-hover/item:opacity-100 p-1 hover:bg-red-50 text-red-200 hover:text-red-500 rounded transition-all"
+                                                            >
+                                                                <Trash2 className="w-3.5 h-3.5" />
+                                                            </button>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -829,10 +956,18 @@ export default function StudioBuilder() {
                                                         <Plus className="w-3.5 h-3.5" />
                                                     </button>
                                                 </div>
-                                                <div className="space-y-2">
+                                                <div className="space-y-4">
                                                     {form.exclusions?.map((exc, i) => (
-                                                        <div key={i} className="flex gap-2">
-                                                            <XCircle className="w-3.5 h-3.5 mt-1.5 text-red-400 shrink-0" />
+                                                        <div key={i} className="flex gap-3 group/item bg-white p-3 rounded-xl border border-midnight-navy/5 hover:border-midnight-navy/10 transition-all shadow-sm">
+                                                            <div className="flex flex-col gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity">
+                                                                <button onClick={() => moveItem('exclusions', i, 'up')} className="p-0.5 hover:bg-midnight-navy/5 rounded text-midnight-navy/20 hover:text-midnight-navy">
+                                                                    <ChevronUp className="w-3 h-3" />
+                                                                </button>
+                                                                <button onClick={() => moveItem('exclusions', i, 'down')} className="p-0.5 hover:bg-midnight-navy/5 rounded text-midnight-navy/20 hover:text-midnight-navy">
+                                                                    <ChevronDown className="w-3 h-3" />
+                                                                </button>
+                                                            </div>
+                                                            <XCircle className="w-3.5 h-3.5 mt-1 text-red-400 shrink-0" />
                                                             <textarea
                                                                 value={exc}
                                                                 onChange={(e) => {
@@ -841,8 +976,61 @@ export default function StudioBuilder() {
                                                                     setForm({ ...form, exclusions: newList });
                                                                 }}
                                                                 rows={1}
-                                                                className="w-full bg-transparent border-none p-0 text-sm text-midnight-navy/70 resize-none h-auto"
+                                                                className="flex-1 bg-transparent border-none p-0 text-sm text-midnight-navy/70 resize-none h-auto focus:ring-0"
                                                             />
+                                                            <button
+                                                                onClick={() => removeItem('exclusions', i)}
+                                                                className="opacity-0 group-hover/item:opacity-100 p-1 hover:bg-red-50 text-red-200 hover:text-red-500 rounded transition-all"
+                                                            >
+                                                                <Trash2 className="w-3.5 h-3.5" />
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <div className="space-y-6">
+                                                <div className="flex items-center justify-between">
+                                                    <h3 className="text-xs font-bold uppercase tracking-widest text-midnight-navy flex items-center gap-2">
+                                                        <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                                                        Optional
+                                                    </h3>
+                                                    <button
+                                                        onClick={() => setForm({ ...form, optional: [...(form.optional || []), "New optional addon..."] })}
+                                                        className="p-1 hover:bg-midnight-navy/5 rounded text-midnight-navy/40 hover:text-midnight-navy"
+                                                    >
+                                                        <Plus className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                                <div className="space-y-4">
+                                                    {form.optional?.map((opt, i) => (
+                                                        <div key={i} className="flex gap-3 group/item bg-white p-3 rounded-xl border border-midnight-navy/5 hover:border-midnight-navy/10 transition-all shadow-sm">
+                                                            <div className="flex flex-col gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity">
+                                                                <button onClick={() => moveItem('optional', i, 'up')} className="p-0.5 hover:bg-midnight-navy/5 rounded text-midnight-navy/20 hover:text-midnight-navy">
+                                                                    <ChevronUp className="w-3 h-3" />
+                                                                </button>
+                                                                <button onClick={() => moveItem('optional', i, 'down')} className="p-0.5 hover:bg-midnight-navy/5 rounded text-midnight-navy/20 hover:text-midnight-navy">
+                                                                    <ChevronDown className="w-3 h-3" />
+                                                                </button>
+                                                            </div>
+                                                            <div className="w-3.5 h-3.5 mt-1 rounded-full border border-midnight-navy/20 flex items-center justify-center shrink-0">
+                                                                <div className="w-1 h-1 bg-midnight-navy/40 rounded-full" />
+                                                            </div>
+                                                            <textarea
+                                                                value={opt}
+                                                                onChange={(e) => {
+                                                                    const newList = [...(form.optional || [])];
+                                                                    newList[i] = e.target.value;
+                                                                    setForm({ ...form, optional: newList });
+                                                                }}
+                                                                rows={1}
+                                                                className="flex-1 bg-transparent border-none p-0 text-sm text-midnight-navy/70 resize-none h-auto focus:ring-0"
+                                                            />
+                                                            <button
+                                                                onClick={() => removeItem('optional', i)}
+                                                                className="opacity-0 group-hover/item:opacity-100 p-1 hover:bg-red-50 text-red-200 hover:text-red-500 rounded transition-all"
+                                                            >
+                                                                <Trash2 className="w-3.5 h-3.5" />
+                                                            </button>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -886,7 +1074,8 @@ export default function StudioBuilder() {
                 {/* Preview Overlay Modal */}
                 {showPreview && (
                     <div className="fixed inset-0 z-[100] bg-midnight-navy/95 backdrop-blur-sm flex items-center justify-center p-8 overflow-y-auto">
-                        <div className="bg-white w-full max-w-6xl rounded-[3rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+                        <div className="bg-white w-full max-w-6xl rounded-[3rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] relative">
+                            {/* Modal Header */}
                             <div className="bg-midnight-navy p-8 text-white flex justify-between items-center shrink-0">
                                 <div>
                                     <h2 className="text-2xl font-serif font-bold italic">Heritage Asset Preview</h2>
@@ -897,6 +1086,33 @@ export default function StudioBuilder() {
                                 </button>
                             </div>
 
+                            {/* PDF Status Notice */}
+                            {isPdfOutdated && (
+                                <div className="bg-amber-50 border-y border-amber-200 px-8 py-3 flex items-center justify-between animate-in slide-in-from-top duration-500">
+                                    <div className="flex items-center gap-3">
+                                        <AlertCircle className="w-4 h-4 text-amber-600" />
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-amber-900">
+                                            PDF Outdated: Changes detected since last generation ({form.pdf_last_generated_at ? new Date(form.pdf_last_generated_at).toLocaleDateString() : 'Never Generated'})
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <span className="text-[9px] font-medium text-amber-700/60 italic">
+                                            Run `npx tsx .agent/skills/brochure-capture/scripts/capture.ts --force` after saving
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {!isPdfOutdated && brochureId && (
+                                <div className="bg-emerald-50 border-y border-emerald-200 px-8 py-3 flex items-center gap-3 animate-in slide-in-from-top duration-500">
+                                    <FileCheck className="w-4 h-4 text-emerald-600" />
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-900">
+                                        PDF Integrated: File in Supabase matches current version
+                                    </span>
+                                </div>
+                            )}
+
+                            {/* Modal Content - Scrollable */}
                             <div className="flex-1 overflow-y-auto p-12 bg-[#fcfcfc]">
                                 <div className="max-w-4xl mx-auto space-y-16">
                                     {/* Hero Section Preview */}
@@ -958,21 +1174,64 @@ export default function StudioBuilder() {
                                         </div>
                                     </div>
 
-                                    {/* Pricing Preview */}
-                                    <div className="bg-midnight-navy/5 p-10 rounded-[2.5rem] border border-midnight-navy/10">
+                                    {/* Pricing Table Preview */}
+                                    <div className="bg-midnight-navy/5 p-10 rounded-[2.5rem] border border-midnight-navy/10 overflow-hidden">
                                         <h3 className="text-xl font-serif font-bold text-center mb-8 uppercase tracking-widest">Pricing Structure</h3>
-                                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                                            {form.pricing?.tiers.map((t, i) => (
-                                                <div key={i} className="bg-white p-6 rounded-2xl shadow-sm text-center">
-                                                    <div className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 mb-2">{t.pax}</div>
-                                                    <div className="text-xl font-serif font-bold text-midnight-navy">¥{t.adultPrice.toLocaleString()}</div>
-                                                    <div className="text-[8px] font-bold uppercase tracking-tighter text-midnight-navy/30">per adult</div>
-                                                </div>
-                                            ))}
+                                        <div className="w-full overflow-hidden rounded-2xl border border-midnight-navy/10 bg-white">
+                                            <table className="w-full text-left border-collapse">
+                                                <thead>
+                                                    <tr className="bg-midnight-navy text-white">
+                                                        <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em]">Group Size</th>
+                                                        <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-right">Adult Price</th>
+                                                        {form.pricing?.tiers.some(t => (t.childPriceWithBed ?? 0) > 0) && (
+                                                            <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-right">Child (Bed)</th>
+                                                        )}
+                                                        {form.pricing?.tiers.some(t => (t.childPriceNoBed ?? 0) > 0) && (
+                                                            <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-right">Child (No Bed)</th>
+                                                        )}
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-midnight-navy/5">
+                                                    {form.pricing?.tiers.map((t, i) => (
+                                                        <tr key={i} className="hover:bg-midnight-navy/5 transition-colors">
+                                                            <td className="px-6 py-4 text-sm font-bold text-midnight-navy">{t.pax}</td>
+                                                            <td className="px-6 py-4 text-sm font-serif font-bold text-midnight-navy text-right">
+                                                                <span className="text-brushed-gold mr-1">¥</span>
+                                                                {t.adultPrice.toLocaleString()}
+                                                            </td>
+                                                            {form.pricing?.tiers.some(tier => (tier.childPriceWithBed ?? 0) > 0) && (
+                                                                <td className="px-6 py-4 text-sm font-serif font-bold text-midnight-navy/60 text-right">
+                                                                    {t.childPriceWithBed ? (
+                                                                        <>
+                                                                            <span className="text-brushed-gold/60 mr-1">¥</span>
+                                                                            {t.childPriceWithBed.toLocaleString()}
+                                                                        </>
+                                                                    ) : '-'}
+                                                                </td>
+                                                            )}
+                                                            {form.pricing?.tiers.some(tier => (tier.childPriceNoBed ?? 0) > 0) && (
+                                                                <td className="px-6 py-4 text-sm font-serif font-bold text-midnight-navy/60 text-right">
+                                                                    {t.childPriceNoBed ? (
+                                                                        <>
+                                                                            <span className="text-brushed-gold/60 mr-1">¥</span>
+                                                                            {t.childPriceNoBed.toLocaleString()}
+                                                                        </>
+                                                                    ) : '-'}
+                                                                </td>
+                                                            )}
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
                                         </div>
+                                        {form.pricing?.surchargeNote && (
+                                            <p className="mt-6 text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 text-center italic">
+                                                {form.pricing.surchargeNote}
+                                            </p>
+                                        )}
                                     </div>
 
-                                    {/* Full Itinerary Audit Preview */}
+                                    {/* Itinerary Preview */}
                                     <div className="space-y-8">
                                         <h3 className="text-xl font-serif font-bold border-b border-midnight-navy/10 pb-4">Itinerary Architecture</h3>
                                         <div className="space-y-4">
@@ -998,7 +1257,7 @@ export default function StudioBuilder() {
                                         </div>
                                     </div>
 
-                                    {/* Terms & Inclusions Preview */}
+                                    {/* Inclusions & Exclusions */}
                                     <div className="grid grid-cols-2 gap-12">
                                         <div className="space-y-6">
                                             <h3 className="text-xl font-serif font-bold border-b border-midnight-navy/10 pb-4">Inclusions</h3>
@@ -1012,22 +1271,54 @@ export default function StudioBuilder() {
                                             </ul>
                                         </div>
                                         <div className="space-y-6">
-                                            <h3 className="text-xl font-serif font-bold border-b border-midnight-navy/10 pb-4">Payment Terms</h3>
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <span className="text-[9px] font-bold uppercase tracking-widest text-midnight-navy/40 block mb-1">Deposit</span>
-                                                    <p className="text-xs text-midnight-navy/70 leading-relaxed italic">{form.paymentTerms?.deposit}</p>
-                                                </div>
-                                                <div>
-                                                    <span className="text-[9px] font-bold uppercase tracking-widest text-midnight-navy/40 block mb-1">Final Payment</span>
-                                                    <p className="text-xs text-midnight-navy/70 leading-relaxed italic">{form.paymentTerms?.finalPayment}</p>
-                                                </div>
+                                            <h3 className="text-xl font-serif font-bold border-b border-midnight-navy/10 pb-4">Exclusions</h3>
+                                            <ul className="space-y-2">
+                                                {form.exclusions?.map((item, i) => (
+                                                    <li key={i} className="text-xs text-midnight-navy/70 flex gap-2">
+                                                        <XCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />
+                                                        {item}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    {/* Optional arrangements (Relocated after Exclusions) */}
+                                    {form.optional && form.optional.length > 0 && (
+                                        <div className="bg-[#fcfcfc] p-10 rounded-[2.5rem] border-2 border-dashed border-midnight-navy/5">
+                                            <h3 className="text-sm font-bold uppercase tracking-widest text-midnight-navy/60 mb-8 flex items-center gap-3">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-brushed-gold"></div>
+                                                Optional Arrangements Preview
+                                            </h3>
+                                            <div className="grid grid-cols-2 gap-x-12 gap-y-6">
+                                                {form.optional.map((item, i) => (
+                                                    <div key={i} className="flex gap-4 text-xs font-medium text-midnight-navy/70 leading-relaxed">
+                                                        <span className="text-brushed-gold font-bold text-lg leading-none">+</span>
+                                                        {item}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Payment Terms */}
+                                    <div className="space-y-6">
+                                        <h3 className="text-xl font-serif font-bold border-b border-midnight-navy/10 pb-4">Payment Terms</h3>
+                                        <div className="grid grid-cols-2 gap-12">
+                                            <div>
+                                                <span className="text-[9px] font-bold uppercase tracking-widest text-midnight-navy/40 block mb-1">Deposit</span>
+                                                <p className="text-xs text-midnight-navy/70 leading-relaxed italic">{form.paymentTerms?.deposit}</p>
+                                            </div>
+                                            <div>
+                                                <span className="text-[9px] font-bold uppercase tracking-widest text-midnight-navy/40 block mb-1">Final Payment</span>
+                                                <p className="text-xs text-midnight-navy/70 leading-relaxed italic">{form.paymentTerms?.finalPayment}</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
+                            {/* Modal Footer (Action Buttons) - correctly nested inside flex-col box */}
                             <div className="p-8 bg-white border-t border-midnight-navy/5 flex justify-center gap-6 shrink-0">
                                 <button
                                     onClick={() => setShowPreview(false)}
@@ -1048,6 +1339,6 @@ export default function StudioBuilder() {
                     </div>
                 )}
             </div>
-        </Gatekeeper>
+        </Gatekeeper >
     );
 }

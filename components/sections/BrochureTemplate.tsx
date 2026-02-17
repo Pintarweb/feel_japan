@@ -159,18 +159,42 @@ export default function BrochureTemplate({ brochure, isAgent = false, agentProfi
                                 <thead className="bg-midnight-navy/5 border-b border-midnight-navy/10">
                                     <tr>
                                         <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Pax Count</th>
-                                        <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Adult</th>
-                                        <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Child (CWB)</th>
-                                        <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Child (CNB)</th>
+                                        {(pricing.displayColumns || ['adult', 'cwb', 'cnb']).includes('adult') && <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Adult</th>}
+                                        {(pricing.displayColumns || ['adult', 'cwb', 'cnb']).includes('cwb') && <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Child (CWB)</th>}
+                                        {(pricing.displayColumns || ['adult', 'cwb', 'cnb']).includes('cnb') && <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Child (CNB)</th>}
+                                        {(pricing.displayColumns || ['adult', 'cwb', 'cnb']).includes('single') && <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Single</th>}
+                                        {(pricing.displayColumns || ['adult', 'cwb', 'cnb']).includes('vehicle') && <th className="px-8 py-6 font-bold uppercase text-midnight-navy text-xs tracking-widest">Vehicle</th>}
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-midnight-navy/5 font-medium text-sm text-midnight-navy/80">
                                     {tiers.map((tier, index) => (
                                         <tr key={index}>
                                             <td className="px-8 py-5">{tier.pax}</td>
-                                            <td className="px-8 py-5 text-brushed-gold font-bold">{new Intl.NumberFormat('en-US').format(tier.adultPrice || 0)}</td>
-                                            <td className="px-8 py-5">{tier.childPriceWithBed ? new Intl.NumberFormat('en-US').format(tier.childPriceWithBed) : '--'}</td>
-                                            <td className="px-8 py-5 opacity-40">{tier.childPriceNoBed ? new Intl.NumberFormat('en-US').format(tier.childPriceNoBed) : '--'}</td>
+                                            {(pricing.displayColumns || ['adult', 'cwb', 'cnb']).includes('adult') && (
+                                                <td className="px-8 py-5 text-brushed-gold font-bold">
+                                                    {new Intl.NumberFormat('en-US').format(tier.adultPrice || 0)}
+                                                </td>
+                                            )}
+                                            {(pricing.displayColumns || ['adult', 'cwb', 'cnb']).includes('cwb') && (
+                                                <td className="px-8 py-5">
+                                                    {tier.childPriceWithBed ? new Intl.NumberFormat('en-US').format(tier.childPriceWithBed) : '--'}
+                                                </td>
+                                            )}
+                                            {(pricing.displayColumns || ['adult', 'cwb', 'cnb']).includes('cnb') && (
+                                                <td className="px-8 py-5 opacity-40">
+                                                    {tier.childPriceNoBed ? new Intl.NumberFormat('en-US').format(tier.childPriceNoBed) : '--'}
+                                                </td>
+                                            )}
+                                            {(pricing.displayColumns || ['adult', 'cwb', 'cnb']).includes('single') && (
+                                                <td className="px-8 py-5">
+                                                    {tier.singlePrice ? new Intl.NumberFormat('en-US').format(tier.singlePrice) : '--'}
+                                                </td>
+                                            )}
+                                            {(pricing.displayColumns || ['adult', 'cwb', 'cnb']).includes('vehicle') && (
+                                                <td className="px-8 py-5 italic text-midnight-navy/60">
+                                                    {tier.vehicle || '--'}
+                                                </td>
+                                            )}
                                         </tr>
                                     ))}
                                 </tbody>
@@ -231,6 +255,26 @@ export default function BrochureTemplate({ brochure, isAgent = false, agentProfi
                         </div>
                     </div>
                 </div>
+
+                {/* Optional Add-ons Section - Only displays if items exist */}
+                {brochure.optional && brochure.optional.length > 0 && (
+                    <div className="mb-20 bg-[#fcfcfc] p-10 rounded-[2.5rem] border-2 border-dashed border-midnight-navy/5">
+                        <h3 className="text-xl font-serif text-midnight-navy mb-8 flex items-center gap-3">
+                            <div className="w-1.5 h-1.5 rounded-full bg-brushed-gold"></div>
+                            Optional Arrangements
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+                            {brochure.optional.map((item, index) => (
+                                <div key={index} className="flex gap-4">
+                                    <span className="text-brushed-gold font-bold text-lg leading-none">+</span>
+                                    <p className="text-sm font-medium text-midnight-navy/70 leading-relaxed">
+                                        {parseDescription(item)}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Floating Inquiry CTA */}

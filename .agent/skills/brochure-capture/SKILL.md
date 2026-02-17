@@ -10,6 +10,19 @@ description: Automatically visits Feel Japan itinerary URLs, captures them as co
 4.  **Watermark:** Use `pdf-lib` to overlay `assets/feel-japan-logo.png` on the bottom-right of every page directly within the script.
 5.  **Upload:** Upload the final watermarked PDFs to the Supabase Storage bucket named `brochures`.
 
+# New Organization Logic
+1. **Standard Brochures (Client-Facing):**
+   - **Local Location:** `dist/brochures/`
+   - **Supabase Bucket Path:** `brochure/`
+   - **Naming:** `${category}_${slug}.pdf` (e.g., `git_tokyo-adventure.pdf`)
+   - **Content:** High-fidelity capture of the public view (no net rates).
+
+2. **Pricing Brochures (Agent-Only):**
+   - **Local Location:** `dist/brochures/pricing/`
+   - **Supabase Bucket Path:** `brochure-pricing/`
+   - **Naming:** `${category}_${slug}_pricing.pdf` (e.g., `git_tokyo-adventure_pricing.pdf`)
+   - **Content:** Complete capture including Net Agent Rates and full pricing breakdowns.
+
 # Usage
 Run the skill using:
 ```bash
@@ -22,5 +35,5 @@ npx tsx .agent/skills/brochure-capture/scripts/capture.ts --force
 
 # Constraints
 - Do not re-capture if a PDF already exists locally unless the `--force` flag is used.
-- Ensure the PDF filename matches the URL slug (e.g., /tokyo-spring -> tokyo-spring.pdf).
-- Ensure the Supabase Storage bucket `brochures` exists.
+- Ensure the PDF filename matches the `${category}_${slug}` pattern.
+- Ensure the Supabase Storage bucket `brochures` exists and uses the specified folder paths.

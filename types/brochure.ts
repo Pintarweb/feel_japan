@@ -3,6 +3,8 @@ export interface PricingTier {
     adultPrice: number;
     childPriceWithBed?: number;
     childPriceNoBed?: number;
+    singlePrice?: number;
+    vehicle?: string;
 }
 
 export interface Activity {
@@ -41,11 +43,14 @@ export interface Brochure {
     };
     inclusions: string[];
     exclusions: string[];
+    optional?: string[];
     paymentTerms: {
         deposit: string;
         finalPayment: string;
     };
     created_at: string;
+    updated_at?: string;
+    pdf_last_generated_at?: string;
     is_archived?: boolean;
     campaign_start?: string;
     campaign_end?: string;

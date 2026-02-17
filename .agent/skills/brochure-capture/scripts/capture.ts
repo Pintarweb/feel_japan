@@ -11,15 +11,20 @@ dotenv.config({ path: '.env.local' });
 
 // Configuration
 const BASE_URL = 'https://feel-japan.vercel.app';
-const OUTPUT_DIR = path.join(process.cwd(), 'dist', 'brochures');
+const OUTPUT_ROOT = path.join(process.cwd(), 'dist', 'brochures');
+const CLIENT_DIR = OUTPUT_ROOT; // Standard brochures saved directly in dist/brochures/
+const AGENT_DIR = path.join(OUTPUT_ROOT, 'pricing'); // Pricing brochures saved in dist/brochures/pricing/
 const ITINERARIES_PATH = path.join(process.cwd(), 'itineraries.json');
 const LOGO_PATH = path.join(process.cwd(), 'public', 'logo_transparent.png');
 const BUCKET_NAME = 'brochures';
+
+// CLI Arguments
 const FORCE_CAPTURE = process.argv.includes('--force');
+const TARGET_SLUG = process.argv.find(arg => arg.startsWith('--slug='))?.split('=')[1];
 
 // Supabase Setup
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 if (!supabaseUrl || !supabaseKey) {
     console.error('Missing Supabase credentials in .env.local');
@@ -42,25 +47,18 @@ async function addWatermark(pdfPath: string) {
         const logoBytes = fs.readFileSync(LOGO_PATH);
         let logoImage;
 
-        // The user copied a JPEG to a .png extension, so pdf-lib fails with strict checking.
-        // Try interpreting as JPEG first if PNG fails, or inspect header.
-        // Simple robust logic: try PNG, catch -> try JPEG.
         try {
             logoImage = await pdfDoc.embedPng(logoBytes);
         } catch (e) {
-            // Fallback to JPEG
             logoImage = await pdfDoc.embedJpg(logoBytes);
         }
 
-        // Scale logo (example: 200px wide)
         const targetWidth = 200;
-        const { width: logoW, height: logoH } = logoImage.scaleToFit(targetWidth, targetWidth); // Maintain aspect ratio
+        const { width: logoW, height: logoH } = logoImage.scaleToFit(targetWidth, targetWidth);
 
         const pages = pdfDoc.getPages();
         for (const page of pages) {
             const { width, height } = page.getSize();
-
-            // Bottom Right Position with padding
             const padding = 40;
 
             page.drawImage(logoImage, {
@@ -74,314 +72,254 @@ async function addWatermark(pdfPath: string) {
 
         const modifiedPdfBytes = await pdfDoc.save();
         fs.writeFileSync(pdfPath, modifiedPdfBytes);
-        console.log(`Watermarked: ${path.basename(pdfPath)}`);
     } catch (err) {
         console.error(`Error adding watermark to ${path.basename(pdfPath)}:`, err);
     }
 }
 
-async function uploadToSupabase(filePath: string, filename: string) {
+async function uploadToSupabase(filePath: string, storagePath: string) {
     try {
         const fileBuffer = fs.readFileSync(filePath);
 
         const { data, error } = await supabase.storage
             .from(BUCKET_NAME)
-            .upload(filename, fileBuffer, {
+            .upload(storagePath, fileBuffer, {
                 contentType: 'application/pdf',
                 upsert: true
             });
 
         if (error) {
-            console.error(`Supabase Upload Error (${filename}):`, error.message);
+            console.error(`Supabase Upload Error (${storagePath}):`, error.message);
         } else {
-            // Get Public URL
             const { data: { publicUrl } } = supabase.storage
                 .from(BUCKET_NAME)
-                .getPublicUrl(filename);
+                .getPublicUrl(storagePath);
             console.log(`Uploaded to Supabase: ${publicUrl}`);
         }
     } catch (err) {
-        console.error(`Upload exception (${filename}):`, err);
+        console.error(`Upload exception (${storagePath}):`, err);
+    }
+}
+
+async function updateDbTimestamp(slug: string) {
+    const { error: dbError } = await supabase
+        .from('brochures')
+        .update({ pdf_last_generated_at: new Date().toISOString() })
+        .eq('slug', slug);
+
+    if (dbError) {
+        console.warn(`Could not update PDF timestamp for slug ${slug}:`, dbError.message);
+    } else {
+        console.log(`Updated PDF timestamp for ${slug} in database.`);
     }
 }
 
 async function ensureBucket() {
-    const { data: buckets, error } = await supabase.storage.listBuckets();
-    if (error) {
-        console.error('Error listing buckets:', error);
-        return;
-    }
-
-    const bucketExists = buckets.find(b => b.name === BUCKET_NAME);
+    const { data: buckets } = await supabase.storage.listBuckets();
+    const bucketExists = buckets?.find(b => b.name === BUCKET_NAME);
 
     if (!bucketExists) {
         console.log(`Bucket '${BUCKET_NAME}' not found. Creating...`);
-        const { data, error: createError } = await supabase.storage.createBucket(BUCKET_NAME, {
+        await supabase.storage.createBucket(BUCKET_NAME, {
             public: true,
-            fileSizeLimit: 52428800, // 50MB
+            fileSizeLimit: 52428800,
             allowedMimeTypes: ['application/pdf']
         });
-
-        if (createError) {
-            console.error(`Failed to create bucket '${BUCKET_NAME}':`, createError);
-        } else {
-            console.log(`Bucket '${BUCKET_NAME}' created successfully.`);
-        }
-    } else {
-        console.log(`Bucket '${BUCKET_NAME}' exists.`);
     }
 }
 
-async function emptyBucket() {
-    console.log(`Emptying bucket '${BUCKET_NAME}'...`);
-    const { data: files, error } = await supabase.storage.from(BUCKET_NAME).list();
+/**
+ * Intelligent Stale File Cleanup:
+ * Only deletes files that do NOT have a corresponding record in the database.
+ * This prevents accidental deletion of sibling brochures sharing the same slug but different categories (e.g., FIT vs GIT).
+ */
+async function performIntelligentCleanup(slug: string) {
+    console.log(`--- Performing Intelligent Cleanup for slug: ${slug} ---`);
 
-    if (error) {
-        console.error('Error listing files for deletion:', error);
-        return;
-    }
+    // 1. Fetch ALL active categories for this slug from the database
+    const { data: activeBrochures } = await supabase
+        .from('brochures')
+        .select('category')
+        .eq('slug', slug);
 
-    if (files && files.length > 0) {
-        const filePaths = files.map(file => file.name);
-        const { error: deleteError } = await supabase.storage.from(BUCKET_NAME).remove(filePaths);
+    const activeCategories = (activeBrochures || []).map(b => b.category.toLowerCase());
+    console.log(`Active categories for ${slug}:`, activeCategories);
 
-        if (deleteError) {
-            console.error('Error deleting files from bucket:', deleteError);
-        } else {
-            console.log(`Deleted ${files.length} files from bucket.`);
+    // 2. Local Cleanup
+    const localDirs = [CLIENT_DIR, AGENT_DIR];
+    for (const dir of localDirs) {
+        if (!fs.existsSync(dir)) continue;
+        const files = fs.readdirSync(dir);
+
+        // Find files matching the slug pattern
+        const matches = files.filter(f => f.endsWith(`_${slug}.pdf`) || f.endsWith(`_${slug}_pricing.pdf`));
+
+        for (const file of matches) {
+            // Extract the category prefix (e.g., 'git' from 'git_tokyo.pdf')
+            const prefix = file.split('_')[0].toLowerCase();
+
+            // If the category prefix is NOT in our active list, it's a stale/ghost file
+            if (!activeCategories.includes(prefix)) {
+                try {
+                    fs.unlinkSync(path.join(dir, file));
+                    console.log(`Removed stale local file: ${file} (Category '${prefix}' no longer active for this slug)`);
+                } catch (e) {
+                    console.warn(`Could not delete local file ${file}:`, e);
+                }
+            }
         }
-    } else {
-        console.log('Bucket is already empty.');
     }
+
+    // 3. Supabase Cleanup
+    const storageFolders = ['brochure', 'brochure-pricing'];
+    for (const folder of storageFolders) {
+        const { data: files, error } = await supabase.storage.from(BUCKET_NAME).list(folder);
+        if (error || !files) continue;
+
+        const staleFilePaths = files
+            .filter(f => {
+                const isMatch = f.name.endsWith(`_${slug}.pdf`) || f.name.endsWith(`_${slug}_pricing.pdf`);
+                if (!isMatch) return false;
+
+                const prefix = f.name.split('_')[0].toLowerCase();
+                return !activeCategories.includes(prefix);
+            })
+            .map(f => `${folder}/${f.name}`);
+
+        if (staleFilePaths.length > 0) {
+            const { error: delError } = await supabase.storage.from(BUCKET_NAME).remove(staleFilePaths);
+            if (delError) {
+                console.warn(`Could not delete stale bucket files:`, delError.message);
+            } else {
+                console.log(`Purged ${staleFilePaths.length} stale assets from '${folder}' bucket path.`);
+            }
+        }
+    }
+}
+
+async function captureView(page: Page, url: string, outputPath: string) {
+    console.log(`Capturing: ${url}`);
+
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 });
+    await page.waitForTimeout(3000);
+
+    // INJECT WEBSITE LINK INTO HEADER
+    await page.evaluate(() => {
+        const nav = document.querySelector('nav');
+        if (nav) {
+            const linkContainer = document.createElement('div');
+            linkContainer.style.cssText = 'position: absolute; right: 30px; top: 50%; transform: translateY(-50%); z-index: 60; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; white-space: nowrap;';
+
+            const ctaText = document.createElement('span');
+            ctaText.innerText = "Check out our full collection at";
+            ctaText.style.cssText = 'color: #0F172A; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.6; margin-bottom: 2px; font-family: ui-sans-serif, system-ui, sans-serif;';
+
+            const link = document.createElement('a');
+            link.href = 'https://feel-japan.vercel.app';
+            link.innerText = 'feel-japan.vercel.app';
+            link.style.cssText = 'color: #B49543; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none; font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;';
+
+            linkContainer.appendChild(ctaText);
+            linkContainer.appendChild(link);
+            nav.appendChild(linkContainer);
+        }
+    });
+
+    // HIDE UI ELEMENTS
+    await page.addStyleTag({
+        content: `
+            a[href^="/inquire"], a[href*="wa.me"], button:has(svg.lucide-eye), button:has(svg.lucide-eye-off), 
+            .fixed.bottom-8, .fixed.bottom-52, .fixed.z-50.bottom-8, .fixed.z-50.bottom-32, #whatsapp-button,
+            nav .absolute.left-1\\/2, nav .hidden.md\\:flex.items-center.gap-8 { display: none !important; }
+            nav, footer { display: flex !important; }
+            header.relative.h-\\[60vh\\] { height: 400px !important; min-height: 0 !important; }
+            footer a[href="/manage-studio"], footer a[href="/privacy"], footer a[href="/terms"] { display: none !important; }
+        `
+    });
+
+    const height = await page.evaluate(() => {
+        const footer = document.querySelector('footer');
+        return footer ? footer.getBoundingClientRect().bottom + 2 : document.documentElement.scrollHeight;
+    });
+
+    await page.pdf({
+        path: outputPath,
+        width: '1200px',
+        height: `${height}px`,
+        printBackground: true,
+        margin: { top: '0px', right: '0px', bottom: '0px', left: '0px' },
+        displayHeaderFooter: false
+    });
+
+    await addWatermark(outputPath);
+}
+
+async function processSlug(page: Page, rawSlug: string) {
+    let slug = rawSlug.replace(/^\/brochures\//, '').replace(/^\//, '');
+
+    const urlPath = `/brochures/${slug}`;
+
+    // Fetch latest category from Supabase to ensure accurate naming
+    const { data: latestBrochure } = await supabase
+        .from('brochures')
+        .select('category')
+        .eq('slug', slug)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .single();
+
+    const category = latestBrochure?.category?.toLowerCase() || (slug.includes('git') ? 'git' : (slug.includes('fit') ? 'fit' : 'general'));
+    const baseName = slug.replace(/\//g, '-');
+
+    // PERFORM INTELLIGENT CLEANUP (Protects sibling categories, removes ghosts)
+    await performIntelligentCleanup(slug);
+
+    // 1. Client Version (Standard)
+    const clientUrl = `${BASE_URL}${urlPath}`;
+    const clientFilename = `${category}_${baseName}.pdf`;
+    const clientLocalPath = path.join(CLIENT_DIR, clientFilename);
+    const clientStoragePath = `brochure/${clientFilename}`;
+
+    console.log(`--- Processing Client Version: ${slug} ---`);
+    await captureView(page, clientUrl, clientLocalPath);
+    await uploadToSupabase(clientLocalPath, clientStoragePath);
+
+    // 2. Agent Version (Pricing)
+    const agentUrl = `${BASE_URL}${urlPath}?print_pricing=true`;
+    const agentFilename = `${category}_${baseName}_pricing.pdf`;
+    const agentLocalPath = path.join(AGENT_DIR, agentFilename);
+    const agentStoragePath = `brochure-pricing/${agentFilename}`;
+
+    console.log(`--- Processing Agent Version: ${slug} ---`);
+    await captureView(page, agentUrl, agentLocalPath);
+    await uploadToSupabase(agentLocalPath, agentStoragePath);
+
+    // Update DB timestamp after both are done
+    await updateDbTimestamp(slug);
 }
 
 async function main() {
-    console.log(`Using Output Dir: ${OUTPUT_DIR}`);
-    console.log(`Using Logo Path: ${LOGO_PATH}`);
+    console.log(`Ensuring folder structure: ${OUTPUT_ROOT}`);
+    if (!fs.existsSync(OUTPUT_ROOT)) fs.mkdirSync(OUTPUT_ROOT, { recursive: true });
+    if (!fs.existsSync(AGENT_DIR)) fs.mkdirSync(AGENT_DIR, { recursive: true });
 
     await ensureBucket();
-    await emptyBucket(); // Start fresh
-
-    // Read Itineraries
-    if (!fs.existsSync(ITINERARIES_PATH)) {
-        console.error(`itineraries.json not found at ${ITINERARIES_PATH}!`);
-        process.exit(1);
-    }
-
-    const fileContent = fs.readFileSync(ITINERARIES_PATH, 'utf-8');
-    const itineraries = JSON.parse(fileContent); // Expecting array of strings
-
-    if (!Array.isArray(itineraries) || itineraries.length === 0) {
-        console.log('No itineraries found in itineraries.json');
-        return;
-    }
-
-    console.log(`Starting capture for ${itineraries.length} itineraries...`);
-    if (!fs.existsSync(OUTPUT_DIR)) {
-        fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-    }
-
-
-
-    // Clean output directory (Gentle approach)
-    if (fs.existsSync(OUTPUT_DIR)) {
-        console.log('Cleaning output directory...');
-        try {
-            const files = fs.readdirSync(OUTPUT_DIR);
-            for (const file of files) {
-                try {
-                    fs.unlinkSync(path.join(OUTPUT_DIR, file));
-                } catch (e) {
-                    console.warn(`Could not delete local file ${file} (locked?), skipping.`);
-                }
-            }
-        } catch (err) {
-            console.warn('Could not list output directory for cleaning, proceeding...');
-        }
-    } else {
-        fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-    }
-
-    // Empty Supabase Bucket (Optional - careful with this!)
-    // For now, we will just count on overwriting or new names. 
-    // If you explicitly want to delete ALL files in bucket first, we can add that logic.
-    // Let's stick to renaming for now.
 
     const browser = await chromium.launch();
     const page = await browser.newPage();
 
-    for (const slug of itineraries) {
-        let relativeSlug = slug;
-        // Normalize format
-        if (!relativeSlug.startsWith('/')) relativeSlug = '/' + relativeSlug;
-
-        const fullUrl = `${BASE_URL}${relativeSlug}`;
-
-        // Extract Category from Slug
-        // Common patterns: "git-", "fit-", or assuming based on tags if available (but we only have slug here).
-        // Let's look for known keywords in the slug string.
-        let category = 'general';
-        const lowerSlug = relativeSlug.toLowerCase();
-
-        if (lowerSlug.includes('git')) {
-            category = 'git';
-        } else if (lowerSlug.includes('fit')) {
-            category = 'fit';
+    if (TARGET_SLUG) {
+        console.log(`Targeting single slug: ${TARGET_SLUG}`);
+        await processSlug(page, TARGET_SLUG);
+    } else {
+        if (!fs.existsSync(ITINERARIES_PATH)) {
+            console.error(`itineraries.json not found!`);
+            process.exit(1);
         }
-
-        // Clean filename: remove 'brochures-' prefix if it ends up there from URL structure
-        // The slug usually is /brochures/some-name. 
-        // We want the part AFTER /brochures/
-        const baseName = relativeSlug.replace(/^\/brochures\//, '').replace(/\//g, '-');
-
-        // Final Filename: category_filename.pdf
-        const filename = `${category}_${baseName}.pdf`;
-        const outputPath = path.join(OUTPUT_DIR, filename);
-
-        const shouldCapture = FORCE_CAPTURE || !fs.existsSync(outputPath);
-
-        if (shouldCapture) {
-            console.log(`Capturing: ${fullUrl} -> ${filename}`);
-            let height = 0;
-            try {
-                // Increase timeout for heavy pages
-                await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 90000 });
-                await page.waitForTimeout(3000);
-
-                // INJECT WEBSITE LINK INTO HEADER
-                await page.evaluate(() => {
-                    const nav = document.querySelector('nav');
-                    if (nav) {
-                        const linkContainer = document.createElement('div');
-                        // Position safely on the right side
-                        linkContainer.style.cssText = 'position: absolute; right: 30px; top: 50%; transform: translateY(-50%); z-index: 60; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; white-space: nowrap;';
-
-                        const ctaText = document.createElement('span');
-                        ctaText.innerText = "Check out our full collection at";
-                        ctaText.style.cssText = `
-                            color: #0F172A; 
-                            font-size: 10px;
-                            font-weight: 500;
-                            text-transform: uppercase;
-                            letter-spacing: 0.05em;
-                            opacity: 0.6;
-                            margin-bottom: 2px;
-                            font-family: ui-sans-serif, system-ui, sans-serif;
-                        `;
-
-                        const link = document.createElement('a');
-                        link.href = 'https://feel-japan.vercel.app';
-                        link.innerText = 'feel-japan.vercel.app'; // Clean URL text
-                        link.style.cssText = `
-                            color: #B49543; /* Brushed Gold color */
-                            font-size: 14px;
-                            font-weight: 700;
-                            text-transform: uppercase;
-                            letter-spacing: 0.1em;
-                            text-decoration: none;
-                            font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-                        `;
-
-                        linkContainer.appendChild(ctaText);
-                        linkContainer.appendChild(link);
-                        nav.appendChild(linkContainer);
-                    }
-                });
-
-                // HIDE UI ELEMENTS
-                // Request Quote button, WhatsApp button, Agent toggles
-                await page.addStyleTag({
-                    content: `
-                    /* Hide Floating Elements (CTAs, Agent Tools) */
-                    a[href^="/inquire"],
-                    a[href*="wa.me"],
-                    button:has(svg.lucide-eye),
-                    button:has(svg.lucide-eye-off), 
-                    .fixed.bottom-8,
-                    .fixed.bottom-52,
-                    .fixed.z-50.bottom-8,
-                    .fixed.z-50.bottom-32,
-                    #whatsapp-button,
-
-                    /* Hide Navigation Tabs in Navbar (Centered Links) */
-                    nav .absolute.left-1\\/2,
-                    nav .hidden.md\\:flex.items-center.gap-8
-                    { display: none !important; }
-                    
-                    /* Ensure Header/Footer remain visible */
-                    nav, footer { display: flex !important; }
-                    /* But hide any 'Request Quote' in footer if exists */
-
-                    /* REDUCE HERO HEIGHT for PDF */
-                    /* Targeted selector for the Hero Header which has h-[60vh] by default */
-                    header.relative.h-\\[60vh\\] { 
-                        height: 400px !important; 
-                        min-height: 0 !important;
-                    }
-
-                    /* Hide Footer Links (Studio Portal, Privacy, Terms) */
-                    footer a[href="/manage-studio"],
-                    footer a[href="/privacy"],
-                    footer a[href="/terms"] {
-                        display: none !important;
-                    }
-                `
-                });
-
-                // Calculate exact content height by finding the bottom of the footer
-                height = await page.evaluate(() => {
-                    const footer = document.querySelector('footer');
-                    if (footer) {
-                        // Get exact bottom of footer
-                        return footer.getBoundingClientRect().bottom + 2;
-                    }
-                    return document.documentElement.scrollHeight;
-                });
-
-                // Generate "Continuous" PDF by setting custom page size
-                // Width: Standard A4 width approx 210mm ~ 800px or higher for resolution. 
-                // Let's use 1200px width for high quality, and full height.
-                // Note: 'format' option overrides width/height, so we omit it.
-                await page.pdf({
-                    path: outputPath,
-                    width: '1200px',
-                    height: `${height}px`,
-                    printBackground: true,
-                    margin: { top: '0px', right: '0px', bottom: '0px', left: '0px' },
-                    displayHeaderFooter: false
-                });
-                console.log(`Saved Continuous PDF.`);
-
-                await addWatermark(outputPath);
-                await uploadToSupabase(outputPath, filename);
-
-            } catch (err: any) {
-                if (err.code === 'EBUSY') {
-                    console.warn(`File ${filename} is locked (open in viewer?). Saving as ${filename.replace('.pdf', '-new.pdf')} instead.`);
-                    const newFilename = filename.replace('.pdf', '-new.pdf');
-                    const newOutputPath = path.join(OUTPUT_DIR, newFilename);
-
-                    await page.pdf({
-                        path: newOutputPath,
-                        width: '1200px',
-                        height: `${height}px`,
-                        printBackground: true,
-                        margin: { top: '0px', right: '0px', bottom: '0px', left: '0px' },
-                        displayHeaderFooter: false
-                    });
-                    console.log(`Saved Fallback PDF: ${newFilename}`);
-
-                    await addWatermark(newOutputPath);
-                    await uploadToSupabase(newOutputPath, newFilename);
-                } else {
-                    console.error(`Failed to capture ${slug}:`, err);
-                }
-            }
-        } else {
-            console.log(`Skipping ${filename} (exists). Uploading existing...`);
-            // If skipped capture, we might be uploading an old version. 
-            // With --force, we always recapture.
-            await uploadToSupabase(outputPath, filename);
+        const itineraries = JSON.parse(fs.readFileSync(ITINERARIES_PATH, 'utf-8'));
+        console.log(`Processing all ${itineraries.length} itineraries...`);
+        for (const slug of itineraries) {
+            await processSlug(page, slug);
         }
     }
 
