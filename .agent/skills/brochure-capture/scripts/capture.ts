@@ -122,13 +122,19 @@ async function ensureBucket() {
     const { data: buckets } = await supabase.storage.listBuckets();
     const bucketExists = buckets?.find(b => b.name === BUCKET_NAME);
 
+    const bucketOptions = {
+        public: true,
+        fileSizeLimit: 52428800,
+        allowedMimeTypes: ['application/pdf', 'image/png', 'image/jpeg']
+    };
+
     if (!bucketExists) {
         console.log(`Bucket '${BUCKET_NAME}' not found. Creating...`);
-        await supabase.storage.createBucket(BUCKET_NAME, {
-            public: true,
-            fileSizeLimit: 52428800,
-            allowedMimeTypes: ['application/pdf']
-        });
+        await supabase.storage.createBucket(BUCKET_NAME, bucketOptions);
+    } else {
+        // Update existing bucket to ensure mime types are allowed
+        console.log(`Updating bucket '${BUCKET_NAME}' configuration...`);
+        await supabase.storage.updateBucket(BUCKET_NAME, bucketOptions);
     }
 }
 
