@@ -10,7 +10,7 @@ import { createClient } from '@supabase/supabase-js';
 dotenv.config({ path: '.env.local' });
 
 // Configuration
-const BASE_URL = 'https://feel-japan.vercel.app';
+const BASE_URL = 'https://feeljapanwithk.com';
 const OUTPUT_ROOT = path.join(process.cwd(), 'dist', 'brochures');
 const CLIENT_DIR = OUTPUT_ROOT; // Standard brochures saved directly in dist/brochures/
 const AGENT_DIR = path.join(OUTPUT_ROOT, 'pricing'); // Pricing brochures saved in dist/brochures/pricing/
@@ -215,8 +215,8 @@ async function captureView(page: Page, url: string, outputPath: string) {
             ctaText.style.cssText = 'color: #0F172A; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.6; margin-bottom: 2px; font-family: ui-sans-serif, system-ui, sans-serif;';
 
             const link = document.createElement('a');
-            link.href = 'https://feel-japan.vercel.app';
-            link.innerText = 'feel-japan.vercel.app';
+            link.href = 'https://feeljapanwithk.com';
+            link.innerText = 'feeljapanwithk.com';
             link.style.cssText = 'color: #B49543; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none; font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;';
 
             linkContainer.appendChild(ctaText);
