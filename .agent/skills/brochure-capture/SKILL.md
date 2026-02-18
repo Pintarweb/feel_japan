@@ -22,6 +22,11 @@ description: Automatically visits Feel Japan itinerary URLs, captures them as co
    - **Supabase Bucket Path:** `brochure-pricing/`
    - **Naming:** `${category}_${slug}_pricing.pdf` (e.g., `git_tokyo-adventure_pricing.pdf`)
    - **Content:** Complete capture including Net Agent Rates and full pricing breakdowns.
+3. **Snippets (Thumbnails):**
+   - **Local Location:** `dist/brochures/thumbnails/`
+   - **Supabase Bucket Path:** `thumbnails/`
+   - **Naming:** `${category}_${slug}_thumb.png`
+   - **Content:** High-res snippet of the brochure's first page for the Partner Library.
 
 # Usage
 Run the skill using:

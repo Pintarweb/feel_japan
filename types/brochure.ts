@@ -51,6 +51,7 @@ export interface Brochure {
     created_at: string;
     updated_at?: string;
     pdf_last_generated_at?: string;
+    thumbnail_url?: string;
     is_archived?: boolean;
     campaign_start?: string;
     campaign_end?: string;

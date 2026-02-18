@@ -16,6 +16,7 @@ const CLIENT_DIR = OUTPUT_ROOT; // Standard brochures saved directly in dist/bro
 const AGENT_DIR = path.join(OUTPUT_ROOT, 'pricing'); // Pricing brochures saved in dist/brochures/pricing/
 const ITINERARIES_PATH = path.join(process.cwd(), 'itineraries.json');
 const LOGO_PATH = path.join(process.cwd(), 'public', 'logo_transparent.png');
+const THUMBNAIL_DIR = path.join(OUTPUT_ROOT, 'thumbnails');
 const BUCKET_NAME = 'brochures';
 
 // CLI Arguments
@@ -101,16 +102,19 @@ async function uploadToSupabase(filePath: string, storagePath: string) {
     }
 }
 
-async function updateDbTimestamp(slug: string) {
+async function updateDbMetadata(slug: string, thumbnailUrl?: string) {
+    const updateData: any = { pdf_last_generated_at: new Date().toISOString() };
+    if (thumbnailUrl) updateData.thumbnail_url = thumbnailUrl;
+
     const { error: dbError } = await supabase
         .from('brochures')
-        .update({ pdf_last_generated_at: new Date().toISOString() })
+        .update(updateData)
         .eq('slug', slug);
 
     if (dbError) {
-        console.warn(`Could not update PDF timestamp for slug ${slug}:`, dbError.message);
+        console.warn(`Could not update DB metadata for slug ${slug}:`, dbError.message);
     } else {
-        console.log(`Updated PDF timestamp for ${slug} in database.`);
+        console.log(`Updated DB metadata for ${slug} (Timestamp + Thumbnail).`);
     }
 }
 
@@ -254,6 +258,35 @@ async function captureView(page: Page, url: string, outputPath: string) {
     await addWatermark(outputPath);
 }
 
+async function captureThumbnail(page: Page, url: string, outputPath: string, storagePath: string): Promise<string | null> {
+    console.log(`--- Creating Thumbnail: ${url} ---`);
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 });
+    await page.waitForTimeout(2000);
+
+    // Capture the top "hero" section (around 800px height)
+    await page.setViewportSize({ width: 1200, height: 1600 });
+    await page.screenshot({
+        path: outputPath,
+        clip: { x: 0, y: 0, width: 1200, height: 1600 }
+    });
+
+    const fileBuffer = fs.readFileSync(outputPath);
+    const { error } = await supabase.storage
+        .from(BUCKET_NAME)
+        .upload(storagePath, fileBuffer, {
+            contentType: 'image/png',
+            upsert: true
+        });
+
+    if (error) {
+        console.error(`Thumbnail Upload Error:`, error.message);
+        return null;
+    }
+
+    const { data: { publicUrl } } = supabase.storage.from(BUCKET_NAME).getPublicUrl(storagePath);
+    return publicUrl;
+}
+
 async function processSlug(page: Page, rawSlug: string) {
     let slug = rawSlug.replace(/^\/brochures\//, '').replace(/^\//, '');
 
@@ -294,14 +327,21 @@ async function processSlug(page: Page, rawSlug: string) {
     await captureView(page, agentUrl, agentLocalPath);
     await uploadToSupabase(agentLocalPath, agentStoragePath);
 
-    // Update DB timestamp after both are done
-    await updateDbTimestamp(slug);
+    // 3. Thumbnail (Snippet)
+    const thumbFilename = `${category}_${baseName}_thumb.png`;
+    const thumbLocalPath = path.join(THUMBNAIL_DIR, thumbFilename);
+    const thumbStoragePath = `thumbnails/${thumbFilename}`;
+    const thumbnailUrl = await captureThumbnail(page, clientUrl, thumbLocalPath, thumbStoragePath);
+
+    // Update DB metadata after everything is done
+    await updateDbMetadata(slug, thumbnailUrl || undefined);
 }
 
 async function main() {
     console.log(`Ensuring folder structure: ${OUTPUT_ROOT}`);
     if (!fs.existsSync(OUTPUT_ROOT)) fs.mkdirSync(OUTPUT_ROOT, { recursive: true });
     if (!fs.existsSync(AGENT_DIR)) fs.mkdirSync(AGENT_DIR, { recursive: true });
+    if (!fs.existsSync(THUMBNAIL_DIR)) fs.mkdirSync(THUMBNAIL_DIR, { recursive: true });
 
     await ensureBucket();
 

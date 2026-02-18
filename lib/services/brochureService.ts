@@ -36,7 +36,8 @@ export const getBrochures = async (): Promise<Brochure[]> => {
         campaign_start: item.campaign_start,
         campaign_end: item.campaign_end,
         show_pricing: item.show_pricing,
-        pdf_last_generated_at: item.pdf_last_generated_at
+        pdf_last_generated_at: item.pdf_last_generated_at,
+        thumbnail_url: item.thumbnail_url
     }));
 };
 
@@ -75,6 +76,7 @@ export const getBrochureBySlug = async (slug: string): Promise<Brochure | null> 
         campaign_start: data.campaign_start,
         campaign_end: data.campaign_end,
         show_pricing: data.show_pricing,
-        pdf_last_generated_at: data.pdf_last_generated_at
+        pdf_last_generated_at: data.pdf_last_generated_at,
+        thumbnail_url: data.thumbnail_url
     };
 };

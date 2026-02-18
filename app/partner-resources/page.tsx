@@ -57,12 +57,12 @@ export default async function PartnerResourcesPage() {
                         return (
                             <article key={brochure.id} className="bg-white rounded-sm shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col group border border-midnight-navy/5">
                                 {/* Thumbnail */}
-                                <div className="relative aspect-[3/4] overflow-hidden">
+                                <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
                                     <Image
-                                        src={brochure.image}
+                                        src={brochure.thumbnail_url || brochure.image}
                                         alt={brochure.title}
                                         fill
-                                        className="object-cover transition-transform duration-[2s] group-hover:scale-110"
+                                        className="object-cover object-top transition-transform duration-[2s] group-hover:scale-105"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
