@@ -243,6 +243,7 @@ async function captureView(page: Page, url: string, outputPath: string) {
             nav .absolute.left-1\\/2, nav .hidden.md\\:flex.items-center.gap-8 { display: none !important; }
             nav, footer { display: flex !important; }
             header.relative.h-\\[60vh\\] { height: 400px !important; min-height: 0 !important; }
+            header div.bg-black\\/70 { opacity: 0.2 !important; }
             footer a[href="/manage-studio"], footer a[href="/privacy"], footer a[href="/terms"] { display: none !important; }
         `
     });

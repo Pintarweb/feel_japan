@@ -22,8 +22,8 @@ export default async function PartnerResourcesPage() {
             <Navbar />
 
             {/* Hero Section - Pure Professionalism */}
-            <section className="relative pt-32 pb-20 bg-midnight-navy overflow-hidden">
-                <div className="absolute inset-0 opacity-10">
+            <section className="relative pt-32 pb-24 bg-white border-b border-midnight-navy/5 overflow-hidden">
+                <div className="absolute inset-0 opacity-[0.03]">
                     <Image
                         src="/b2b_collection_banner.png"
                         alt="Background Pattern"
@@ -32,16 +32,16 @@ export default async function PartnerResourcesPage() {
                     />
                 </div>
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brushed-gold/10 border border-brushed-gold/20 mb-6 group cursor-default">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brushed-gold/5 border border-brushed-gold/10 mb-6 group cursor-default">
                         <ShieldCheck className="w-4 h-4 text-brushed-gold" />
                         <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-brushed-gold">
                             Authorized Partner Resource Center
                         </span>
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-serif text-white mb-6">
+                    <h1 className="text-4xl md:text-6xl font-serif text-midnight-navy mb-6">
                         Digital Brochure Library
                     </h1>
-                    <p className="text-white/70 max-w-2xl mx-auto font-light leading-relaxed">
+                    <p className="text-midnight-navy/60 max-w-2xl mx-auto font-light leading-relaxed">
                         Access our complete 2026 collection of curated itineraries. Designed specifically for travel agents to download, customize, and share with your discerning clients.
                     </p>
                 </div>
@@ -64,7 +64,7 @@ export default async function PartnerResourcesPage() {
                                         fill
                                         className="object-cover object-top transition-transform duration-[2s] group-hover:scale-105"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
                                     {/* Category Badge */}
                                     <div className="absolute top-4 left-4">
