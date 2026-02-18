@@ -16,9 +16,9 @@ export const metadata: Metadata = {
   title: "Feel Japan with K | Exclusive B2B Travel",
   description: "Curated luxury travel experiences for discerning agents.",
   icons: {
-    icon: "/favicon.ico?v=1",
-    shortcut: "/favicon.ico?v=1",
-    apple: "/favicon.ico?v=1",
+    icon: "/logo_transparent.png?v=2",
+    shortcut: "/logo_transparent.png?v=2",
+    apple: "/logo_transparent.png?v=2",
   },
 };
 
