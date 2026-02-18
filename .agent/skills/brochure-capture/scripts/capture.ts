@@ -241,16 +241,14 @@ async function captureView(page: Page, url: string, outputPath: string) {
             a[href^="/inquire"], a[href*="wa.me"], button:has(svg.lucide-eye), button:has(svg.lucide-eye-off), 
             .fixed.bottom-8, .fixed.bottom-52, .fixed.z-50.bottom-8, .fixed.z-50.bottom-32, #whatsapp-button,
             nav .absolute.left-1\\/2, nav .hidden.md\\:flex.items-center.gap-8 { display: none !important; }
-            nav, footer { display: flex !important; }
+            nav, footer { display: none !important; }
             header.relative.h-\\[60vh\\] { height: 400px !important; min-height: 0 !important; }
-            header div.bg-black\\/70 { opacity: 0.2 !important; }
-            footer a[href="/manage-studio"], footer a[href="/privacy"], footer a[href="/terms"] { display: none !important; }
+            header div.bg-black\\/70 { opacity: 0.2 !important; background-color: rgba(0,0,0,0.2) !important; }
         `
     });
 
     const height = await page.evaluate(() => {
-        const footer = document.querySelector('footer');
-        return footer ? footer.getBoundingClientRect().bottom + 2 : document.documentElement.scrollHeight;
+        return document.documentElement.scrollHeight;
     });
 
     await page.pdf({
@@ -270,11 +268,21 @@ async function captureThumbnail(page: Page, url: string, outputPath: string, sto
     await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 });
     await page.waitForTimeout(2000);
 
-    // Capture the top "hero" section (around 800px height)
+    // Apply exact same PDF cleanup for the thumbnail
+    await page.addStyleTag({
+        content: `
+            nav, footer, .fixed, #whatsapp-button, a[href^="/inquire"], button { display: none !important; }
+            header.relative.h-\\[60vh\\] { height: 450px !important; min-height: 0 !important; }
+            header div.bg-black\\/70 { opacity: 0.2 !important; background-color: rgba(0,0,0,0.2) !important; }
+            body { background: white !important; }
+        `
+    });
+
+    // Capture the top "hero" section
     await page.setViewportSize({ width: 1200, height: 1600 });
     await page.screenshot({
         path: outputPath,
-        clip: { x: 0, y: 0, width: 1200, height: 1600 }
+        clip: { x: 0, y: 0, width: 1200, height: 1200 }
     });
 
     const fileBuffer = fs.readFileSync(outputPath);

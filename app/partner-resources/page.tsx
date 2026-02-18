@@ -23,7 +23,7 @@ export default async function PartnerResourcesPage() {
 
             {/* Hero Section - Pure Professionalism */}
             <section className="relative pt-32 pb-24 bg-white border-b border-midnight-navy/5 overflow-hidden">
-                <div className="absolute inset-0 opacity-[0.03]">
+                <div className="absolute inset-0 opacity-[0.15]">
                     <Image
                         src="/b2b_collection_banner.png"
                         alt="Background Pattern"
