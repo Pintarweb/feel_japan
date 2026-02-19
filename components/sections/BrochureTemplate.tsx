@@ -277,16 +277,21 @@ export default function BrochureTemplate({ brochure, isAgent = false, agentProfi
                 )}
             </div>
 
-            {/* Floating Inquiry CTA */}
-            <a
-                href={`/inquire?package=${encodeURIComponent(brochure.slug)}`}
-                data-umami-event="request-quote-click"
-                data-umami-event-package={brochure.slug}
-                className="fixed bottom-24 right-4 md:bottom-12 md:right-28 z-40 inline-flex items-center gap-2 md:gap-3 bg-brushed-gold text-white px-5 py-3 md:px-8 md:py-4 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:bg-white hover:text-midnight-navy transition-colors shadow-2xl hover:shadow-brushed-gold/20 transform hover:-translate-y-1 border-2 border-white/10"
-            >
-                <MapPin className="w-3 h-3 md:w-4 md:h-4" />
-                <span>Request Quote</span>
-            </a>
+            {/* Final Inquiry CTA - Relocated above footer for better flow */}
+            <div className="max-w-4xl mx-auto px-6 pb-24 text-center">
+                <a
+                    href={`/inquire?package=${encodeURIComponent(brochure.slug)}`}
+                    data-umami-event="request-quote-click"
+                    data-umami-event-package={brochure.slug}
+                    className="inline-flex items-center gap-3 bg-brushed-gold text-white px-12 py-5 rounded-full text-sm font-bold uppercase tracking-[0.2em] hover:bg-midnight-navy transition-all duration-500 shadow-2xl hover:shadow-brushed-gold/20 transform hover:-translate-y-1 border-2 border-white/10 group"
+                >
+                    <MapPin className="w-4 h-4 group-hover:animate-bounce" />
+                    <span>Request Quotation</span>
+                </a>
+                <p className="mt-6 text-[10px] text-midnight-navy/40 uppercase tracking-[0.3em] font-bold">
+                    Curate your bespoke Japanese experience
+                </p>
+            </div>
 
             {/* Floating Agent Toggle - Persistent presence if admin hasn't revealed */}
             {isAdmin && !showNetRates && (
