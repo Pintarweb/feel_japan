@@ -164,30 +164,36 @@ export default function AboutPage() {
             {/* Meet the Team */}
             <section className="py-24 md:py-32 bg-[#F8F8F8]">
                 <div className="max-w-7xl mx-auto px-6">
-                    <div className="grid lg:grid-cols-2 gap-16 items-center">
-                        <div className="relative aspect-[4/5] bg-gray-200 overflow-hidden rounded-sm group shadow-2xl">
-                            {/* Placeholder for "The Handshake" Photo */}
-                            <div className="absolute inset-0 flex items-center justify-center text-midnight-navy/20 font-serif italic text-xl group-hover:scale-110 transition-transform duration-[3s]">
-                                [ Photo: The Handshake - Mr. Rosli Seth ]
-                            </div>
-                            <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/40 to-transparent"></div>
-                            <div className="absolute bottom-10 left-10 text-white">
-                                <p className="text-2xl font-serif">Mr. Rosli Seth</p>
-                                <p className="text-xs uppercase tracking-[0.3em] font-bold text-brushed-gold">Official Lead Representative for Feel Japan with K</p>
+                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                        <div className="flex justify-center lg:justify-start">
+                            <div className="relative w-full max-w-[300px] aspect-[4/5] bg-white overflow-hidden rounded-sm shadow-xl border border-midnight-navy/5">
+                                <Image
+                                    src="/rosli.png"
+                                    alt="Mr. Rosli Seth - Official Lead Representative"
+                                    fill
+                                    className="object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/70 via-transparent to-transparent"></div>
+                                <div className="absolute bottom-6 left-0 right-0 px-6 text-center text-white z-10">
+                                    <p className="text-lg font-serif">Mr. Rosli Seth</p>
+                                    <p className="text-[8px] uppercase tracking-[0.3em] font-bold text-brushed-gold mt-1">
+                                        Official Lead Representative
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="space-y-10">
-                            <h2 className="text-10px font-bold uppercase tracking-[0.4em] text-brushed-gold leading-relaxed">Meet the Leadership</h2>
-                            <blockquote className="space-y-6">
-                                <p className="text-3xl md:text-4xl font-serif text-midnight-navy italic leading-snug">
-                                    \"Our goal is to be more than a supplier; we want to be your most trusted consultant in Japan. When you work with us, you aren't just booking a tour—you’re gaining a partner dedicated to your agency&apos;s growth.\"
+                        <div className="space-y-8">
+                            <h2 className="text-[9px] font-bold uppercase tracking-[0.4em] text-brushed-gold leading-relaxed">Meet the Leadership</h2>
+                            <blockquote className="space-y-5">
+                                <p className="text-xl md:text-2xl font-serif text-midnight-navy italic leading-snug">
+                                    "Our goal is to be more than a supplier; we want to be your most trusted consultant in Japan. When you work with us, you aren't just booking a tour—you&apos;re gaining a partner dedicated to your agency&apos;s growth."
                                 </p>
-                                <footer className="pt-6 border-t border-midnight-navy/10 flex items-center gap-4">
-                                    <div className="w-10 h-[1px] bg-brushed-gold"></div>
+                                <footer className="pt-4 border-t border-midnight-navy/10 flex items-center gap-4">
+                                    <div className="w-8 h-[1px] bg-brushed-gold"></div>
                                     <cite className="not-italic">
-                                        <span className="block text-lg font-serif text-midnight-navy">Rosli Seth</span>
-                                        <span className="block text-xs uppercase tracking-widest text-midnight-navy/50 font-light mt-1 text-justify md:text-left">A veteran of 25 years in Japan tourism</span>
+                                        <span className="block text-base font-serif text-midnight-navy">Rosli Seth</span>
+                                        <span className="block text-[10px] uppercase tracking-widest text-midnight-navy/50 font-light mt-1">A veteran of 25 years in Japan tourism</span>
                                     </cite>
                                 </footer>
                             </blockquote>

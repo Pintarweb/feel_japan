@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Phone, Mail } from 'lucide-react';
 
 export default function Footer() {
     return (
@@ -38,10 +39,24 @@ export default function Footer() {
 
                     {/* Contact */}
                     <div>
-                        <p className="text-[10px] font-bold text-brushed-gold uppercase tracking-[0.2em] mb-1">Contact Specialist</p>
-                        <div className="flex flex-col items-start gap-0.5">
-                            <span className="font-serif text-base tracking-wide text-white">013-702 3981</span>
-                            <span className="font-serif text-base tracking-wide text-white">019-655 6243</span>
+                        <p className="text-[10px] font-bold text-brushed-gold uppercase tracking-[0.2em] mb-4">Contact Specialist</p>
+                        <div className="flex flex-col items-start gap-4">
+                            <div className="flex flex-col gap-3">
+                                <a href="tel:+60137023981" className="flex items-center gap-3 group/item">
+                                    <Phone className="w-3.5 h-3.5 text-brushed-gold shrink-0 transition-transform group-hover/item:scale-110" />
+                                    <span className="font-serif text-sm tracking-wide text-white group-hover/item:text-brushed-gold transition-colors">013-702 3981</span>
+                                </a>
+                                <a href="tel:+60196556243" className="flex items-center gap-3 group/item">
+                                    <Phone className="w-3.5 h-3.5 text-brushed-gold shrink-0 transition-transform group-hover/item:scale-110" />
+                                    <span className="font-serif text-sm tracking-wide text-white group-hover/item:text-brushed-gold transition-colors">019-655 6243</span>
+                                </a>
+                            </div>
+                            <div className="flex items-center gap-3 border-t border-white/5 pt-4 group/item">
+                                <Mail className="w-3.5 h-3.5 text-brushed-gold shrink-0 transition-transform group-hover/item:scale-110" />
+                                <a href="mailto:info@feeljapanwithk.com" className="text-[11px] text-white/70 hover:text-white transition-colors lowercase tracking-wider">
+                                    info@feeljapanwithk.com
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
