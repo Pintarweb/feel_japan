@@ -142,6 +142,11 @@ async function ensureBucket() {
  * Intelligent Stale File Cleanup:
  * Only deletes files that do NOT have a corresponding record in the database.
  * This prevents accidental deletion of sibling brochures sharing the same slug but different categories (e.g., FIT vs GIT).
+ * 
+ * 2. **Hide Interactions:** Completely hide the "Request Quote" buttons, WhatsApp floating bubbles, and Agent Rate toggle buttons.
+ * 3. **Hero Vibrancy:** Avoid heavy black tints. Use a translucent gradient (max 30% intensity at edges) and apply a `brightness(1.1)` filter to hero images to make them "exciting" and attractive.
+ * 4. **Readability:** Maintain high-contrast text shadows on all white typography over hero images to ensure readability without sacrificing image brightness.
+ * 5. **Thumbnail Clipping:** Thumbnails should be captured at 1200x1200px to focus on the brand identity and title without showing the itinerary body.
  */
 async function performIntelligentCleanup(slug: string) {
     console.log(`--- Performing Intelligent Cleanup for slug: ${slug} ---`);
@@ -235,15 +240,30 @@ async function captureView(page: Page, url: string, outputPath: string) {
         }
     });
 
-    // HIDE UI ELEMENTS
+    // HIDE INTERACTIVE UI BUT KEEP BRANDING (HEADER/FOOTER)
     await page.addStyleTag({
         content: `
+            /* Hide Call-to-Actions and Floating Buttons */
             a[href^="/inquire"], a[href*="wa.me"], button:has(svg.lucide-eye), button:has(svg.lucide-eye-off), 
             .fixed.bottom-8, .fixed.bottom-52, .fixed.z-50.bottom-8, .fixed.z-50.bottom-32, #whatsapp-button,
-            nav .absolute.left-1\\/2, nav .hidden.md\\:flex.items-center.gap-8 { display: none !important; }
-            nav, footer { display: none !important; }
+            [data-umami-event="request-quote-click"] { display: none !important; }
+
+            /* Header: Keep Logo, Hide Nav Tabs */
+            nav { display: flex !important; }
+            nav .absolute.left-1\\/2, nav .hidden.md\\:flex.items-center.gap-8, nav a[href="/login"] { display: none !important; }
+
+            /* Footer: Keep Branding, Hide Policy/Portal Links */
+            footer { display: block !important; }
+            footer .flex.gap-6, footer a[href="/manage-studio"], footer a[href="/privacy"], footer a[href="/terms"], footer a[href="/partner-resources"] { display: none !important; }
+
+            /* Hero: Exciting & Vibrant (Remove heavy dark tint) */
             header.relative.h-\\[60vh\\] { height: 400px !important; min-height: 0 !important; }
-            header div.bg-black\\/70 { opacity: 0.2 !important; background-color: rgba(0,0,0,0.2) !important; }
+            header img { filter: brightness(1.1) !important; }
+            header div.bg-black\\/70, header div.bg-gradient-to-b { 
+                background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.3) 100%) !important; 
+                opacity: 1 !important;
+            }
+            header h2, header p, header span { text-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; opacity: 1 !important; }
         `
     });
 
@@ -268,12 +288,22 @@ async function captureThumbnail(page: Page, url: string, outputPath: string, sto
     await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 });
     await page.waitForTimeout(2000);
 
-    // Apply exact same PDF cleanup for the thumbnail
+    // Apply exact same brand-clean cleanup for the thumbnail
     await page.addStyleTag({
         content: `
-            nav, footer, .fixed, #whatsapp-button, a[href^="/inquire"], button { display: none !important; }
+            /* Hide all interactive/floating elements */
+            nav .absolute.left-1\\/2, nav .hidden.md\\:flex.items-center.gap-8, nav a[href="/login"] { display: none !important; }
+            footer .flex.gap-6, footer a[href="/manage-studio"], footer a[href="/privacy"], footer a[href="/terms"], footer a[href="/partner-resources"] { display: none !important; }
+            .fixed, #whatsapp-button, a[href^="/inquire"], button { display: none !important; }
+
+            /* Layout Fixes & Vibrance */
             header.relative.h-\\[60vh\\] { height: 450px !important; min-height: 0 !important; }
-            header div.bg-black\\/70 { opacity: 0.2 !important; background-color: rgba(0,0,0,0.2) !important; }
+            header img { filter: brightness(1.1) !important; }
+            header div.bg-black\\/70, header div.bg-gradient-to-b { 
+                background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.3) 100%) !important; 
+                opacity: 1 !important;
+            }
+            header h2, header p, header span { text-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; opacity: 1 !important; }
             body { background: white !important; }
         `
     });

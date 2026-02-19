@@ -38,7 +38,16 @@ To force re-capture existing PDFs:
 npx tsx .agent/skills/brochure-capture/scripts/capture.ts --force
 ```
 
+# Brand-Clean UI Rules (Mandatory)
+To maintain a high-end professional appearance, the following UI elements MUST be hidden or modified via CSS injection during capture:
+1. **Branding Only:** Keep the Header (Logo) and Footer (Company Info), but hide all navigation tabs, login buttons, and site-map links (Manage Studio, Privacy, Terms).
+2. **Hide Interactions:** Completely hide the "Request Quote" buttons, WhatsApp floating bubbles, and Agent Rate toggle buttons.
+3. **Hero Vibrancy:** Avoid heavy black tints. Use a translucent gradient (max 30% intensity at edges) and apply a `brightness(1.1)` filter to hero images to make them "exciting" and attractive.
+4. **Readability:** Maintain high-contrast text shadows on all white typography over hero images to ensure readability without sacrificing image brightness.
+5. **Thumbnail Clipping:** Thumbnails should be captured at 1200x1200px to focus on the brand identity and title without showing the itinerary body.
+
 # Constraints
 - Do not re-capture if a PDF already exists locally unless the `--force` flag is used.
 - Ensure the PDF filename matches the `${category}_${slug}` pattern.
 - Ensure the Supabase Storage bucket `brochures` exists and uses the specified folder paths.
+- **Strict Adherence:** All generated PDFs and Thumbnails must follow the Brand-Clean and Vibrancy rules above.

@@ -62,17 +62,17 @@ export default function BrochureTemplate({ brochure, isAgent = false, agentProfi
                     <img
                         src={brochure.image}
                         alt={brochure.title}
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-cover brightness-[1.1]"
                     />
-                    <div className="absolute inset-0 bg-black/70"></div>
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/40"></div>
                 </div>
 
                 <div className="relative z-10 animate-fade-in-up">
-                    <span className="block text-brushed-gold text-sm font-bold tracking-[0.3em] uppercase mb-4">
+                    <span className="block text-brushed-gold text-sm font-bold tracking-[0.3em] uppercase mb-4 drop-shadow-md">
                         {subtitle.includes('Summer') ? 'Summer 2026' : (subtitle.split('•').pop()?.trim() || "Season")}
                     </span>
-                    <h2 className="text-2xl md:text-4xl font-bold mb-8 tracking-[0.2em] hero-text-shadow uppercase opacity-95">{brochure.title}</h2>
-                    <p className="text-xl md:text-2xl font-light mb-8 opacity-90 hero-text-shadow tracking-widest">
+                    <h2 className="text-2xl md:text-4xl font-bold mb-8 tracking-[0.2em] uppercase text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] opacity-100">{brochure.title}</h2>
+                    <p className="text-xl md:text-2xl font-light mb-8 opacity-100 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-widest">
                         {subtitle.includes('•')
                             ? subtitle.split('•').slice(0, -1).join(' • ').trim()
                             : subtitle}
