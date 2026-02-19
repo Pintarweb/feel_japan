@@ -22,13 +22,13 @@ export default async function PartnerResourcesPage() {
             <Navbar />
 
             {/* Hero Section - Pure Professionalism */}
-            <section className="relative pt-32 pb-24 bg-white border-b border-midnight-navy/5 overflow-hidden">
-                <div className="absolute inset-0 opacity-[0.15]">
+            <section className="relative pt-32 pb-24 bg-[#FAFAFA] border-b border-midnight-navy/5 overflow-hidden">
+                <div className="absolute inset-0 opacity-[0.2]">
                     <Image
                         src="/b2b_collection_banner.png"
                         alt="Background Pattern"
                         fill
-                        className="object-cover"
+                        className="object-cover brightness-[0.85]"
                     />
                 </div>
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
@@ -47,96 +47,118 @@ export default async function PartnerResourcesPage() {
                 </div>
             </section>
 
-            {/* Library Grid */}
+            {/* Library Grid - Organized by Category */}
             <section className="py-24 max-w-7xl mx-auto px-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                    {brochures.map((brochure) => {
-                        const pdfUrl = `${SUPABASE_STORAGE_URL}/brochure/${brochure.category.toLowerCase()}_${brochure.slug}.pdf`;
-                        const pricingPdfUrl = `${SUPABASE_STORAGE_URL}/brochure-pricing/${brochure.category.toLowerCase()}_${brochure.slug}_pricing.pdf`;
+                {['GIT', 'FIT', 'Seasonal'].map((cat) => {
+                    const categorizedBrochures = brochures.filter(b => b.category.toUpperCase() === cat.toUpperCase());
+                    if (categorizedBrochures.length === 0) return null;
 
-                        return (
-                            <article key={brochure.id} className="bg-white rounded-sm shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col group border border-midnight-navy/5">
-                                {/* Thumbnail */}
-                                <div className="relative aspect-[3/4] overflow-hidden bg-white font-serif">
-                                    <Image
-                                        src={brochure.thumbnail_url || brochure.image}
-                                        alt={brochure.title}
-                                        fill
-                                        className="object-cover object-top transition-transform duration-[2s] group-hover:scale-105 brightness-[1.05]"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    return (
+                        <div key={cat} className="mb-24 last:mb-0">
+                            {/* Category Header */}
+                            <div className="flex items-center gap-4 mb-12">
+                                <h2 className="text-2xl font-serif text-midnight-navy flex items-center gap-3">
+                                    <span className="w-12 h-[1px] bg-brushed-gold/30"></span>
+                                    {cat === 'GIT' ? 'Group Inclusive Tours (GIT)' :
+                                        cat === 'FIT' ? 'Free Independent Travels (FIT)' :
+                                            'Limited Seasonal Explorations'}
+                                </h2>
+                                <span className="bg-midnight-navy/5 text-midnight-navy/40 text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
+                                    {categorizedBrochures.length} Itineraries
+                                </span>
+                            </div>
 
-                                    {/* Category Badge */}
-                                    <div className="absolute top-4 left-4">
-                                        <span className="px-3 py-1.5 bg-midnight-navy/90 backdrop-blur-md text-brushed-gold text-[9px] font-bold uppercase tracking-widest rounded-sm">
-                                            {brochure.category}
-                                        </span>
-                                    </div>
-                                </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                                {categorizedBrochures.map((brochure) => {
+                                    const pdfUrl = `${SUPABASE_STORAGE_URL}/brochure/${brochure.category.toLowerCase()}_${brochure.slug}.pdf`;
+                                    const pricingPdfUrl = `${SUPABASE_STORAGE_URL}/brochure-pricing/${brochure.category.toLowerCase()}_${brochure.slug}_pricing.pdf`;
 
-                                {/* Info */}
-                                <div className="p-8 flex flex-col flex-grow">
-                                    <div className="flex items-center gap-2 text-midnight-navy/50 text-[10px] uppercase tracking-widest mb-3">
-                                        <MapPin className="w-3 h-3 text-brushed-gold" />
-                                        {Array.isArray(brochure.city) ? brochure.city.join(', ') : brochure.city}
-                                    </div>
-                                    <h3 className="text-2xl font-serif text-midnight-navy mb-4 group-hover:text-brushed-gold transition-colors leading-snug">
-                                        {brochure.title}
-                                    </h3>
-                                    <p className="text-sm text-midnight-navy/60 font-light mb-8 line-clamp-3 leading-relaxed">
-                                        {brochure.summary || brochure.subtitle}
-                                    </p>
+                                    return (
+                                        <article key={brochure.id} className="bg-white rounded-sm shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col group border border-midnight-navy/5">
+                                            {/* Thumbnail */}
+                                            <div className="relative aspect-[3/4] overflow-hidden bg-white font-serif">
+                                                <Image
+                                                    src={brochure.thumbnail_url || brochure.image}
+                                                    alt={brochure.title}
+                                                    fill
+                                                    className="object-cover object-top transition-transform duration-[2s] group-hover:scale-105 brightness-[1.05]"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                                    {/* Actions */}
-                                    <div className="mt-auto space-y-3">
-                                        {brochure.pdf_last_generated_at ? (
-                                            <a
-                                                href={pdfUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="w-full flex items-center justify-center gap-2 py-4 bg-midnight-navy text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-sm hover:bg-brushed-gold transition-all duration-300 shadow-md group-hover:shadow-lg"
-                                            >
-                                                <Download className="w-3.5 h-3.5" />
-                                                Download Client PDF
-                                            </a>
-                                        ) : (
-                                            <div className="w-full py-4 bg-gray-100 text-midnight-navy/30 text-[9px] font-bold uppercase tracking-[0.2em] rounded-sm flex items-center justify-center gap-2 cursor-not-allowed">
-                                                <ShieldCheck className="w-3.5 h-3.5" />
-                                                Preparing Digital PDF
-                                            </div>
-                                        )}
-
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <Link
-                                                href={`/brochures/${brochure.slug}`}
-                                                className="flex items-center justify-center gap-1.5 py-3 border border-midnight-navy/10 text-midnight-navy text-[9px] font-bold uppercase tracking-widest rounded-sm hover:bg-gray-50 transition-colors"
-                                            >
-                                                <Globe className="w-3 h-3" />
-                                                Online View
-                                            </Link>
-                                            {brochure.pdf_last_generated_at ? (
-                                                <a
-                                                    href={pricingPdfUrl}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="flex items-center justify-center gap-1.5 py-3 border border-brushed-gold/30 text-brushed-gold text-[9px] font-bold uppercase tracking-widest rounded-sm hover:bg-brushed-gold/5 transition-colors"
-                                                >
-                                                    <FileText className="w-3 h-3" />
-                                                    Agent Rates
-                                                </a>
-                                            ) : (
-                                                <div className="flex items-center justify-center gap-1.5 py-3 border border-gray-200 text-gray-400 text-[9px] font-bold uppercase tracking-widest rounded-sm cursor-not-allowed">
-                                                    <FileText className="w-3 h-3" />
-                                                    Pending
+                                                {/* Category Badge */}
+                                                <div className="absolute top-4 left-4">
+                                                    <span className="px-3 py-1.5 bg-midnight-navy/90 backdrop-blur-md text-brushed-gold text-[9px] font-bold uppercase tracking-widest rounded-sm">
+                                                        {brochure.category}
+                                                    </span>
                                                 </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-                        );
-                    })}
-                </div>
+                                            </div>
+
+                                            {/* Info */}
+                                            <div className="p-8 flex flex-col flex-grow">
+                                                <div className="flex items-center gap-2 text-midnight-navy/50 text-[10px] uppercase tracking-widest mb-3">
+                                                    <MapPin className="w-3 h-3 text-brushed-gold" />
+                                                    {Array.isArray(brochure.city) ? brochure.city.join(', ') : brochure.city}
+                                                </div>
+                                                <h3 className="text-2xl font-serif text-midnight-navy mb-4 group-hover:text-brushed-gold transition-colors leading-snug">
+                                                    {brochure.title}
+                                                </h3>
+                                                <p className="text-sm text-midnight-navy/60 font-light mb-8 line-clamp-3 leading-relaxed">
+                                                    {brochure.summary || brochure.subtitle}
+                                                </p>
+
+                                                {/* Actions */}
+                                                <div className="mt-auto space-y-3">
+                                                    {brochure.pdf_last_generated_at ? (
+                                                        <a
+                                                            href={pdfUrl}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="w-full flex items-center justify-center gap-2 py-4 bg-midnight-navy text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-sm hover:bg-brushed-gold transition-all duration-300 shadow-md group-hover:shadow-lg"
+                                                        >
+                                                            <Download className="w-3.5 h-3.5" />
+                                                            Download Client PDF
+                                                        </a>
+                                                    ) : (
+                                                        <div className="w-full py-4 bg-gray-100 text-midnight-navy/30 text-[9px] font-bold uppercase tracking-[0.2em] rounded-sm flex items-center justify-center gap-2 cursor-not-allowed">
+                                                            <ShieldCheck className="w-3.5 h-3.5" />
+                                                            Preparing Digital PDF
+                                                        </div>
+                                                    )}
+
+                                                    <div className="grid grid-cols-2 gap-3">
+                                                        <Link
+                                                            href={`/brochures/${brochure.slug}`}
+                                                            className="flex items-center justify-center gap-1.5 py-3 border border-midnight-navy/10 text-midnight-navy text-[9px] font-bold uppercase tracking-widest rounded-sm hover:bg-gray-50 transition-colors"
+                                                        >
+                                                            <Globe className="w-3 h-3" />
+                                                            Online View
+                                                        </Link>
+                                                        {brochure.pdf_last_generated_at ? (
+                                                            <a
+                                                                href={pricingPdfUrl}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="flex items-center justify-center gap-1.5 py-3 border border-brushed-gold/30 text-brushed-gold text-[9px] font-bold uppercase tracking-widest rounded-sm hover:bg-brushed-gold/5 transition-colors"
+                                                            >
+                                                                <FileText className="w-3 h-3" />
+                                                                Agent Rates
+                                                            </a>
+                                                        ) : (
+                                                            <div className="flex items-center justify-center gap-1.5 py-3 border border-gray-200 text-gray-400 text-[9px] font-bold uppercase tracking-widest rounded-sm cursor-not-allowed">
+                                                                <FileText className="w-3 h-3" />
+                                                                Pending
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    );
+                })}
             </section>
 
             {/* Newsletter / Contact Section for Partners */}
