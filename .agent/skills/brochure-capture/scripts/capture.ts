@@ -60,11 +60,12 @@ async function addWatermark(pdfPath: string) {
         const pages = pdfDoc.getPages();
         for (const page of pages) {
             const { width, height } = page.getSize();
-            const padding = 280; // Relocated higher to sit above the navy footer and Inquiry CTA
+            const paddingX = 40;
+            const paddingY = 130;
 
             page.drawImage(logoImage, {
-                x: width - logoW - padding,
-                y: padding,
+                x: width - logoW - paddingX,
+                y: paddingY,
                 width: logoW,
                 height: logoH,
                 opacity: 0.9,

@@ -7,7 +7,7 @@ description: Automatically visits Feel Japan itinerary URLs, captures them as co
 1.  **Read URLs:** Get the itinerary URLs from the `itineraries.json` file in the project root.
 2.  **Browser Setup:** Use Playwright (Node.js/TypeScript) to launch a headless browser.
 3.  **Capture:** Navigate to each URL (Live Site: `https://feeljapanwithk.com`), wait for images/fonts to load, and save as a continuous PDF locally to `dist/brochures/`.
-4.  **Watermark:** Use `pdf-lib` to overlay `public/logo_transparent.png` on the bottom-right of the PDF. Position it at `y=280` to ensure it sits elegantly above the navy footer and the inquiry CTA section.
+4.  **Watermark:** Use `pdf-lib` to overlay `public/logo_transparent.png` on the bottom-right of the PDF. Position it at `y=130` to ensure it sits elegantly just above the footer section.
 5.  **Upload:** Upload the final watermarked PDFs to the Supabase Storage bucket named `brochures`.
 
 # New Organization Logic
