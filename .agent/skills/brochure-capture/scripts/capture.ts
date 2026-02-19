@@ -60,7 +60,7 @@ async function addWatermark(pdfPath: string) {
         const pages = pdfDoc.getPages();
         for (const page of pages) {
             const { width, height } = page.getSize();
-            const padding = 40;
+            const padding = 280; // Relocated higher to sit above the navy footer and Inquiry CTA
 
             page.drawImage(logoImage, {
                 x: width - logoW - padding,
@@ -252,9 +252,10 @@ async function captureView(page: Page, url: string, outputPath: string) {
             nav { display: flex !important; }
             nav .absolute.left-1\\/2, nav .hidden.md\\:flex.items-center.gap-8, nav a[href="/login"] { display: none !important; }
 
-            /* Footer: Keep Branding, Hide Policy/Portal Links */
-            footer { display: block !important; }
-            footer .flex.gap-6, footer a[href="/manage-studio"], footer a[href="/privacy"], footer a[href="/terms"], footer a[href="/partner-resources"] { display: none !important; }
+            /* Footer: Keep Branding & Contact Specialist. Hide ONLY the 4-link navigation tabs */
+            footer { display: block !important; opacity: 1 !important; visibility: visible !important; }
+            footer div.flex.gap-6:has(a[href="/privacy"]), 
+            footer div.flex.gap-6:has(a[href="/manage-studio"]) { display: none !important; }
 
             /* Hero: Exciting & Vibrant (Remove heavy dark tint) */
             header.relative.h-\\[60vh\\] { height: 400px !important; min-height: 0 !important; }
@@ -291,9 +292,10 @@ async function captureThumbnail(page: Page, url: string, outputPath: string, sto
     // Apply exact same brand-clean cleanup for the thumbnail
     await page.addStyleTag({
         content: `
-            /* Hide all interactive/floating elements */
-            nav .absolute.left-1\\/2, nav .hidden.md\\:flex.items-center.gap-8, nav a[href="/login"] { display: none !important; }
-            footer .flex.gap-6, footer a[href="/manage-studio"], footer a[href="/privacy"], footer a[href="/terms"], footer a[href="/partner-resources"] { display: none !important; }
+            /* Footer: Keep Branding & Contact. Hide ONLY navigation tabs */
+            footer { display: block !important; opacity: 1 !important; visibility: visible !important; }
+            footer div.flex.gap-6:has(a[href="/privacy"]),
+            footer .flex.gap-6:has(a[href="/manage-studio"]) { display: none !important; }
             .fixed, #whatsapp-button, a[href^="/inquire"], button { display: none !important; }
 
             /* Layout Fixes & Vibrance */

@@ -7,7 +7,7 @@ description: Automatically visits Feel Japan itinerary URLs, captures them as co
 1.  **Read URLs:** Get the itinerary URLs from the `itineraries.json` file in the project root.
 2.  **Browser Setup:** Use Playwright (Node.js/TypeScript) to launch a headless browser.
 3.  **Capture:** Navigate to each URL (Live Site: `https://feeljapanwithk.com`), wait for images/fonts to load, and save as a continuous PDF locally to `dist/brochures/`.
-4.  **Watermark:** Use `pdf-lib` to overlay `public/logo_transparent.png` on the bottom-right of every page directly within the script.
+4.  **Watermark:** Use `pdf-lib` to overlay `public/logo_transparent.png` on the bottom-right of the PDF. Position it at `y=280` to ensure it sits elegantly above the navy footer and the inquiry CTA section.
 5.  **Upload:** Upload the final watermarked PDFs to the Supabase Storage bucket named `brochures`.
 
 # New Organization Logic
@@ -40,11 +40,12 @@ npx tsx .agent/skills/brochure-capture/scripts/capture.ts --force
 
 # Brand-Clean UI Rules (Mandatory)
 To maintain a high-end professional appearance, the following UI elements MUST be hidden or modified via CSS injection during capture:
-1. **Branding Only:** Keep the Header (Logo) and Footer (Company Info), but hide all navigation tabs, login buttons, and site-map links (Manage Studio, Privacy, Terms).
-2. **Hide Interactions:** Completely hide the "Request Quote" buttons, WhatsApp floating bubbles, and Agent Rate toggle buttons.
-3. **Hero Vibrancy:** Avoid heavy black tints. Use a translucent gradient (max 30% intensity at edges) and apply a `brightness(1.1)` filter to hero images to make them "exciting" and attractive.
-4. **Readability:** Maintain high-contrast text shadows on all white typography over hero images to ensure readability without sacrificing image brightness.
-5. **Thumbnail Clipping:** Thumbnails should be captured at 1200x1200px to focus on the brand identity and title without showing the itinerary body.
+1. **Branding Only (Header):** Keep the Header (Logo), but hide all navigation tabs (Home, Portfolio, etc.) and login buttons.
+2. **Complete Footer:** Keep the Footer (Logo, HQ Address, and Contact Specialist details). ONLY hide the "4-page tab" navigation links (Studio Portal, Partner Library, Privacy, and Terms).
+3. **Hide Interactions:** Completely hide the "Request Quote" buttons, WhatsApp floating bubbles, and Agent Rate toggle buttons.
+4. **Hero Vibrancy:** Avoid heavy black tints. Use a translucent gradient (max 30% intensity at edges) and apply a `brightness(1.1)` filter to hero images to make them "exciting" and attractive.
+5. **Readability:** Maintain high-contrast text shadows on all white typography over hero images to ensure readability without sacrificing image brightness.
+6. **Thumbnail Clipping:** Thumbnails should be captured at 1200x1200px to focus on the brand identity and title without showing the itinerary body.
 
 # Constraints
 - Do not re-capture if a PDF already exists locally unless the `--force` flag is used.
