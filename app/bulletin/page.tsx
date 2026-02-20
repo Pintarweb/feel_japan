@@ -249,7 +249,7 @@ export default function BulletinPage() {
                         </button>
                         <iframe
                             className="w-full h-full"
-                            src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                            src="https://www.youtube.com/embed/6_9WreV_XpY?autoplay=1"
                             title="2026 Japan Travel Guide"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
