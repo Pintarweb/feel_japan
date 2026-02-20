@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Image from "next/image";
@@ -63,6 +63,27 @@ const NEWS_UPDATES = [
 
 export default function BulletinPage() {
     const [selectedAlert, setSelectedAlert] = useState<null | typeof B2B_INSIDER_ALERTS[0]>(null);
+    const [showVideo, setShowVideo] = useState(false);
+    const [watchlist, setWatchlist] = useState<string[]>([]);
+
+    // Sync watchlist with localStorage
+    useEffect(() => {
+        const saved = localStorage.getItem('fj_watchlist');
+        if (saved) setWatchlist(JSON.parse(saved));
+    }, []);
+
+    const toggleWatchlist = (title: string) => {
+        const next = watchlist.includes(title)
+            ? watchlist.filter(t => t !== title)
+            : [...watchlist, title];
+        setWatchlist(next);
+        localStorage.setItem('fj_watchlist', JSON.stringify(next));
+    };
+
+    const handleForward = (alert: typeof B2B_INSIDER_ALERTS[0]) => {
+        const text = `*Feel Japan B2B Intelligence*\n\n*${alert.title}*\n${alert.action}\n\nRead more: ${window.location.href}`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    };
 
     return (
         <main className="relative min-h-screen bg-off-white text-midnight-navy">
@@ -112,7 +133,13 @@ export default function BulletinPage() {
 
                     <div className="grid lg:grid-cols-3 gap-8">
                         {B2B_INSIDER_ALERTS.map((alert, i) => (
-                            <div key={i} className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-all duration-500 group flex flex-col h-full">
+                            <div key={i} className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-all duration-500 group flex flex-col h-full relative">
+                                {watchlist.includes(alert.title) && (
+                                    <div className="absolute top-4 right-4 flex items-center gap-2 px-2 py-1 bg-brushed-gold/20 rounded-full border border-brushed-gold/30 animate-in zoom-in duration-300">
+                                        <div className="w-1.5 h-1.5 bg-brushed-gold rounded-full animate-pulse" />
+                                        <span className="text-[8px] font-bold text-brushed-gold uppercase">Saved</span>
+                                    </div>
+                                )}
                                 <div className="flex items-center gap-4 mb-6">
                                     <div className="p-3 bg-white/10 rounded-xl">
                                         {alert.icon}
@@ -184,15 +211,49 @@ export default function BulletinPage() {
                             </div>
 
                             <div className="grid grid-cols-2 gap-4 mt-12">
-                                <button className="py-4 bg-midnight-navy text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl hover:bg-brushed-gold hover:text-midnight-navy transition-all duration-300 flex items-center justify-center gap-2">
-                                    <Share2 className="w-4 h-4" />
+                                <button
+                                    onClick={() => handleForward(selectedAlert)}
+                                    className="py-4 bg-midnight-navy text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl hover:bg-brushed-gold hover:text-midnight-navy transition-all duration-300 flex items-center justify-center gap-2 group/share"
+                                >
+                                    <Share2 className="w-4 h-4 group-hover/share:rotate-12 transition-transform" />
                                     Forward to Team
                                 </button>
-                                <button className="py-4 bg-white text-midnight-navy text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl border border-midnight-navy/10 hover:border-midnight-navy transition-all duration-300">
-                                    Add to Watchlist
+                                <button
+                                    onClick={() => toggleWatchlist(selectedAlert.title)}
+                                    className={`py-4 text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl border transition-all duration-300 ${watchlist.includes(selectedAlert.title)
+                                        ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                                        : 'bg-white text-midnight-navy border-midnight-navy/10 hover:border-midnight-navy'
+                                        }`}
+                                >
+                                    {watchlist.includes(selectedAlert.title) ? 'Saved' : 'Add to Watchlist'}
                                 </button>
                             </div>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Video Overlay Modal */}
+            {showVideo && (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+                    <div
+                        className="absolute inset-0 bg-midnight-navy/95 backdrop-blur-2xl animate-in fade-in duration-500"
+                        onClick={() => setShowVideo(false)}
+                    />
+                    <div className="relative w-full max-w-5xl aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-500">
+                        <button
+                            onClick={() => setShowVideo(false)}
+                            className="absolute top-6 right-6 z-10 p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+                        >
+                            <X className="w-6 h-6" />
+                        </button>
+                        <iframe
+                            className="w-full h-full"
+                            src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                            title="2026 Japan Travel Guide"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        />
                     </div>
                 </div>
             )}
@@ -245,7 +306,10 @@ export default function BulletinPage() {
                         {/* Video / Resource Card */}
                         <div className="lg:col-span-4 h-full">
                             <div className="bg-white rounded-2xl p-8 border border-midnight-navy/5 shadow-xl h-full flex flex-col group">
-                                <div className="relative aspect-video rounded-xl overflow-hidden mb-8 bg-midnight-navy group-hover:shadow-2xl transition-all duration-500">
+                                <div
+                                    onClick={() => setShowVideo(true)}
+                                    className="relative aspect-video rounded-xl overflow-hidden mb-8 bg-midnight-navy group-hover:shadow-2xl transition-all duration-500 cursor-pointer"
+                                >
                                     <Image src="/b2b_collection_banner.png" alt="2026 Japan Travel Guide" fill className="object-cover opacity-60 grayscale group-hover:scale-110 transition-transform duration-[3s]" />
                                     <div className="absolute inset-0 flex items-center justify-center">
                                         <div className="w-16 h-16 bg-brushed-gold rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
@@ -268,7 +332,10 @@ export default function BulletinPage() {
                                         </li>
                                     ))}
                                 </ul>
-                                <button className="w-full py-4 bg-midnight-navy text-white text-xs font-bold uppercase tracking-[0.3em] rounded-xl hover:bg-brushed-gold hover:text-midnight-navy transition-all duration-300">
+                                <button
+                                    onClick={() => setShowVideo(true)}
+                                    className="w-full py-4 bg-midnight-navy text-white text-xs font-bold uppercase tracking-[0.3em] rounded-xl hover:bg-brushed-gold hover:text-midnight-navy transition-all duration-300"
+                                >
                                     Watch Full Briefing
                                 </button>
                             </div>
