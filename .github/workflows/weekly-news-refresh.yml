@@ -1,0 +1,44 @@
+name: Weekly Japan News Refresh
+
+on:
+  schedule:
+    # Runs at 00:00 UTC every Monday (8:00 AM Malaysia Time)
+    - cron: '0 0 * * 1'
+  workflow_dispatch: # Allows manual triggering from GitHub Actions tab
+
+jobs:
+  refresh-news:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run @japan-news-filter Skill
+        run: node .agent/skills/japan-news-filter/scripts/fetch-news.mjs > latest-news.json
+
+      - name: Update Bulletin Content
+        if: success()
+        run: |
+          # This is where a small script would take the JSON and update the app/bulletin/page.tsx file or a database
+          # For now, we commit the raw data so Antigravity can process it, or we update a dynamic source.
+          echo "News fetch complete. Processing updates..."
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name 'Japan Intelligence Bot'
+          git config --global user.email 'bot@feeljapanwithk.com'
+          git add latest-news.json
+          git commit -m "chore: automated weekly news fetch [skip ci]" || echo "No changes to commit"
+          git push
