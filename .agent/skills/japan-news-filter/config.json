@@ -1,0 +1,60 @@
+{
+    "skill": "japan-news-filter",
+    "version": "2.0.0",
+    "logic": "B2B Strategic Filter",
+    "priorities": {
+        "operational": [
+            "Visa Update",
+            "JESTA",
+            "Lodging Tax",
+            "Tax-Free Rules",
+            "JR Pass",
+            "Visit Japan Web"
+        ],
+        "muslim_friendly": [
+            "Halal Certification",
+            "Prayer Room",
+            "Mosque",
+            "Muslim-Friendly Hotel",
+            "Pork-Free"
+        ],
+        "b2b_opportunities": [
+            "MICE",
+            "Incentive Travel",
+            "FAM Trip",
+            "Travel Trade",
+            "MATTA",
+            "B2B Brochure"
+        ],
+        "local_interest": [
+            "Kuala Lumpur",
+            "AirAsia",
+            "Malaysia Airlines",
+            "MYR to JPY"
+        ]
+    },
+    "sources": [
+        "https://www.japan.travel/en/my/travel-trade/news/",
+        "https://halalmedia.jp/",
+        "https://www.travelvoice.jp/english/"
+    ],
+    "transformation_rules": [
+        {
+            "pattern": "tax|jesta|visa",
+            "action": "Rewrite as: 'Action Required: Update Your Quotations & Advisories'"
+        },
+        {
+            "pattern": "campaign|launch",
+            "action": "Rewrite as: 'New Marketing Assets Available for Your Clients'"
+        },
+        {
+            "pattern": "halal|muslim",
+            "action": "Rewrite as: 'New Muslim-Friendly Resource for Your VIP Clients'"
+        }
+    ],
+    "output_structure": {
+        "official": "Regulatory Alerts (Laws/Taxes/Visas)",
+        "muslim": "Spotlight (Halal Openings/Facilities)",
+        "seasonal": "Logistics (Sakura/Autumn/Transport)"
+    }
+}
