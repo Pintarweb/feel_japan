@@ -1,8 +1,11 @@
+'use client';
+
+import { useState } from 'react';
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Image from "next/image";
-import Link from "next/link";
-import { Newspaper, ArrowRight, ExternalLink, ShieldCheck, Zap, Heart, Compass, PlayCircle } from "lucide-react";
+import Link from 'next/link';
+import { Newspaper, ArrowRight, ExternalLink, ShieldCheck, Zap, Heart, Compass, PlayCircle, X, Info, FileText, Share2 } from "lucide-react";
 import WeatherWidget from "@/components/shared/WeatherWidget";
 import CurrencyWidget from "@/components/shared/CurrencyWidget";
 
@@ -13,6 +16,8 @@ const B2B_INSIDER_ALERTS = [
         title: "Kyoto Lodging Tax Update",
         action: "Action Required: Update Your Kyoto Quotations for 2026",
         summary: "New tiered lodging tax structures coming into effect for premium properties.",
+        fullBriefing: "Effective Jan 2026, Kyoto is introducing a tiered lodging tax. Properties above 50,000 JPY/night will see a significant increase. We recommend all Malaysian partners update their 2026 quotations immediately to avoid margin slippage. Feel Japan with K is currently renegotiating group rates with our partner hotels to absorb some of this cost.",
+        priority: "CRITICAL",
         url: "#"
     },
     {
@@ -21,6 +26,8 @@ const B2B_INSIDER_ALERTS = [
         title: "New Prayer Facilities in Ginza",
         action: "New Muslim-Friendly Resource for Your VIP Clients",
         summary: "Premium Ginza shopping district has opened a central prayer lounge for international travelers.",
+        fullBriefing: "The new 'Ginza Serenity Lounge' offers gender-segregated prayer rooms, wudu facilities, and a halal juice bar. Located just 3 minutes from Mitsukoshi. This is a primary selling point for your high-net-worth Muslim clients who skip Ginza due to lack of facilities. Contact us for a pre-printed map of these facilities to include in your welcome packs.",
+        priority: "OPPORTUNITY",
         url: "#"
     },
     {
@@ -29,6 +36,8 @@ const B2B_INSIDER_ALERTS = [
         title: "2026 Sakura Forecast & Logistics",
         action: "Action Required: Pre-book Private Coaches by October",
         summary: "Early data suggests 15% increase in domestic travel volume during the 2026 Sakura season.",
+        fullBriefing: "With the rebound of both domestic and Chinese group travel, coach availability for March/April 2026 is projected to hit critical levels earlier than usual. We are advising our Malaysian partners to secure their group itineraries and deposits by mid-October 2025. We have secured exclusive priority booking for 5 extra 45-seater coaches for our frequent partners.",
+        priority: "LOGISTICS",
         url: "#"
     }
 ];
@@ -53,6 +62,8 @@ const NEWS_UPDATES = [
 ];
 
 export default function BulletinPage() {
+    const [selectedAlert, setSelectedAlert] = useState<null | typeof B2B_INSIDER_ALERTS[0]>(null);
+
     return (
         <main className="relative min-h-screen bg-off-white text-midnight-navy">
             <Navbar />
@@ -88,7 +99,6 @@ export default function BulletinPage() {
 
             {/* Fast-Scan Dashboard */}
             <section className="py-20 bg-midnight-navy relative overflow-hidden">
-                {/* Decorative Pattern */}
                 <div className="absolute inset-0 opacity-10 pointer-events-none grayscale invert">
                     <Image src="/b2b_collection_banner.png" alt="" fill className="object-cover" />
                 </div>
@@ -96,13 +106,13 @@ export default function BulletinPage() {
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
                     <div className="flex items-center gap-4 mb-12">
                         <div className="h-px flex-1 bg-white/10"></div>
-                        <h2 className="text-xs font-bold uppercase tracking-[0.4em] text-brushed-gold">Fast-Scan Dashboard</h2>
+                        <h2 className="text-xs font-bold uppercase tracking-[0.4em] text-brushed-gold">Fast-Scan Intelligence</h2>
                         <div className="h-px flex-1 bg-white/10"></div>
                     </div>
 
                     <div className="grid lg:grid-cols-3 gap-8">
                         {B2B_INSIDER_ALERTS.map((alert, i) => (
-                            <div key={i} className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-all duration-500 group">
+                            <div key={i} className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-all duration-500 group flex flex-col h-full">
                                 <div className="flex items-center gap-4 mb-6">
                                     <div className="p-3 bg-white/10 rounded-xl">
                                         {alert.icon}
@@ -114,12 +124,78 @@ export default function BulletinPage() {
                                     <p className="text-xs font-bold text-brushed-gold uppercase tracking-tighter mb-1">Skill Output:</p>
                                     <p className="text-sm text-white/90 font-medium italic">"{alert.action}"</p>
                                 </div>
-                                <p className="text-xs text-white/60 leading-relaxed">{alert.summary}</p>
+                                <p className="text-xs text-white/60 leading-relaxed mb-8">{alert.summary}</p>
+
+                                <button
+                                    onClick={() => setSelectedAlert(alert)}
+                                    className="mt-auto w-full py-3 bg-white/10 text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-lg border border-white/5 hover:bg-brushed-gold hover:text-midnight-navy hover:border-brushed-gold transition-all duration-300 flex items-center justify-center gap-2 group/btn"
+                                >
+                                    Access Briefing
+                                    <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
+                                </button>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
+
+            {/* Insider Briefing Modal */}
+            {selectedAlert && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center px-6 py-10 antialiased">
+                    <div
+                        className="absolute inset-0 bg-midnight-navy/90 backdrop-blur-xl animate-in fade-in duration-500"
+                        onClick={() => setSelectedAlert(null)}
+                    />
+                    <div className="relative w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.5)] animate-in zoom-in-95 slide-in-from-bottom-10 duration-500">
+                        {/* Modal Header */}
+                        <div className="p-8 md:p-12 bg-gradient-to-br from-[#FDFDFD] to-[#F5F5F5] border-b border-midnight-navy/5">
+                            <button
+                                onClick={() => setSelectedAlert(null)}
+                                className="absolute top-8 right-8 p-2 rounded-full hover:bg-midnight-navy/5 transition-colors group"
+                            >
+                                <X className="w-6 h-6 text-midnight-navy/40 group-hover:text-midnight-navy transition-colors" />
+                            </button>
+
+                            <div className="flex items-center gap-4 mb-6">
+                                <span className="px-3 py-1 rounded-full bg-brushed-gold/10 text-[9px] font-bold text-brushed-gold uppercase tracking-widest border border-brushed-gold/20">
+                                    {selectedAlert.priority}
+                                </span>
+                                <span className="text-[10px] font-bold text-midnight-navy/40 uppercase tracking-widest">{selectedAlert.category}</span>
+                            </div>
+
+                            <h2 className="text-3xl md:text-4xl font-serif text-midnight-navy mb-4 leading-tight">
+                                {selectedAlert.title}
+                            </h2>
+                            <p className="text-lg text-brushed-gold font-serif italic mb-0">"{selectedAlert.action}"</p>
+                        </div>
+
+                        {/* Modal Content */}
+                        <div className="p-8 md:p-12">
+                            <div className="flex items-start gap-4 mb-8">
+                                <div className="p-4 bg-midnight-navy/5 rounded-2xl">
+                                    <FileText className="w-6 h-6 text-midnight-navy" />
+                                </div>
+                                <div className="space-y-4">
+                                    <h4 className="text-[11px] font-bold uppercase tracking-[0.3em] text-midnight-navy/30">Founder's Briefing</h4>
+                                    <p className="text-lg text-midnight-navy/80 font-light leading-relaxed">
+                                        {selectedAlert.fullBriefing}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4 mt-12">
+                                <button className="py-4 bg-midnight-navy text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl hover:bg-brushed-gold hover:text-midnight-navy transition-all duration-300 flex items-center justify-center gap-2">
+                                    <Share2 className="w-4 h-4" />
+                                    Forward to Team
+                                </button>
+                                <button className="py-4 bg-white text-midnight-navy text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl border border-midnight-navy/10 hover:border-midnight-navy transition-all duration-300">
+                                    Add to Watchlist
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Live Widgets & Video Section */}
             <section className="py-24 bg-[#F8F8F8] border-b border-midnight-navy/5">
@@ -131,7 +207,6 @@ export default function BulletinPage() {
                                 <WeatherWidget />
                                 <CurrencyWidget />
                             </div>
-                            {/* Ops Status Card */}
                             <div className="relative overflow-hidden group rounded-2xl transition-all duration-700 hover:shadow-[0_20px_50px_rgba(197,160,89,0.15)] bg-midnight-navy flex flex-col justify-between p-10">
                                 <div className="absolute -top-10 -right-10 w-64 h-64 bg-brushed-gold/10 rounded-full blur-[100px] group-hover:bg-brushed-gold/20 transition-all duration-1000"></div>
                                 <div className="absolute inset-0 bg-white/5 backdrop-blur-[1px] pointer-events-none" />
