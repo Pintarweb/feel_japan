@@ -72,13 +72,33 @@ export default function BulletinPage() {
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         <WeatherWidget />
                         <CurrencyWidget />
-                        <div className="bg-midnight-navy p-8 rounded-sm shadow-xl flex flex-col justify-center relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-brushed-gold/5 -mr-16 -mt-16 rounded-full group-hover:bg-brushed-gold/10 transition-all duration-700"></div>
-                            <ShieldCheck className="w-8 h-8 text-brushed-gold mb-4" />
-                            <h3 className="text-white text-lg font-serif mb-2">Ground Status: Green</h3>
-                            <p className="text-white/40 text-[10px] uppercase tracking-widest leading-relaxed">
-                                Our Tokyo operations center reports normal conditions across all major itineraries.
-                            </p>
+                        <div className="relative overflow-hidden group rounded-2xl transition-all duration-700 hover:shadow-[0_20px_50px_rgba(197,160,89,0.15)] bg-midnight-navy min-h-[220px] flex flex-col justify-between p-8">
+                            {/* Animated Background Glow */}
+                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-brushed-gold/20 rounded-full blur-[80px] group-hover:bg-brushed-gold/30 transition-all duration-1000"></div>
+                            <div className="absolute inset-0 bg-white/5 backdrop-blur-[1px] pointer-events-none" />
+
+                            <div className="flex justify-between items-start relative z-10">
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                                        <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/60">Live Feed</span>
+                                    </div>
+                                    <h3 className="text-xl font-serif text-white">Ops Center</h3>
+                                </div>
+                                <div className="p-2 bg-brushed-gold/10 backdrop-blur-md rounded-lg border border-brushed-gold/20">
+                                    <ShieldCheck className="w-4 h-4 text-brushed-gold" />
+                                </div>
+                            </div>
+
+                            <div className="relative z-10">
+                                <div className="flex items-baseline gap-2 mb-2">
+                                    <span className="text-4xl font-serif text-white uppercase tracking-tighter">Status</span>
+                                    <span className="text-4xl font-serif text-emerald-400 italic">Clear</span>
+                                </div>
+                                <p className="text-white/40 text-[10px] md:text-[11px] uppercase tracking-widest leading-relaxed font-medium">
+                                    Ground operations in Tokyo, Kyoto, and Osaka report 100% capacity and optimal conditions.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -96,26 +116,29 @@ export default function BulletinPage() {
                     {NEWS_UPDATES.map((news, i) => (
                         <article
                             key={i}
-                            className="group flex flex-col bg-white p-10 rounded-sm border border-midnight-navy/5 shadow-sm hover:shadow-2xl transition-all duration-500"
+                            className="group flex flex-col bg-white p-10 rounded-2xl border border-midnight-navy/5 shadow-sm hover:shadow-[0_30px_60px_rgba(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 overflow-hidden relative"
                         >
-                            <div className="flex justify-between items-start mb-8">
+                            {/* Subtle Background Accent */}
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-brushed-gold/5 -mr-12 -mt-12 rounded-full blur-2xl group-hover:bg-brushed-gold/10 transition-all duration-700"></div>
+
+                            <div className="flex justify-between items-start mb-8 relative z-10">
                                 <span className="text-[10px] font-bold text-brushed-gold/60 uppercase tracking-widest">{news.date}</span>
                                 <span className="px-3 py-1 rounded-full bg-brushed-gold/5 text-[9px] font-bold text-brushed-gold uppercase tracking-widest border border-brushed-gold/10">
                                     {news.tag}
                                 </span>
                             </div>
 
-                            <h3 className="text-2xl font-serif text-midnight-navy mb-6 group-hover:text-brushed-gold transition-colors leading-snug">
+                            <h3 className="text-2xl font-serif text-midnight-navy mb-6 group-hover:text-brushed-gold transition-colors leading-snug relative z-10">
                                 {news.title}
                             </h3>
 
-                            <p className="text-base text-midnight-navy/60 font-light leading-relaxed mb-10">
+                            <p className="text-base text-midnight-navy/60 font-light leading-relaxed mb-10 relative z-10">
                                 {news.summary}
                             </p>
 
-                            <div className="mt-auto pt-8 border-t border-midnight-navy/5">
-                                <div className="p-4 bg-off-white/50 rounded-sm mb-8 border-l-2 border-brushed-gold">
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 mb-2">B2B Strategy Takeaway</p>
+                            <div className="mt-auto pt-8 border-t border-midnight-navy/5 relative z-10">
+                                <div className="p-6 bg-[#FBFBFB] rounded-xl mb-8 border-l-4 border-brushed-gold shadow-inner">
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/40 mb-3">B2B Strategy Takeaway</p>
                                     <p className="text-sm text-midnight-navy/80 italic font-medium leading-relaxed">
                                         "{news.takeaway}"
                                     </p>
