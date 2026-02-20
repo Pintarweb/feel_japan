@@ -5,6 +5,7 @@ import BottomNav from "@/components/layout/BottomNav";
 import BrochureGrid from "@/components/sections/BrochureGrid";
 import Footer from "@/components/layout/Footer";
 import PortfolioHero from "@/components/sections/PortfolioHero";
+import Bulletin from "@/components/sections/Bulletin";
 import { getBrochures } from "@/lib/services/brochureService";
 
 export default async function Home() {
@@ -15,6 +16,7 @@ export default async function Home() {
       <Navbar />
       <Hero />
       <Features />
+      <Bulletin />
       <PortfolioHero />
       <BrochureGrid brochures={brochures} />
       <Footer />
