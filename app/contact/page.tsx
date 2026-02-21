@@ -76,7 +76,7 @@ export default function ContactPage() {
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <Mail className="w-3 h-3 text-brushed-gold shrink-0 mt-1" />
-                                        <a href="mailto:admin@feeljapanwithk.com" className="text-xs text-midnight-navy hover:text-brushed-gold transition-colors">admin@feeljapanwithk.com</a>
+                                        <a href="mailto:hello@feeljapanwithk.com" className="text-xs text-midnight-navy hover:text-brushed-gold transition-colors">hello@feeljapanwithk.com</a>
                                     </li>
                                 </ul>
                             </div>

@@ -53,8 +53,8 @@ export default function Footer() {
                             </div>
                             <div className="flex items-center gap-3 border-t border-white/5 pt-4 group/item">
                                 <Mail className="w-3.5 h-3.5 text-brushed-gold shrink-0 transition-transform group-hover/item:scale-110" />
-                                <a href="mailto:info@feeljapanwithk.com" className="text-[11px] text-white/70 hover:text-white transition-colors lowercase tracking-wider">
-                                    info@feeljapanwithk.com
+                                <a href="mailto:hello@feeljapanwithk.com" className="text-[11px] text-white/70 hover:text-white transition-colors lowercase tracking-wider">
+                                    hello@feeljapanwithk.com
                                 </a>
                             </div>
                         </div>
