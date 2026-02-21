@@ -20,7 +20,8 @@ const getIcon = (iconName: string) => {
         'Bus': `${iconPath}/tourism-vector-free-icon-set-28.png`,
         'Hotel': `${iconPath}/tourism-vector-free-icon-set-29.png`,
         'Train': `${iconPath}/tourism-vector-free-icon-set-38.png`,
-        'Utensils': `${iconPath}/tourism-vector-free-icon-set-32.png`, // Using coconut as dining proxy
+        'Utensils': `${iconPath}/tourism-vector-free-icon-set-32.png`,
+        'Shopping': `${iconPath}/tourism-vector-free-icon-set-23.png`, // Suitcase for shopping
         'Check': `${iconPath}/tourism-vector-free-icon-set-24.png`,
     };
 
