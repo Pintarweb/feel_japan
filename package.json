@@ -1,12 +1,13 @@
 {
   "name": "feeljapan_brochure",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "release": "node .agent/skills/version-control/scripts/version.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
