@@ -8,11 +8,25 @@ import React, { useState, useEffect } from 'react';
 
 // Icon mapping helper
 const getIcon = (iconName: string) => {
-    const icons: { [key: string]: any } = {
-        MapPin, Calendar, Check, Utensils, Hotel, Bus, Train, Plane, Star, Camera, Mountain, ShoppingBag, Footprints, Droplet, UserCheck, Map
+    const iconPath = "/icon/graphicsurf-com-432444-tourism-vector-free-icon-set/PNG";
+
+    const iconMap: { [key: string]: string } = {
+        'Plane': `${iconPath}/tourism-vector-free-icon-set-21.png`,
+        'Camera': `${iconPath}/tourism-vector-free-icon-set-22.png`,
+        'Arrival': `${iconPath}/tourism-vector-free-icon-set-23.png`,
+        'Departure': `${iconPath}/tourism-vector-free-icon-set-23.png`,
+        'MapPin': `${iconPath}/tourism-vector-free-icon-set-39.png`,
+        'Mountain': `${iconPath}/tourism-vector-free-icon-set-27.png`,
+        'Bus': `${iconPath}/tourism-vector-free-icon-set-28.png`,
+        'Hotel': `${iconPath}/tourism-vector-free-icon-set-29.png`,
+        'Train': `${iconPath}/tourism-vector-free-icon-set-38.png`,
+        'Utensils': `${iconPath}/tourism-vector-free-icon-set-32.png`, // Using coconut as dining proxy
+        'Check': `${iconPath}/tourism-vector-free-icon-set-24.png`,
     };
-    const IconComponent = icons[iconName] || MapPin;
-    return <IconComponent className="w-5 h-5 text-brushed-gold flex-shrink-0" />;
+
+    const src = iconMap[iconName] || `${iconPath}/tourism-vector-free-icon-set-39.png`;
+
+    return <img src={src} alt={iconName} className="w-8 h-8 object-contain flex-shrink-0" />;
 };
 
 // Simplified parser for bold text (**text**)

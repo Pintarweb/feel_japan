@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.3] - 2026-02-21
+### Changed
+- feat: roll out premium tourism icon set to all brochures
+
 ## [0.1.2] - 2026-02-21
 ### Changed
 - update: modified package.json, , release.md
