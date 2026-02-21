@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.5] - 2026-02-21
+### Changed
+- chore: housekeeping — remove orphan scripts, PDFs, stitch folder and fix gitignore
+
 ## [0.1.4] - 2026-02-21
 ### Changed
 - feat(skills): update brochure-capture for premium icon system support
