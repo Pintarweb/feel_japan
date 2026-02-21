@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.4] - 2026-02-21
+### Changed
+- feat(skills): update brochure-capture for premium icon system support
+
 ## [0.1.3] - 2026-02-21
 ### Changed
 - feat: roll out premium tourism icon set to all brochures

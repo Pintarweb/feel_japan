@@ -217,6 +217,12 @@ async function captureView(page: Page, url: string, outputPath: string) {
     console.log(`Capturing: ${url}`);
 
     await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 });
+
+    // Ensure premium icons are loaded
+    await page.waitForSelector('img[src*="tourism-vector"]', { state: 'attached', timeout: 5000 }).catch(() => {
+        console.warn('Premium icons not detected or took too long to load.');
+    });
+
     await page.waitForTimeout(3000);
 
     // INJECT WEBSITE LINK INTO HEADER
@@ -288,6 +294,12 @@ async function captureView(page: Page, url: string, outputPath: string) {
 async function captureThumbnail(page: Page, url: string, outputPath: string, storagePath: string): Promise<string | null> {
     console.log(`--- Creating Thumbnail: ${url} ---`);
     await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 });
+
+    // Ensure premium icons are loaded before screenshot
+    await page.waitForSelector('img[src*="tourism-vector"]', { state: 'attached', timeout: 5000 }).catch(() => {
+        // Thumbnail might not show icons, but it's safe to check
+    });
+
     await page.waitForTimeout(2000);
 
     // Apply exact same brand-clean cleanup for the thumbnail

@@ -8,7 +8,9 @@ description: Automatically visits Feel Japan itinerary URLs, captures them as co
 2.  **Browser Setup:** Use Playwright (Node.js/TypeScript) to launch a headless browser.
 3.  **Capture:** Navigate to each URL (Live Site: `https://feeljapanwithk.com`), wait for images/fonts to load, and save as a continuous PDF locally to `dist/brochures/`.
 4.  **Watermark:** Use `pdf-lib` to overlay `public/logo_transparent.png` on the bottom-right of the PDF. Position it at `y=130` to ensure it sits elegantly just above the footer section.
-5.  **Upload:** Upload the final watermarked PDFs to the Supabase Storage bucket named `brochures`.
+5. **Upload:** Upload the final watermarked PDFs to the Supabase Storage bucket named `brochures`.
+6. **Icon Fidelity:** Ensure the Premium Icon System (colored PNG icons) is fully loaded before capture to maintain the "Zen Luxury" aesthetic.
+
 
 # New Organization Logic
 1. **Standard Brochures (Client-Facing):**
@@ -45,7 +47,8 @@ To maintain a high-end professional appearance, the following UI elements MUST b
 3. **Hide Interactions:** Completely hide the "Request Quote" buttons, WhatsApp floating bubbles, and Agent Rate toggle buttons.
 4. **Hero Vibrancy:** Avoid heavy black tints. Use a translucent gradient (max 30% intensity at edges) and apply a `brightness(1.1)` filter to hero images to make them "exciting" and attractive.
 5. **Readability:** Maintain high-contrast text shadows on all white typography over hero images to ensure readability without sacrificing image brightness.
-6. **Thumbnail Clipping:** Thumbnails should be captured at 1200x1200px to focus on the brand identity and title without showing the itinerary body.
+6. **Premium Icons:** The itinerary uses a specific set of colored PNG icons (located in `public/icon/`). Ensure these are not replaced by standard monochrome icons. In PDFs, these should appear vibrant and clearly legible at 32x32px.
+7. **Thumbnail Clipping:** Thumbnails should be captured at 1200x1200px to focus on the brand identity and title without showing the itinerary body.
 
 # Constraints
 - Do not re-capture if a PDF already exists locally unless the `--force` flag is used.
