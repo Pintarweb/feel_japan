@@ -90,38 +90,47 @@ export async function POST(req: Request) {
 
         const emailSubject = `New B2B Inquiry: ${agencyName} - ${agentName}`;
         const emailHtml = `
-      <div style="font-family: serif; color: #001F3F; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 40px; border-radius: 20px;">
-        <h1 style="color: #C5A059; border-bottom: 2px solid #C5A059; padding-bottom: 10px;">New Inquiry Received</h1>
-        <p>A new lead has been captured via the Feel Japan with K B2B Portal (Linked to Agent Profile).</p>
-        
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0;">
-          <p><strong>Agency:</strong> ${agencyName}</p>
-          <p><strong>License No:</strong> ${licenseNo}</p>
-          
-          <div style="background: ${isVerified ? '#D4EDDA' : '#FFF3CD'}; padding: 15px; border: 1px solid ${isVerified ? '#C3E6CB' : '#FFEEBA'}; border-radius: 5px; margin-top: 10px;">
-             <strong style="color: ${isVerified ? '#155724' : '#856404'}; font-size: 12px;">${isVerified ? '✅ VERIFIED PARTNER' : '⚠️ UNVERIFIED/GUEST'}</strong>
-             <p style="margin: 5px 0 10px 0; font-size: 11px; color: ${isVerified ? '#155724' : '#856404'};">Status: ${isVerified ? 'Partner is pre-verified in the portal.' : 'Manual validation required for guest/unverified submission.'}</p>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 20px; color: #334155;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0;">
+          <div style="background-color: #0f172a; padding: 30px; text-align: center;">
+            <h1 style="color: #C5A059; margin: 0; font-size: 24px; font-weight: 300; letter-spacing: 1px;">New B2B Inquiry</h1>
           </div>
+          <div style="padding: 30px;">
+            <p style="margin-top: 0; font-size: 15px; color: #475569;">A new lead has been captured via the Feel Japan with K B2B Portal.</p>
+            
+            <div style="margin-bottom: 25px;">
+              <h3 style="color: #0f172a; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Agent Details</h3>
+              <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                <tr><td style="padding: 8px 0; color: #64748b; border-bottom: 1px solid #f1f5f9; width: 35%;">Agency Name</td><td style="padding: 8px 0; color: #0f172a; font-weight: 600; border-bottom: 1px solid #f1f5f9;">${agencyName}</td></tr>
+                <tr><td style="padding: 8px 0; color: #64748b; border-bottom: 1px solid #f1f5f9;">Agent Name</td><td style="padding: 8px 0; color: #0f172a; font-weight: 600; border-bottom: 1px solid #f1f5f9;">${agentName}</td></tr>
+                <tr><td style="padding: 8px 0; color: #64748b; border-bottom: 1px solid #f1f5f9;">License No</td><td style="padding: 8px 0; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${licenseNo}</td></tr>
+                <tr><td style="padding: 8px 0; color: #64748b; border-bottom: 1px solid #f1f5f9;">Email</td><td style="padding: 8px 0; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${agentEmail}</td></tr>
+                <tr><td style="padding: 8px 0; color: #64748b; border-bottom: 1px solid #f1f5f9;">Phone</td><td style="padding: 8px 0; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${agentPhone}</td></tr>
+                <tr><td style="padding: 8px 0; color: #64748b; border-bottom: 1px solid #f1f5f9;">User Type</td><td style="padding: 8px 0; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${user ? 'Partner (' + user.id + ')' : 'Guest'}</td></tr>
+              </table>
+            </div>
 
-          <p style="margin-top: 15px;"><strong>Agent Name:</strong> ${agentName}</p>
-          <p><strong>Email:</strong> ${agentEmail}</p>
-          <p><strong>Phone:</strong> ${agentPhone}</p>
-          <p><strong>User Type:</strong> ${user ? `Partner (${user.id})` : 'Guest'}</p>
+            <div style="background-color: ${isVerified ? '#f0fdf4' : '#fffbeb'}; border-left: 4px solid ${isVerified ? '#22c55e' : '#f59e0b'}; padding: 16px; margin-bottom: 25px; border-radius: 0 8px 8px 0;">
+              <strong style="color: ${isVerified ? '#166534' : '#b45309'}; font-size: 14px; display: block; margin-bottom: 4px;">${isVerified ? '✓ Verified Partner' : '⚠ Unverified / Guest'}</strong>
+              <span style="color: ${isVerified ? '#15803d' : '#d97706'}; font-size: 13px;">${isVerified ? 'Partner is pre-verified in the portal.' : 'Manual validation required for guest/unverified submission.'}</span>
+            </div>
+
+            <div>
+              <h3 style="color: #0f172a; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Itinerary Requirements</h3>
+              <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                <tr><td style="padding: 8px 0; color: #64748b; border-bottom: 1px solid #f1f5f9; width: 35%;">Package</td><td style="padding: 8px 0; color: #0f172a; font-weight: 600; border-bottom: 1px solid #f1f5f9;">${package_slug || 'Custom Architecture'}</td></tr>
+                <tr><td style="padding: 8px 0; color: #64748b; border-bottom: 1px solid #f1f5f9;">Dates</td><td style="padding: 8px 0; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${travel_dates}</td></tr>
+                <tr><td style="padding: 8px 0; color: #64748b; border-bottom: 1px solid #f1f5f9;">Pax</td><td style="padding: 8px 0; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${pax} Total (A:${adults} C:${numChildren611} I:${numInfantsUnder6})</td></tr>
+                <tr><td style="padding: 8px 0; color: #64748b; border-bottom: 1px solid #f1f5f9;">Category</td><td style="padding: 8px 0; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${room_category}</td></tr>
+                <tr><td style="padding: 8px 0; color: #64748b; border-bottom: 1px solid #f1f5f9;">Budget</td><td style="padding: 8px 0; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${estimated_budget}</td></tr>
+                <tr><td style="padding: 8px 0; color: #64748b; vertical-align: top;">Destinations</td><td style="padding: 8px 0; color: #0f172a; line-height: 1.5;">${places_of_visit}</td></tr>
+              </table>
+            </div>
+          </div>
+          <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
+            <p style="margin: 0; font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px;">Feel Japan with K • B2B Portal • Secure Transmission</p>
+          </div>
         </div>
-
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0;">
-          <h3 style="margin-top: 0;">Itinerary Interest</h3>
-          <p><strong>Package:</strong> ${package_slug || 'Custom Architecture'}</p>
-          <p><strong>Dates:</strong> ${travel_dates}</p>
-          <p><strong>Pax:</strong> ${pax} (Adults: ${adults}, Children: ${children_6_11}, Infants: ${infants_under_6})</p>
-          <p><strong>Category:</strong> ${room_category}</p>
-          <p><strong>Budget:</strong> ${estimated_budget}</p>
-          <p><strong>Destinations:</strong> ${places_of_visit}</p>
-        </div>
-
-        <p style="font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 2px; text-align: center; margin-top: 40px;">
-          FEEL JAPAN WITH K • B2B PORTAL • SECURE TRANSMISSION
-        </p>
       </div>
     `;
 
@@ -155,29 +164,33 @@ export async function POST(req: Request) {
         // 3b. Client Acknowledgment (Auto-Reply)
         const clientSubject = `Inquiry Confirmed: Feel Japan with K Bespoke (Ref: ${inquiry.id.substring(0, 8)})`;
         const clientHtml = `
-            <div style="font-family: serif; color: #001F3F; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 40px; border-radius: 20px; line-height: 1.6;">
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <h2 style="color: #C5A059; font-style: italic; margin-bottom: 5px;">Feel Japan with K</h2>
-                    <p style="font-[10px]; text-transform: uppercase; letter-spacing: 3px; color: #999;">Bespoke Travel Architecture</p>
-                </div>
-                
-                <p>Dear ${agentName},</p>
-                
-                <p>We wish to formally acknowledge receipt of your bespoke travel request for <strong>${agencyName}</strong>. Your inquiry has been successfully transmitted to our team of travel designers at <strong>Feel Japan with K</strong>.</p>
-                
-                <p>At Feel Japan with K, we treat every itinerary as a unique piece of architecture. Your request has been linked to your professional profile.</p>
-                
-                <p>A member of our team will review your requirements and reach out to you within 24-48 business hours.</p>
-                
-                <div style="margin: 30px 0; padding: 20px; background: #fcfaf5; border-left: 3px solid #C5A059; font-size: 13px;">
-                    <strong>Reference ID:</strong> ${inquiry.id}<br/>
-                    <strong>Package Interest:</strong> ${package_slug || 'Bespoke Arrangement'}
-                </div>
+            <div style="font-family: 'Georgia', serif; background-color: #f8fafc; padding: 40px 20px; color: #334155;">
+              <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-top: 4px solid #C5A059; border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+                <div style="padding: 40px;">
+                  <div style="text-align: center; margin-bottom: 40px;">
+                    <h1 style="color: #0f172a; font-size: 28px; font-weight: normal; margin: 0 0 10px 0; letter-spacing: 1px;">Feel Japan with K</h1>
+                    <p style="color: #C5A059; font-family: -apple-system, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; margin: 0;">Bespoke Travel Architecture</p>
+                  </div>
+                  
+                  <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px; color: #334155;">Dear ${agentName},</p>
+                  
+                  <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px; color: #334155;">We wish to formally acknowledge receipt of your bespoke travel request for <strong>${agencyName}</strong>. Your inquiry has been successfully transmitted to our team of travel designers.</p>
+                  
+                  <p style="font-size: 16px; line-height: 1.6; margin-bottom: 30px; color: #334155;">At Feel Japan with K, we treat every itinerary as a unique piece of architecture. A member of our concierge team will carefully review your requirements and reach out to you within 24 to 48 business hours.</p>
+                  
+                  <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 25px; text-align: center; margin-bottom: 30px;">
+                    <p style="font-family: -apple-system, sans-serif; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px 0;">Reference Details</p>
+                    <p style="font-size: 18px; color: #0f172a; margin: 0 0 5px 0;"><strong>${package_slug || 'Bespoke Arrangement'}</strong></p>
+                    <p style="font-family: -apple-system, sans-serif; font-size: 13px; color: #64748b; margin: 0;">Transmission ID: ${inquiry.id.substring(0, 8).toUpperCase()}</p>
+                  </div>
 
-                <p style="font-size: 12px; color: #666; margin-top: 40px;">
-                    Warm regards,<br/>
-                    <strong>The Feel Japan with K Concierge Team</strong>
-                </p>
+                  <p style="font-size: 16px; line-height: 1.6; margin-bottom: 5px; color: #334155;">Warm regards,</p>
+                  <p style="font-size: 16px; font-style: italic; color: #C5A059; margin: 0;">The Feel Japan with K Concierge Team</p>
+                </div>
+                <div style="background-color: #0f172a; padding: 25px; text-align: center;">
+                  <p style="font-family: -apple-system, sans-serif; font-size: 11px; color: #94a3b8; margin: 0; letter-spacing: 0.5px;">This is an automated acknowledgment. Please do not reply directly to this email.</p>
+                </div>
+              </div>
             </div>
         `;
 
