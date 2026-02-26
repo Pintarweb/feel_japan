@@ -1,23 +1,19 @@
 "use client";
 
 import Link from 'next/link';
-import { useState } from 'react';
-import { X, User, LogOut, Loader2 } from 'lucide-react';
+import Image from 'next/image';
+import { useState, useEffect } from 'react';
+import { X, LogOut } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
-import { useEffect } from 'react';
 
-interface NavbarProps { }
-
-export default function Navbar({ }: NavbarProps) {
+export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [user, setUser] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         checkUser();
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setUser(session?.user ?? null);
-            setLoading(false);
         });
         return () => subscription.unsubscribe();
     }, []);
@@ -25,7 +21,6 @@ export default function Navbar({ }: NavbarProps) {
     async function checkUser() {
         const { data: { session } } = await supabase.auth.getSession();
         setUser(session?.user ?? null);
-        setLoading(false);
     }
 
     const handleLogout = async () => {
@@ -46,11 +41,13 @@ export default function Navbar({ }: NavbarProps) {
                 </div>
 
                 {/* Logo Section */}
-                <div className="flex items-center gap-6 h-full">
+                <div className="flex items-center gap-6 h-full md:flex-1">
                     <Link href="/" className="flex items-center gap-4 h-full group">
-                        <img
+                        <Image
                             src="/logo_transparent.png"
                             alt="Feel Japan with K"
+                            width={50}
+                            height={50}
                             className="h-[120%] md:h-[135%] w-auto object-contain transition-transform group-hover:scale-105 mt-2"
                         />
                         <div className="flex flex-col border-l border-midnight-navy/10 pl-4 py-1">
@@ -58,9 +55,11 @@ export default function Navbar({ }: NavbarProps) {
                             <div className="flex items-center gap-3 opacity-60">
                                 <span className="text-[8px] md:text-[9px] font-bold uppercase tracking-widest leading-none whitespace-nowrap">An affiliated company of</span>
                                 <div className="flex items-center gap-2">
-                                    <img
+                                    <Image
                                         src="/arkalliance_transparent_logo.png"
                                         alt="Ark Alliance"
+                                        width={40}
+                                        height={40}
                                         className="h-9 md:h-10 w-auto object-contain"
                                     />
                                     <span className="text-[10px] md:text-[12px] font-bold uppercase tracking-widest text-midnight-navy">Ark Alliance</span>
@@ -71,7 +70,7 @@ export default function Navbar({ }: NavbarProps) {
                 </div>
 
                 {/* Desktop Navigation Links */}
-                <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+                <div className="hidden md:flex flex-1 justify-center items-center gap-8">
                     <Link href="/" className="text-xs font-bold tracking-widest uppercase text-midnight-navy/85 hover:text-midnight-navy transition-colors">
                         Home
                     </Link>
@@ -93,28 +92,24 @@ export default function Navbar({ }: NavbarProps) {
                 </div>
 
                 {/* Partner Identity & CTA */}
-                <div className="flex items-center gap-6">
-                    {loading ? (
-                        <Loader2 className="w-3 h-3 animate-spin text-midnight-navy/20" />
-                    ) : (
-                        <div className="flex items-center space-x-8">
-                            {user ? (
-                                <div className="flex items-center gap-6">
-                                    <div className="flex flex-col items-end">
-                                        <span className="text-[9px] font-bold text-brushed-gold uppercase tracking-[0.2em] mb-0.5 leading-none">Partner Account</span>
-                                        <span className="text-[11px] font-bold text-midnight-navy/85 uppercase tracking-widest">{user.email?.split('@')[0]}</span>
-                                    </div>
-                                    <button
-                                        onClick={handleLogout}
-                                        className="flex items-center gap-2 text-[10px] font-bold text-red-500/85 uppercase tracking-widest hover:text-red-500 transition-all border border-red-500/10 hover:border-red-500/30 px-4 py-2 rounded-full"
-                                    >
-                                        <LogOut className="w-3 h-3" />
-                                        Logout
-                                    </button>
+                <div className="flex items-center justify-end gap-6 md:flex-1">
+                    <div className="flex items-center space-x-8">
+                        {user ? (
+                            <div className="flex items-center gap-6">
+                                <div className="flex flex-col items-end">
+                                    <span className="text-[9px] font-bold text-brushed-gold uppercase tracking-[0.2em] mb-0.5 leading-none">Partner Account</span>
+                                    <span className="text-[11px] font-bold text-midnight-navy/85 uppercase tracking-widest">{user.email?.split('@')[0]}</span>
                                 </div>
-                            ) : null}
-                        </div>
-                    )}
+                                <button
+                                    onClick={handleLogout}
+                                    className="flex items-center gap-2 text-[10px] font-bold text-red-500/85 uppercase tracking-widest hover:text-red-500 transition-all border border-red-500/10 hover:border-red-500/30 px-4 py-2 rounded-full"
+                                >
+                                    <LogOut className="w-3 h-3" />
+                                    Logout
+                                </button>
+                            </div>
+                        ) : null}
+                    </div>
                 </div>
             </nav>
 

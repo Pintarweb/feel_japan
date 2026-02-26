@@ -1,6 +1,7 @@
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { z } from 'zod';
 
 // We instantiate this inside the handler or via a getter to avoid build-time crashes if the API key is missing
 const getResend = () => {
@@ -11,15 +12,29 @@ const getResend = () => {
     return new Resend(key || 're_placeholder');
 };
 
-// Server-side Supabase client (using Service Role would be better for internal logs, but Anon works if RLS allows)
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+const inquirySchema = z.object({
+    pax: z.number().min(1),
+    adults: z.number().min(1),
+    children_6_11: z.union([z.number(), z.string()]).optional(),
+    infants_under_6: z.union([z.number(), z.string()]).optional(),
+    travel_dates: z.string().min(1),
+    package_slug: z.string().optional(),
+    room_category: z.string().optional(),
+    places_of_visit: z.string().optional(),
+    estimated_budget: z.string().optional(),
+    newsletter_optin: z.boolean().optional(),
+    guest_full_name: z.string().optional().nullable(),
+    guest_email: z.string().email().optional().nullable().or(z.literal('')),
+    guest_agency_name: z.string().optional().nullable(),
+    guest_license_number: z.string().optional().nullable(),
+    guest_phone: z.string().optional().nullable()
+});
 
 export async function POST(req: Request) {
     try {
-        const body = await req.json();
+        const rawBody = await req.json();
+        const body = inquirySchema.parse(rawBody);
+        
         const {
             pax,
             adults,
@@ -32,6 +47,12 @@ export async function POST(req: Request) {
             estimated_budget,
             newsletter_optin
         } = body;
+
+        // Server-side Supabase client instantiated per request
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
 
         // 0. Get Authenticated User from Session (Optional for Selective Launch)
         const { data: { user } } = await supabase.auth.getUser();

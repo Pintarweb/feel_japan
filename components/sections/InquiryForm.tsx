@@ -3,7 +3,9 @@
 import { ChevronDown, CheckCircle2, ShieldCheck, AlertCircle, PlaneTakeoff, MapPin, Wallet, BedDouble, Loader2, UserCheck } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import InquirySuccessView from '../shared/InquirySuccessView';
 import { Brochure } from '@/types/brochure';
 
 interface InquiryFormProps {
@@ -162,45 +164,14 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
 
     if (isSubmitted) {
         return (
-            <section id="inquiry-form" className="max-w-4xl mx-auto py-24 px-6">
-                <div
-                    className="bg-white rounded-[3rem] border border-midnight-navy/5 shadow-2xl p-16 text-center animate-in fade-in zoom-in duration-700"
-                    data-umami-event="inquiry-success"
-                >
-                    <div className="w-20 h-20 bg-brushed-gold/10 rounded-full flex items-center justify-center mx-auto mb-10">
-                        <CheckCircle2 className="w-10 h-10 text-brushed-gold" />
-                    </div>
-
-                    <h2 className="text-4xl font-serif font-bold italic text-midnight-navy mb-6">Request Logged</h2>
-
-                    <div className="max-w-md mx-auto space-y-6">
-                        <p className="text-sm leading-relaxed text-midnight-navy/70">
-                            Your bespoke travel architecture request has been successfully transmitted to our travel designers.
-                        </p>
-
-                        <div className="h-px w-12 bg-brushed-gold/30 mx-auto"></div>
-
-                        <p className="text-[11px] uppercase tracking-[0.2em] font-bold text-midnight-navy/70 leading-loose">
-                            Due to high demand for curated itineraries, requests are processed in chronological order.
-                            You will receive a formal response within 24-48 business hours.
-                        </p>
-                    </div>
-
-                    <div className="mt-12">
-                        <button
-                            onClick={() => {
-                                setIsSubmitted(false);
-                                setAdults("2"); setChildren611("0"); setInfantsUnder6("0");
-                                setDateFrom(""); setDateTo(""); setRoomCategory(""); setPlacesOfVisit(""); setEstimatedBudget("");
-                                setTouched({}); setErrors({});
-                            }}
-                            className="text-[10px] uppercase tracking-widest font-bold text-brushed-gold hover:text-midnight-navy transition-colors border-b border-brushed-gold/20 pb-1"
-                        >
-                            Log Another Request
-                        </button>
-                    </div>
-                </div>
-            </section>
+            <InquirySuccessView
+                onReset={() => {
+                    setIsSubmitted(false);
+                    setAdults("2"); setChildren611("0"); setInfantsUnder6("0");
+                    setDateFrom(""); setDateTo(""); setRoomCategory(""); setPlacesOfVisit(""); setEstimatedBudget("");
+                    setTouched({}); setErrors({});
+                }}
+            />
         );
     }
 
@@ -210,10 +181,11 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
 
                 {/* Visual Side (Concierge Vibe) */}
                 <div className="md:col-span-4 relative min-h-[300px] md:min-h-full bg-midnight-navy">
-                    <img
+                    <Image
                         src="/images/inquiry_form_image.jpeg"
                         alt="Concierge Service"
-                        className="absolute inset-0 w-full h-full object-contain"
+                        fill
+                        className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy via-transparent to-transparent"></div>
                     <div className="absolute bottom-0 left-0 p-10 z-10">
@@ -326,19 +298,12 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                             required
                                             value={phoneNumber}
                                             onChange={(e) => {
-                                                const rawValue = e.target.value.replace(/\D/g, "");
-                                                let formattedValue = rawValue;
-                                                if (rawValue.length > 2) {
-                                                    formattedValue = `${rawValue.slice(0, 2)} - ${rawValue.slice(2)}`;
-                                                }
-                                                if (rawValue.length > 6) {
-                                                    formattedValue = `${rawValue.slice(0, 2)} - ${rawValue.slice(2, 6)} ${rawValue.slice(6, 11)}`;
-                                                }
-                                                setPhoneNumber(formattedValue);
+                                                const rawValue = e.target.value.replace(/[^\d\s\-\+]/g, "");
+                                                setPhoneNumber(rawValue);
                                             }}
                                             className={inputClasses('phone')}
-                                            placeholder="12 - 3456 789"
-                                            maxLength={15}
+                                            placeholder="e.g. 123456789"
+                                            maxLength={20}
                                         />
                                     </div>
                                 </div>

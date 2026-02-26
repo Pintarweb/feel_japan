@@ -156,10 +156,11 @@ export default function BrochureGrid({ brochures }: BrochureGridProps) {
                                     {/* Image Card */}
                                     <div className="relative aspect-[3/4] overflow-hidden rounded-sm shadow-xl hover:shadow-2xl transition-all duration-500 mb-6">
                                         <div className="absolute inset-0 bg-midnight-navy/10 z-10 group-hover:bg-transparent transition-colors duration-500"></div>
-                                        <img
+                                        <Image
                                             src={brochure.image}
                                             alt={brochure.title}
-                                            className="h-full w-full object-cover transition-transform duration-[1.5s] ease-in-out group-hover:scale-110"
+                                            fill
+                                            className="object-cover transition-transform duration-[1.5s] ease-in-out group-hover:scale-110"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy/80 via-transparent to-transparent opacity-80"></div>
 

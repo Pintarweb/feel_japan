@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.7] - 2026-02-26
+### Changed
+- update: modified route.ts, page.tsx, page.tsx and 7 others
+
 ## [0.1.6] - 2026-02-25
 ### Changed
 - update: modified brevo_marketing_boilerplate.html

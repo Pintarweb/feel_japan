@@ -15,7 +15,7 @@ export const getBrochures = async (): Promise<Brochure[]> => {
         return [];
     }
 
-    return (data as any[]).map(item => ({
+    const mappedBrochures: Brochure[] = (data || []).map((item: any) => ({
         id: item.id,
         slug: item.slug,
         image: item.image,
@@ -39,6 +39,8 @@ export const getBrochures = async (): Promise<Brochure[]> => {
         pdf_last_generated_at: item.pdf_last_generated_at,
         thumbnail_url: item.thumbnail_url
     }));
+
+    return mappedBrochures;
 };
 
 export const getBrochureBySlug = async (slug: string): Promise<Brochure | null> => {
