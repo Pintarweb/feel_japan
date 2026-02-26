@@ -43,7 +43,22 @@ interface Inquiry {
     package_slug: string;
     travel_dates: string;
     pax: number;
+    guest_full_name?: string;
+    guest_email?: string;
+    guest_phone?: string;
+    guest_agency_name?: string;
+    agent_profiles?: {
+        full_name: string;
+        email: string;
+        phone: string;
+        agency_name: string;
+    } | null;
 }
+
+const getAgencyName = (i: any) => i.agent_profiles?.agency_name || i.guest_agency_name || i.agency_name || "";
+const getFullName = (i: any) => i.agent_profiles?.full_name || i.guest_full_name || i.name || "Guest";
+const getEmail = (i: any) => i.agent_profiles?.email || i.guest_email || i.email || "N/A";
+const getPhone = (i: any) => i.agent_profiles?.phone || i.guest_phone || i.phone || "N/A";
 
 export default function StudioInquiries() {
     const router = useRouter();
@@ -70,7 +85,7 @@ export default function StudioInquiries() {
         try {
             const { data, error } = await supabase
                 .from('inquiries')
-                .select('*')
+                .select('*, agent_profiles(*)')
                 .order('created_at', { ascending: false });
 
             if (data) setInquiries(data);
@@ -99,9 +114,9 @@ export default function StudioInquiries() {
     const filteredInquiries = inquiries.filter(i => {
         const query = searchQuery.toLowerCase();
         return (
-            (i.name?.toLowerCase().includes(query) ?? false) ||
-            (i.email?.toLowerCase().includes(query) ?? false) ||
-            (i.agency_name?.toLowerCase().includes(query) ?? false) ||
+            (getFullName(i)?.toLowerCase().includes(query) ?? false) ||
+            (getEmail(i)?.toLowerCase().includes(query) ?? false) ||
+            (getAgencyName(i)?.toLowerCase().includes(query) ?? false) ||
             (i.package_slug?.toLowerCase().includes(query) ?? false)
         );
     });
@@ -222,14 +237,14 @@ export default function StudioInquiries() {
                                     >
                                         <div className="flex items-center gap-6">
                                             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-xs ${selectedInquiry?.id === inquiry.id ? 'bg-brushed-gold text-midnight-navy' : 'bg-midnight-navy/5 text-midnight-navy'}`}>
-                                                {(inquiry.name || inquiry.agency_name || "??").substring(0, 2).toUpperCase()}
+                                                {(getFullName(inquiry) || getAgencyName(inquiry) || "??").substring(0, 2).toUpperCase()}
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-3">
-                                                    <span className={`text-sm font-bold ${selectedInquiry?.id === inquiry.id ? 'text-white' : 'text-midnight-navy'}`}>{inquiry.name || inquiry.agency_name}</span>
-                                                    {inquiry.agency_name && (
+                                                    <span className={`text-sm font-bold ${selectedInquiry?.id === inquiry.id ? 'text-white' : 'text-midnight-navy'}`}>{getFullName(inquiry)}</span>
+                                                    {getAgencyName(inquiry) && (
                                                         <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-tighter ${selectedInquiry?.id === inquiry.id ? 'bg-white/10 text-white/60' : 'bg-midnight-navy/5 text-midnight-navy/40'}`}>
-                                                            {inquiry.agency_name}
+                                                            {getAgencyName(inquiry)}
                                                         </span>
                                                     )}
                                                 </div>
@@ -254,12 +269,12 @@ export default function StudioInquiries() {
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-brushed-gold/10 rounded-full -mr-16 -mt-16"></div>
                                     <div className="relative">
                                         <div className="w-16 h-16 bg-brushed-gold text-midnight-navy rounded-3xl flex items-center justify-center font-serif font-bold text-2xl shadow-xl shadow-black/20 mb-6">
-                                            {(selectedInquiry.name || selectedInquiry.agency_name || "?").substring(0, 1).toUpperCase()}
+                                            {(getFullName(selectedInquiry) || getAgencyName(selectedInquiry) || "?").substring(0, 1).toUpperCase()}
                                         </div>
-                                        <h2 className="text-2xl font-serif font-bold italic">{selectedInquiry.name || selectedInquiry.agency_name}</h2>
-                                        {selectedInquiry.agency_name && (
+                                        <h2 className="text-2xl font-serif font-bold italic">{getFullName(selectedInquiry)}</h2>
+                                        {getAgencyName(selectedInquiry) && (
                                             <div className="flex items-center gap-2 mt-2">
-                                                <span className="text-brushed-gold text-[10px] font-bold uppercase tracking-widest">{selectedInquiry.agency_name}</span>
+                                                <span className="text-brushed-gold text-[10px] font-bold uppercase tracking-widest">{getAgencyName(selectedInquiry)}</span>
                                             </div>
                                         )}
                                     </div>
@@ -273,11 +288,11 @@ export default function StudioInquiries() {
                                         <div className="grid grid-cols-1 gap-4">
                                             <div className="bg-[#f8f9fa] p-4 rounded-2xl flex items-center gap-4 border border-midnight-navy/5">
                                                 <Mail className="w-4 h-4 text-midnight-navy/30" />
-                                                <span className="text-sm font-medium">{selectedInquiry.email}</span>
+                                                <span className="text-sm font-medium">{getEmail(selectedInquiry)}</span>
                                             </div>
                                             <div className="bg-[#f8f9fa] p-4 rounded-2xl flex items-center gap-4 border border-midnight-navy/5">
                                                 <Phone className="w-4 h-4 text-midnight-navy/30" />
-                                                <span className="text-sm font-medium">{selectedInquiry.phone}</span>
+                                                <span className="text-sm font-medium">{getPhone(selectedInquiry)}</span>
                                             </div>
                                         </div>
                                     </section>
