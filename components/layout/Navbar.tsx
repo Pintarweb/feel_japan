@@ -43,11 +43,9 @@ export default function Navbar() {
                 {/* Logo Section */}
                 <div className="flex items-center gap-6 h-full md:flex-1">
                     <Link href="/" className="flex items-center gap-4 h-full group">
-                        <Image
+                        <img
                             src="/logo_transparent.png"
                             alt="Feel Japan with K"
-                            width={50}
-                            height={50}
                             className="h-[120%] md:h-[135%] w-auto object-contain transition-transform group-hover:scale-105 mt-2"
                         />
                         <div className="flex flex-col border-l border-midnight-navy/10 pl-4 py-1">
@@ -55,11 +53,9 @@ export default function Navbar() {
                             <div className="flex items-center gap-3 opacity-60">
                                 <span className="text-[8px] md:text-[9px] font-bold uppercase tracking-widest leading-none whitespace-nowrap">An affiliated company of</span>
                                 <div className="flex items-center gap-2">
-                                    <Image
+                                    <img
                                         src="/arkalliance_transparent_logo.png"
                                         alt="Ark Alliance"
-                                        width={40}
-                                        height={40}
                                         className="h-9 md:h-10 w-auto object-contain"
                                     />
                                     <span className="text-[10px] md:text-[12px] font-bold uppercase tracking-widest text-midnight-navy">Ark Alliance</span>
