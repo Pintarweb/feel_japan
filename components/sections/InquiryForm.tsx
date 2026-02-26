@@ -4,7 +4,7 @@ import { ChevronDown, CheckCircle2, ShieldCheck, AlertCircle, PlaneTakeoff, MapP
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import InquirySuccessView from '../shared/InquirySuccessView';
 import { Brochure } from '@/types/brochure';
 
@@ -53,6 +53,18 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
     const [email, setEmail] = useState(agentProfile?.email || "");
     const [countryCode, setCountryCode] = useState("+60");
     const [phoneNumber, setPhoneNumber] = useState(agentProfile?.phone || "");
+    const [isPhoneDropdownOpen, setIsPhoneDropdownOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsPhoneDropdownOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     const COUNTRY_CODES = [
         { code: "+60", iso: "my", name: "Malaysia" },
@@ -268,29 +280,53 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                 <div>
                                     <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Phone Number</label>
                                     <div className="flex gap-2">
-                                        <div className="relative w-44 flex-shrink-0">
-                                            <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10 flex items-center">
-                                                <img
-                                                    src={`https://flagcdn.com/w40/${COUNTRY_CODES.find(c => c.code === countryCode)?.iso}.png`}
-                                                    srcSet={`https://flagcdn.com/w80/${COUNTRY_CODES.find(c => c.code === countryCode)?.iso}.png 2x`}
-                                                    width="24"
-                                                    height="16"
-                                                    alt="Flag"
-                                                    className="rounded-[2px] object-cover shadow-sm border border-black/10"
-                                                />
-                                            </div>
-                                            <select
-                                                value={countryCode}
-                                                onChange={(e) => setCountryCode(e.target.value)}
-                                                className="w-full bg-white text-midnight-navy border border-midnight-navy/10 rounded-lg pl-12 pr-8 py-4 appearance-none focus:outline-none focus:ring-1 focus:ring-brushed-gold cursor-pointer text-sm"
+                                        <div className="relative w-44 flex-shrink-0" ref={dropdownRef}>
+                                            <button
+                                                type="button"
+                                                className="w-full h-full bg-white text-midnight-navy border border-midnight-navy/10 rounded-lg pl-12 pr-8 py-4 flex items-center focus:outline-none focus:ring-1 focus:ring-brushed-gold cursor-pointer text-sm"
+                                                onClick={() => setIsPhoneDropdownOpen(!isPhoneDropdownOpen)}
                                             >
-                                                {COUNTRY_CODES.map((c) => (
-                                                    <option key={c.code} value={c.code}>
-                                                        {c.code} ({c.name})
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            <ChevronDown className="w-4 h-4 text-midnight-navy/50 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                                <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10 flex items-center">
+                                                    <img
+                                                        src={`https://flagcdn.com/w40/${COUNTRY_CODES.find(c => c.code === countryCode)?.iso}.png`}
+                                                        srcSet={`https://flagcdn.com/w80/${COUNTRY_CODES.find(c => c.code === countryCode)?.iso}.png 2x`}
+                                                        width="24"
+                                                        height="16"
+                                                        alt="Flag"
+                                                        className="rounded-[2px] object-cover shadow-sm border border-black/10"
+                                                    />
+                                                </div>
+                                                <span className="truncate text-left w-full">{countryCode}</span>
+                                                <ChevronDown className="w-4 h-4 text-midnight-navy/50 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                            </button>
+
+                                            {isPhoneDropdownOpen && (
+                                                <div className="absolute top-full left-0 mt-2 w-[280px] bg-white border border-midnight-navy/10 rounded-lg shadow-2xl z-50 max-h-60 overflow-y-auto py-2">
+                                                    {COUNTRY_CODES.map((c) => (
+                                                        <div
+                                                            key={c.code}
+                                                            className="flex items-center gap-3 px-4 py-3 hover:bg-midnight-navy/5 cursor-pointer transition-colors"
+                                                            onClick={() => {
+                                                                setCountryCode(c.code);
+                                                                setIsPhoneDropdownOpen(false);
+                                                            }}
+                                                        >
+                                                            <img
+                                                                src={`https://flagcdn.com/w40/${c.iso}.png`}
+                                                                srcSet={`https://flagcdn.com/w80/${c.iso}.png 2x`}
+                                                                width="24"
+                                                                height="16"
+                                                                alt={c.name}
+                                                                className="rounded-[2px] object-cover shadow-sm border border-black/10 flex-shrink-0"
+                                                            />
+                                                            <div className="flex flex-col">
+                                                                <span className="text-sm font-semibold text-midnight-navy">{c.code}</span>
+                                                                <span className="text-xs text-midnight-navy/60">{c.name}</span>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                         <input
                                             type="tel"

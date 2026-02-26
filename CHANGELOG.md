@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.10] - 2026-02-26
+### Changed
+- update: modified InquiryForm.tsx, InquirySuccessView.tsx
+
 ## [0.1.9] - 2026-02-26
 ### Changed
 - update: modified route.ts
