@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.14] - 2026-02-27
+### Changed
+- update: modified page.tsx, route.ts, page.tsx and 5 others
+
 ## [0.1.13] - 2026-02-27
 ### Changed
 - update: modified layout.tsx, StudioBuilder.tsx, InquiryForm.tsx and 2 others

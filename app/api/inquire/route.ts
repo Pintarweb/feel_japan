@@ -19,8 +19,9 @@ const getResend = () => {
 const inquirySchema = z.object({
   pax: z.number().min(1),
   adults: z.number().min(1),
-  children_6_11: z.union([z.number(), z.string()]).optional(),
-  infants_under_6: z.union([z.number(), z.string()]).optional(),
+  children_cwb: z.union([z.number(), z.string()]).optional(),
+  children_cnb: z.union([z.number(), z.string()]).optional(),
+  infants_0_2: z.union([z.number(), z.string()]).optional(),
   travel_dates: z.string().min(1),
   package_slug: z.string().optional(),
   room_category: z.string().optional(),
@@ -56,8 +57,9 @@ export async function POST(req: Request) {
     const {
       pax,
       adults,
-      children_6_11,
-      infants_under_6,
+      children_cwb,
+      children_cnb,
+      infants_0_2,
       travel_dates,
       package_slug,
       room_category,
@@ -78,15 +80,16 @@ export async function POST(req: Request) {
       agentProfile = profile;
     }
 
-    const numChildren611 = children_6_11 ? parseInt(String(children_6_11)) : 0;
-    const numInfantsUnder6 = infants_under_6 ? parseInt(String(infants_under_6)) : 0;
+    const numChildrenCWB = children_cwb ? parseInt(String(children_cwb)) : 0;
+    const numChildrenCNB = children_cnb ? parseInt(String(children_cnb)) : 0;
+    const numInfants0to2 = infants_0_2 ? parseInt(String(infants_0_2)) : 0;
 
     // 1. Save Inquiry to Supabase
     const inquiryData: any = {
       pax,
       adults,
-      children_6_11: numChildren611,
-      infants_under_6: numInfantsUnder6,
+      children_6_11: numChildrenCWB + numChildrenCNB,
+      infants_0_2: numInfants0to2,
       travel_dates,
       package_slug,
       room_category,
@@ -133,8 +136,9 @@ export async function POST(req: Request) {
         travelDates: travel_dates,
         pax,
         adults,
-        children611: numChildren611,
-        infantsUnder6: numInfantsUnder6,
+        childrenCWB: numChildrenCWB,
+        childrenCNB: numChildrenCNB,
+        infants0to2: numInfants0to2,
         roomCategory: room_category || '',
         estimatedBudget: estimated_budget || '',
         placesOfVisit: places_of_visit || ''

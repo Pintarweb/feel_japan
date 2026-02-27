@@ -35,8 +35,9 @@ interface Inquiry {
     email: string;
     phone: string;
     adults: number;
-    children_6_11: number;
-    infants_under_6: number;
+    children_cwb: number;
+    children_cnb: number;
+    infants_0_2: number;
     estimated_budget: string;
     places_of_visit: string;
     room_category: string;

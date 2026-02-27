@@ -30,8 +30,9 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
 
     // Travel Details state
     const [adults, setAdults] = useState("2");
-    const [children611, setChildren611] = useState("0");
-    const [infantsUnder6, setInfantsUnder6] = useState("0");
+    const [childrenCWB, setChildrenCWB] = useState("0");
+    const [childrenCNB, setChildrenCNB] = useState("0");
+    const [infants0to2, setInfants0to2] = useState("0");
     const [dateFrom, setDateFrom] = useState("");
     const [dateTo, setDateTo] = useState("");
     const [roomCategory, setRoomCategory] = useState("");
@@ -117,14 +118,16 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
 
         try {
             const numAdults = parseInt(adults) || 0;
-            const numChildren611 = parseInt(children611) || 0;
-            const numInfantsUnder6 = parseInt(infantsUnder6) || 0;
+            const numChildrenCWB = parseInt(childrenCWB) || 0;
+            const numChildrenCNB = parseInt(childrenCNB) || 0;
+            const numInfants0to2 = parseInt(infants0to2) || 0;
 
             const payload = {
-                pax: numAdults + numChildren611 + numInfantsUnder6,
+                pax: numAdults + numChildrenCWB + numChildrenCNB + numInfants0to2,
                 adults: numAdults,
-                children_6_11: numChildren611,
-                infants_under_6: numInfantsUnder6,
+                children_cwb: numChildrenCWB,
+                children_cnb: numChildrenCNB,
+                infants_0_2: numInfants0to2,
                 travel_dates: `${dateFrom} to ${dateTo}`,
                 package_slug: selectedPackage,
                 room_category: roomCategory,
@@ -179,7 +182,7 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
             <InquirySuccessView
                 onReset={() => {
                     setIsSubmitted(false);
-                    setAdults("2"); setChildren611("0"); setInfantsUnder6("0");
+                    setAdults("2"); setChildrenCWB("0"); setChildrenCNB("0"); setInfants0to2("0");
                     setDateFrom(""); setDateTo(""); setRoomCategory(""); setPlacesOfVisit(""); setEstimatedBudget("");
                     setTouched({}); setErrors({});
                 }}
@@ -350,7 +353,7 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                         <div>
                             <div className="flex items-center gap-3 mb-6 pb-2 border-b border-midnight-navy/5">
                                 <PlaneTakeoff className="w-5 h-5 text-brushed-gold" />
-                                <h5 className="text-midnight-navy text-sm font-bold uppercase tracking-widest">Travel Architecture Details</h5>
+                                <h5 className="text-midnight-navy text-sm font-bold uppercase tracking-widest">Travel Info Details</h5>
                             </div>
 
                             <div className="space-y-6">
@@ -383,7 +386,7 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                                     <div>
                                         <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Adults (13y+)</label>
                                         <input
@@ -397,14 +400,25 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Children (3-12y)</label>
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Children CWB</label>
                                         <input
                                             type="number"
                                             min="0"
-                                            name="children611"
-                                            value={children611}
-                                            onChange={(e) => setChildren611(e.target.value)}
-                                            className={inputClasses('children611')}
+                                            name="childrenCWB"
+                                            value={childrenCWB}
+                                            onChange={(e) => setChildrenCWB(e.target.value)}
+                                            className={inputClasses('childrenCWB')}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Children CNB</label>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            name="childrenCNB"
+                                            value={childrenCNB}
+                                            onChange={(e) => setChildrenCNB(e.target.value)}
+                                            className={inputClasses('childrenCNB')}
                                         />
                                     </div>
                                     <div>
@@ -412,10 +426,10 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                         <input
                                             type="number"
                                             min="0"
-                                            name="infantsUnder6"
-                                            value={infantsUnder6}
-                                            onChange={(e) => setInfantsUnder6(e.target.value)}
-                                            className={inputClasses('infantsUnder6')}
+                                            name="infants0to2"
+                                            value={infants0to2}
+                                            onChange={(e) => setInfants0to2(e.target.value)}
+                                            className={inputClasses('infants0to2')}
                                         />
                                     </div>
                                 </div>

@@ -26,8 +26,9 @@ interface InquiryNotificationProps {
     travelDates: string;
     pax: number;
     adults: number;
-    children611: number;
-    infantsUnder6: number;
+    childrenCWB: number;
+    childrenCNB: number;
+    infants0to2: number;
     roomCategory: string;
     estimatedBudget: string;
     placesOfVisit: string;
@@ -45,8 +46,9 @@ export default function InquiryNotification({
     travelDates,
     pax,
     adults,
-    children611,
-    infantsUnder6,
+    childrenCWB,
+    childrenCNB,
+    infants0to2,
     roomCategory,
     estimatedBudget,
     placesOfVisit,
@@ -126,7 +128,7 @@ export default function InquiryNotification({
                                 </Row>
                                 <Row className="mb-2 border-none border-b-[1px] border-b-slate-100 border-solid pb-2">
                                     <Column className="text-slate-500 w-[35%] text-sm">Pax</Column>
-                                    <Column className="text-slate-900 text-sm">{pax} Total (A:{adults} C:{children611} I:{infantsUnder6})</Column>
+                                    <Column className="text-slate-900 text-sm">{pax} Total (A:{adults} CWB:{childrenCWB} CNB:{childrenCNB} I:{infants0to2})</Column>
                                 </Row>
                                 <Row className="mb-2 border-none border-b-[1px] border-b-slate-100 border-solid pb-2">
                                     <Column className="text-slate-500 w-[35%] text-sm">Category</Column>
@@ -169,8 +171,9 @@ InquiryNotification.PreviewProps = {
     travelDates: "Oct 12 - Oct 17, 2026",
     pax: 4,
     adults: 2,
-    children611: 2,
-    infantsUnder6: 0,
+    childrenCWB: 1,
+    childrenCNB: 1,
+    infants0to2: 0,
     roomCategory: "4-Star (Premium)",
     estimatedBudget: "¥500,000",
     placesOfVisit: "Osaka Castle, Dotonbori, Fushimi Inari, Arashiyama Bamboo Grove",
