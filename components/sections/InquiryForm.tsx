@@ -192,14 +192,14 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
             <div className="max-w-7xl mx-auto bg-white rounded-[3rem] shadow-2xl overflow-hidden grid md:grid-cols-12">
 
                 {/* Visual Side (Concierge Vibe) */}
-                <div className="md:col-span-4 relative min-h-[300px] md:min-h-full bg-midnight-navy">
+                <div className="md:col-span-4 relative min-h-[300px] md:min-h-full bg-midnight-navy group overflow-hidden flex items-center justify-center">
                     <Image
                         src="/images/inquiry_form_image.jpeg"
                         alt="Concierge Service"
                         fill
-                        className="object-cover"
+                        className="object-contain transition-transform duration-[2000ms] ease-out group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy via-transparent to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-midnight-navy via-transparent to-transparent pointer-events-none"></div>
                     <div className="absolute bottom-0 left-0 p-10 z-10">
                         <UserCheck className="w-12 h-12 text-brushed-gold mb-6" />
                         <h2 className="text-3xl md:text-4xl font-serif text-white mb-4 italic">Here to Assist.</h2>

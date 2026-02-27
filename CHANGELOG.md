@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.12] - 2026-02-27
+### Changed
+- update: modified route.ts, InquiryForm.tsx, package-lock.json and 6 others
+
 ## [0.1.10] - 2026-02-26
 ### Changed
 - update: modified InquiryForm.tsx, InquirySuccessView.tsx
