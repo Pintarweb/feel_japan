@@ -265,8 +265,8 @@ function parseBrochureHTML(html: string, filename: string): any {
     // === PAYMENT TERMS ===
     const depositMatch = html.match(/Deposit \(Non-Refundable\)<\/p>[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/i);
     const deposit = depositMatch ? depositMatch[1].trim() : '';
-    const finalMatch = html.match(/Final Payment[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/i);
-    const finalPayment = finalMatch ? finalMatch[1].trim() : '';
+    // Standardized final payment term required
+    const finalPayment = "1 month before arrival";
     const paymentTermsValue = { deposit, finalPayment };
 
     // === HIGHLIGHTS ===

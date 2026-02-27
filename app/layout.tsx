@@ -22,7 +22,6 @@ export const metadata: Metadata = {
   },
 };
 
-import WhatsAppButton from "@/components/layout/WhatsAppButton";
 
 export default function RootLayout({
   children,
@@ -38,7 +37,7 @@ export default function RootLayout({
         className={`${playfair.variable} ${montserrat.variable} antialiased bg-off-white text-midnight-navy font-sans`}
       >
         {children}
-        <WhatsAppButton />
+
       </body>
     </html>
   );

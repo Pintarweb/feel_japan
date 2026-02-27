@@ -385,7 +385,7 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div>
-                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Adults (12y+)</label>
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Adults (13y+)</label>
                                         <input
                                             type="number"
                                             required
@@ -397,7 +397,7 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Children (6-11y)</label>
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Children (3-12y)</label>
                                         <input
                                             type="number"
                                             min="0"
@@ -408,7 +408,7 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Infants (Under 6y)</label>
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Infants (0-2y)</label>
                                         <input
                                             type="number"
                                             min="0"

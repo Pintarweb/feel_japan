@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.13] - 2026-02-27
+### Changed
+- update: modified layout.tsx, StudioBuilder.tsx, InquiryForm.tsx and 2 others
+
 ## [0.1.12] - 2026-02-27
 ### Changed
 - update: modified route.ts, InquiryForm.tsx, package-lock.json and 6 others

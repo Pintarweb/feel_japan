@@ -69,7 +69,7 @@ export default function StudioBuilder() {
         optional: [],
         paymentTerms: {
             deposit: "50% non-refundable deposit required to secure booking.",
-            finalPayment: "Final balance due 30 days prior to arrival."
+            finalPayment: "1 month before arrival"
         },
         tags: {
             type: "Private Tour",
