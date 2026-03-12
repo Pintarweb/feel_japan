@@ -42,6 +42,11 @@ const parseDescription = (text: string) => {
     });
 };
 
+// Helper to remove any pricing figures in strings (e.g. RM 50, 4,000 Yen / Pax)
+const removePricing = (text: string) => {
+    return text.replace(/(?:[:\-\(]\s*)?(?:(?:RM|MYR|USD|JPY|Yen|¥|\$)\s*[\d,]+(?:\.\d{2})?|[\d,]+(?:\.\d{2})?\s*(?:Yen|RM|MYR|USD|JPY|¥|\$)).*$/gi, '').trim();
+};
+
 interface BrochureTemplateProps {
     brochure: Brochure;
     isAgent?: boolean;
@@ -249,24 +254,27 @@ export default function BrochureTemplate({ brochure, isAgent = false, agentProfi
                                 What's Excluded
                             </h3>
                             <ul className="space-y-3 text-xs font-bold text-white/85 italic mb-8">
-                                {brochure.exclusions.map((item, index) => (
-                                    <li key={index}>• {item}</li>
-                                ))}
+                                {[...brochure.exclusions, "Immenities"].map((item, index) => {
+                                    const cleanedItem = removePricing(item);
+                                    return <li key={index}>• {cleanedItem}</li>;
+                                })}
                             </ul>
 
+                            {/* 
                             <h3 className="text-lg font-bold mb-4 flex items-center gap-3 text-brushed-gold border-t border-white/10 pt-6 uppercase tracking-tight">
                                 Payment Terms
                             </h3>
                             <div className="space-y-4 text-xs font-semibold opacity-90 leading-relaxed">
                                 <div>
                                     <p className="text-brushed-gold uppercase font-black mb-1">Deposit (Non-Refundable)</p>
-                                    <p>{brochure.paymentTerms.deposit}</p>
+                                    <p>{brochure.paymentTerms?.deposit}</p>
                                 </div>
                                 <div>
                                     <p className="text-brushed-gold uppercase font-black mb-1">Final Payment</p>
-                                    <p>{brochure.paymentTerms.finalPayment}</p>
+                                    <p>{brochure.paymentTerms?.finalPayment}</p>
                                 </div>
                             </div>
+                            */}
                         </div>
                     </div>
                 </div>

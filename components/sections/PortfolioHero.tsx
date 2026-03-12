@@ -19,7 +19,7 @@ export default function PortfolioHero() {
                     Exclusive Access
                 </span>
                 <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white mb-6 tracking-tight animate-fade-in-up delay-100">
-                    Our Range of Packages
+                    Explore Our Itineraries
                 </h2>
                 <div className="w-24 h-1 bg-brushed-gold mx-auto mb-8 animate-scale-x delay-200 origin-left"></div>
             </div>

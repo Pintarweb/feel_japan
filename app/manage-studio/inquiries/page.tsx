@@ -22,7 +22,8 @@ import {
     Filter,
     CheckCircle2,
     Trash2,
-    ShieldCheck
+    ShieldCheck,
+    AlertCircle
 } from 'lucide-react';
 import Link from 'next/link';
 import Gatekeeper from '@/components/studio/Gatekeeper';
@@ -43,6 +44,7 @@ interface Inquiry {
     room_category: string;
     package_slug: string;
     travel_dates: string;
+    special_request?: string;
     pax: number;
     guest_full_name?: string;
     guest_email?: string;
@@ -341,6 +343,19 @@ export default function StudioInquiries() {
                                             </div>
                                         </div>
                                     </section>
+
+                                    {selectedInquiry.special_request && (
+                                        <section>
+                                            <h3 className="text-[10px] uppercase font-bold tracking-[0.2em] text-midnight-navy/40 mb-4 flex items-center gap-2">
+                                                <AlertCircle className="w-3 h-3 text-brushed-gold" /> Special Request
+                                            </h3>
+                                            <div className="bg-brushed-gold/5 border border-brushed-gold/20 rounded-[2rem] p-6 shadow-sm">
+                                                <p className="text-sm leading-relaxed text-midnight-navy/80 italic font-serif">
+                                                    "{selectedInquiry.special_request}"
+                                                </p>
+                                            </div>
+                                        </section>
+                                    )}
 
                                     <div className="pt-6">
                                         <button className="w-full bg-midnight-navy text-white py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-xl shadow-midnight-navy/20 hover:bg-midnight-navy/90 hover:-translate-y-1 transition-all flex items-center justify-center gap-3">

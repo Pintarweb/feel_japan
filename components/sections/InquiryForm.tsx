@@ -37,6 +37,7 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
     const [roomCategory, setRoomCategory] = useState("");
     const [placesOfVisit, setPlacesOfVisit] = useState("");
     const [estimatedBudget, setEstimatedBudget] = useState("");
+    const [specialRequest, setSpecialRequest] = useState("");
 
     const [newsletterOptin, setNewsletterOptin] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -133,7 +134,7 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                 places_of_visit: placesOfVisit,
                 estimated_budget: estimatedBudget,
                 newsletter_optin: newsletterOptin,
-                // Guest details (will be ignored by API if logged in)
+                special_request: specialRequest,
                 // Guest details
                 guest_full_name: fullName,
                 guest_email: email,
@@ -182,7 +183,7 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                 onReset={() => {
                     setIsSubmitted(false);
                     setAdults("2"); setChildrenCWB("0"); setChildrenCNB("0"); setInfants0to2("0");
-                    setDateFrom(""); setDateTo(""); setRoomCategory(""); setPlacesOfVisit(""); setEstimatedBudget("");
+                    setDateFrom(""); setDateTo(""); setRoomCategory(""); setPlacesOfVisit(""); setEstimatedBudget(""); setSpecialRequest("");
                     setTouched({}); setErrors({});
                 }}
             />
@@ -243,15 +244,15 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Travel License (MOTAC)</label>
+                                    <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Contact Email</label>
                                     <input
-                                        type="text"
-                                        name="licenseNumber"
+                                        type="email"
+                                        name="email"
                                         required
-                                        value={licenseNumber}
-                                        onChange={(e) => setLicenseNumber(e.target.value.toUpperCase())}
-                                        className={inputClasses('licenseNumber')}
-                                        placeholder="e.g. KPK/LN 1234"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className={inputClasses('email')}
+                                        placeholder="e.g. sarah@travelwithstyle.com"
                                     />
                                 </div>
                                 <div>
@@ -268,15 +269,15 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Contact Email</label>
+                                    <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Travel License (MOTAC)</label>
                                     <input
-                                        type="email"
-                                        name="email"
+                                        type="text"
+                                        name="licenseNumber"
                                         required
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className={inputClasses('email')}
-                                        placeholder="e.g. sarah@travelwithstyle.com"
+                                        value={licenseNumber}
+                                        onChange={(e) => setLicenseNumber(e.target.value.toUpperCase())}
+                                        className={inputClasses('licenseNumber')}
+                                        placeholder="e.g. KPK/LN 1234"
                                     />
                                 </div>
                                 <div>
@@ -455,6 +456,23 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                             <ChevronDown className="w-5 h-5" />
                                         </div>
                                     </div>
+
+                                    {selectedPackage === "custom" && (
+                                        <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                                            <div className="flex items-center gap-2 mb-1.5 ml-1">
+                                                <AlertCircle className="w-3 h-3 text-brushed-gold/85" />
+                                                <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70">Special Request / Details</label>
+                                            </div>
+                                            <textarea
+                                                name="specialRequest"
+                                                value={specialRequest}
+                                                onChange={(e) => setSpecialRequest(e.target.value)}
+                                                placeholder="Please detail your custom itinerary requirements..."
+                                                rows={4}
+                                                className={inputClasses('specialRequest') + " py-3 resize-none bg-midnight-navy/5"}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -500,7 +518,7 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                 <div>
                                     <div className="flex items-center gap-2 mb-1.5 ml-1">
                                         <MapPin className="w-3 h-3 text-brushed-gold/85" />
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70">Tentative Places of Visit</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70">Planned Places of Visit</label>
                                     </div>
                                     <textarea
                                         name="placesOfVisit"

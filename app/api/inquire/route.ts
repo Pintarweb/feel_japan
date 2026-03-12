@@ -28,6 +28,7 @@ const inquirySchema = z.object({
   places_of_visit: z.string().optional(),
   estimated_budget: z.string().optional(),
   newsletter_optin: z.boolean().optional(),
+  special_request: z.string().optional(),
   guest_full_name: z.string().optional().nullable(),
   guest_email: z.string().email().optional().nullable().or(z.literal('')),
   guest_agency_name: z.string().optional().nullable(),
@@ -65,7 +66,8 @@ export async function POST(req: Request) {
       room_category,
       places_of_visit,
       estimated_budget,
-      newsletter_optin
+      newsletter_optin,
+      special_request
     } = body;
 
     let agentProfile = null;
@@ -96,6 +98,7 @@ export async function POST(req: Request) {
       places_of_visit,
       estimated_budget,
       newsletter_optin,
+      special_request,
       // Link to agent if logged in
       agent_id: user?.id || null,
       // Save guest details if not logged in
