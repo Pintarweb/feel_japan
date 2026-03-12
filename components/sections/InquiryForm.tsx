@@ -19,9 +19,8 @@ const ROOM_CATEGORIES = [
     "Superior Room",
     "Deluxe Room",
     "Executive Suite",
-    "Japanese Traditional (Ryokan)",
     "Family Room",
-    "Luxury Villa"
+    "Others"
 ];
 
 export default function InquiryForm({ brochures, isAgent = false, agentProfile }: InquiryFormProps) {

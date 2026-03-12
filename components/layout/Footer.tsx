@@ -24,38 +24,32 @@ export default function Footer() {
                     </div>
                 </div>
 
-                {/* Contact Info */}
-                <div className="flex flex-row gap-8 md:gap-12 text-left">
-
-                    {/* Address */}
-                    <div>
-                        <p className="text-[10px] font-bold text-brushed-gold uppercase tracking-[0.2em] mb-1">KL Headquarters</p>
-                        <address className="text-[10px] text-white/80 leading-tight not-italic font-light">
-                            E-8-6, Block E, Megan Avenue 1,<br />
-                            189, Jalan Tun Razak,<br />
-                            50400 Kuala Lumpur
-                        </address>
-                    </div>
-
-                    {/* Contact */}
-                    <div>
-                        <p className="text-[10px] font-bold text-brushed-gold uppercase tracking-[0.2em] mb-4">Contact Specialist</p>
-                        <div className="flex flex-col items-start gap-4">
-                            <div className="flex flex-col gap-3">
+                {/* Contact specialists */}
+                <div>
+                    <p className="text-[10px] font-bold text-brushed-gold uppercase tracking-[0.2em] mb-4">Contact Specialist</p>
+                    <div className="flex flex-col items-start gap-4">
+                        <div className="flex flex-col gap-4">
+                            <div className="flex flex-col gap-1">
                                 <a href="tel:+60137023981" className="flex items-center gap-3 group/item">
                                     <Phone className="w-3.5 h-3.5 text-brushed-gold shrink-0 transition-transform group-hover/item:scale-110" />
-                                    <span className="font-serif text-sm tracking-wide text-white group-hover/item:text-brushed-gold transition-colors">013-702 3981</span>
+                                    <span className="font-serif text-sm tracking-wide text-white group-hover/item:text-brushed-gold transition-colors">+60 13-702 3981</span>
                                 </a>
+                                <a href="mailto:rosli@feeljapanwithk.com" className="flex items-center gap-3 group/item pl-[26px] -mt-0.5">
+                                    <Mail className="w-2.5 h-2.5 text-brushed-gold/60 shrink-0" />
+                                    <span className="text-[10px] text-white/60 hover:text-white transition-colors lowercase tracking-wider">rosli@feeljapanwithk.com</span>
+                                </a>
+                                <p className="text-[12px] text-white/40 uppercase tracking-widest pl-[36px]">Rosli Seth</p>
+                            </div>
+                            <div className="flex flex-col gap-1">
                                 <a href="tel:+60196556243" className="flex items-center gap-3 group/item">
                                     <Phone className="w-3.5 h-3.5 text-brushed-gold shrink-0 transition-transform group-hover/item:scale-110" />
-                                    <span className="font-serif text-sm tracking-wide text-white group-hover/item:text-brushed-gold transition-colors">019-655 6243</span>
+                                    <span className="font-serif text-sm tracking-wide text-white group-hover/item:text-brushed-gold transition-colors">+60 19-655 6243</span>
                                 </a>
-                            </div>
-                            <div className="flex items-center gap-3 border-t border-white/5 pt-4 group/item">
-                                <Mail className="w-3.5 h-3.5 text-brushed-gold shrink-0 transition-transform group-hover/item:scale-110" />
-                                <a href="mailto:hello@feeljapanwithk.com" className="text-[11px] text-white/70 hover:text-white transition-colors lowercase tracking-wider">
-                                    hello@feeljapanwithk.com
+                                <a href="mailto:yusmarin@feeljapanwithk.com" className="flex items-center gap-3 group/item pl-[26px] -mt-0.5">
+                                    <Mail className="w-2.5 h-2.5 text-brushed-gold/60 shrink-0" />
+                                    <span className="text-[10px] text-white/60 hover:text-white transition-colors lowercase tracking-wider">yusmarin@feeljapanwithk.com</span>
                                 </a>
+                                <p className="text-[12px] text-white/40 uppercase tracking-widest pl-[36px]">Yusmarin</p>
                             </div>
                         </div>
                     </div>

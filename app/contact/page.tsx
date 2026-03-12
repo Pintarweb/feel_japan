@@ -71,13 +71,40 @@ export default function ContactPage() {
                                         <span className="text-xs text-midnight-navy/70">Kuala Lumpur, Malaysia</span>
                                     </li>
                                     <li className="flex items-start gap-3">
-                                        <Phone className="w-3 h-3 text-brushed-gold shrink-0 mt-1" />
-                                        <a href="https://wa.me/60137023981" className="text-xs text-midnight-navy hover:text-brushed-gold transition-colors">+60 13-702 3981</a>
-                                    </li>
-                                    <li className="flex items-start gap-3">
                                         <Mail className="w-3 h-3 text-brushed-gold shrink-0 mt-1" />
                                         <a href="mailto:hello@feeljapanwithk.com" className="text-xs text-midnight-navy hover:text-brushed-gold transition-colors">hello@feeljapanwithk.com</a>
                                     </li>
+                                    <div className="pt-4 mt-4 border-t border-midnight-navy/10">
+                                        <p className="text-[10px] font-bold text-midnight-navy/40 uppercase tracking-widest mb-4">Contact Persons</p>
+                                        <div className="space-y-4">
+                                            <div className="space-y-1.5">
+                                                <p className="text-[11px] font-bold text-midnight-navy uppercase">Rosli Seth</p>
+                                                <div className="space-y-1">
+                                                    <a href="https://wa.me/60137023981" className="flex items-center gap-2 text-xs text-midnight-navy/70 hover:text-brushed-gold transition-colors">
+                                                        <Phone className="w-3 h-3 text-brushed-gold/50" />
+                                                        +60 13-702 3981
+                                                    </a>
+                                                    <a href="mailto:rosli@feeljapanwithk.com" className="flex items-center gap-2 text-xs text-midnight-navy/70 hover:text-brushed-gold transition-colors">
+                                                        <Mail className="w-3 h-3 text-brushed-gold/50" />
+                                                        rosli@feeljapanwithk.com
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <p className="text-[11px] font-bold text-midnight-navy uppercase">Yusmarin</p>
+                                                <div className="space-y-1">
+                                                    <a href="https://wa.me/60123222841" className="flex items-center gap-2 text-xs text-midnight-navy/70 hover:text-brushed-gold transition-colors">
+                                                        <Phone className="w-3 h-3 text-brushed-gold/50" />
+                                                        +60 19-655 6243
+                                                    </a>
+                                                    <a href="mailto:yusmarin@feeljapanwithk.com" className="flex items-center gap-2 text-xs text-midnight-navy/70 hover:text-brushed-gold transition-colors">
+                                                        <Mail className="w-3 h-3 text-brushed-gold/50" />
+                                                        yusmarin@feeljapanwithk.com
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </ul>
                             </div>
 
@@ -129,7 +156,15 @@ export default function ContactPage() {
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <MapPin className="w-3 h-3 text-midnight-navy/30 shrink-0 mt-1" />
-                                        <span className="text-xs text-midnight-navy/70 font-light">Tokyo, Japan</span>
+                                        <span className="text-xs text-midnight-navy/70 font-light leading-relaxed">
+                                            Suite 402 No.5 Ogawara Building, 5-4-24 Chuo Nakano-ku, Tokyo, Japan
+                                        </span>
+                                    </li>
+                                    <li className="flex items-start gap-3">
+                                        <Mail className="w-3 h-3 text-midnight-navy/30 shrink-0 mt-1" />
+                                        <a href="mailto:hello@feeljapanwithk.com" className="text-xs text-midnight-navy/70 font-light hover:text-brushed-gold transition-colors">
+                                            hello@feeljapanwithk.com
+                                        </a>
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <Briefcase className="w-3 h-3 text-midnight-navy/30 shrink-0 mt-1" />
@@ -189,7 +224,7 @@ export default function ContactPage() {
                             className="inline-flex items-center gap-4 bg-white text-midnight-navy px-10 py-5 rounded-sm text-xs font-bold uppercase tracking-[0.2em] hover:bg-brushed-gold hover:text-white transition-all duration-500 shadow-2xl group"
                         >
                             <Download className="w-4 h-4" />
-                            2026 B2B Brochure
+                            2026 B2B Leaflet
                             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-2" />
                         </Link>
 

@@ -30,9 +30,9 @@ export default function Navbar() {
 
     return (
         <>
-            <nav className="sticky top-0 z-50 flex items-center justify-between px-6 py-2 bg-white/95 backdrop-blur-md border-b border-midnight-navy/5 h-20 md:h-24">
+            <nav className="sticky top-0 z-[50] flex items-center justify-between px-6 py-2 bg-white/95 backdrop-blur-md border-b border-midnight-navy/5 h-20 lg:h-24">
                 {/* Mobile: Hamburger / Desktop: Hidden */}
-                <div className="flex items-center gap-2 md:hidden">
+                <div className="flex items-center gap-2 lg:hidden">
                     <button onClick={() => setIsMenuOpen(true)} className="p-1 group">
                         <span className="block w-6 h-0.5 bg-midnight-navy mb-1.5 rounded-full transition-all group-hover:bg-brushed-gold"></span>
                         <span className="block w-6 h-0.5 bg-midnight-navy mb-1.5 rounded-full transition-all group-hover:bg-brushed-gold"></span>
@@ -41,24 +41,24 @@ export default function Navbar() {
                 </div>
 
                 {/* Logo Section */}
-                <div className="flex items-center gap-6 h-full md:flex-1">
+                <div className="flex items-center gap-6 h-full shrink-0">
                     <Link href="/" className="flex items-center gap-4 h-full group">
                         <img
                             src="/logo_transparent.png"
                             alt="Feel Japan with K"
-                            className="h-[120%] md:h-[135%] w-auto object-contain transition-transform group-hover:scale-105 mt-2"
+                            className="h-[120%] lg:h-[135%] w-auto object-contain transition-transform group-hover:scale-105 mt-2"
                         />
                         <div className="flex flex-col border-l border-midnight-navy/10 pl-4 py-1">
-                            <span className="text-lg md:text-xl font-serif font-bold tracking-tight text-midnight-navy">Feel Japan with K</span>
+                            <span className="text-lg lg:text-xl font-serif font-bold tracking-tight text-midnight-navy">Feel Japan with K</span>
                             <div className="flex items-center gap-3 opacity-60">
-                                <span className="text-[8px] md:text-[9px] font-bold uppercase tracking-widest leading-none whitespace-nowrap">An affiliated company of</span>
+                                <span className="text-[8px] lg:text-[9px] font-bold uppercase tracking-widest leading-none whitespace-nowrap">An affiliated company of</span>
                                 <div className="flex items-center gap-2">
                                     <img
                                         src="/arkalliance_transparent_logo.png"
                                         alt="Ark Alliance"
-                                        className="h-9 md:h-10 w-auto object-contain"
+                                        className="h-9 lg:h-10 w-auto object-contain"
                                     />
-                                    <span className="text-[10px] md:text-[12px] font-bold uppercase tracking-widest text-midnight-navy">Ark Alliance</span>
+                                    <span className="text-[10px] lg:text-[12px] font-bold uppercase tracking-widest text-midnight-navy">Ark Alliance</span>
                                 </div>
                             </div>
                         </div>
@@ -66,7 +66,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Desktop Navigation Links */}
-                <div className="hidden md:flex flex-1 justify-center items-center gap-8">
+                <div className="hidden lg:flex flex-1 justify-center items-center gap-4 xl:gap-6 2xl:gap-8 px-4">
                     <Link href="/" className="text-xs font-bold tracking-widest uppercase text-midnight-navy/85 hover:text-midnight-navy transition-colors">
                         Home
                     </Link>
@@ -88,7 +88,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Partner Identity & CTA */}
-                <div className="flex items-center justify-end gap-6 md:flex-1">
+                <div className="hidden lg:flex items-center justify-end gap-6 shrink-0">
                     <div className="flex items-center space-x-8">
                         {user ? (
                             <div className="flex items-center gap-6">
