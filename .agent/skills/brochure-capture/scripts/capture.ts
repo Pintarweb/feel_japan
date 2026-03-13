@@ -10,7 +10,7 @@ import { createClient } from '@supabase/supabase-js';
 dotenv.config({ path: '.env.local' });
 
 // Configuration
-const BASE_URL = 'https://feeljapanwithk.com';
+const BASE_URL = 'http://localhost:3000';
 const OUTPUT_ROOT = path.join(process.cwd(), 'dist', 'brochures');
 const CLIENT_DIR = OUTPUT_ROOT; // Standard brochures saved directly in dist/brochures/
 const AGENT_DIR = path.join(OUTPUT_ROOT, 'pricing'); // Pricing brochures saved in dist/brochures/pricing/

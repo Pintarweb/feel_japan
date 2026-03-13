@@ -46,7 +46,7 @@ export default function AboutPage() {
                     <div className="grid lg:grid-cols-2 gap-20 items-center">
                         <div className="space-y-8">
                             <h2 className="text-10px font-bold uppercase tracking-[0.4em] text-brushed-gold">
-                                The Symbiotic Partnership
+                                The Compatibility Partnership
                             </h2>
                             <h3 className="text-4xl md:text-5xl font-serif text-midnight-navy leading-tight">
                                 The Power of Two: <br />
@@ -65,22 +65,28 @@ export default function AboutPage() {
                         <div className="grid sm:grid-cols-1 gap-6">
                             {[
                                 {
-                                    icon: Globe,
-                                    title: "Ground-Level Accuracy",
-                                    desc: "Real-time updates and direct coordination from our team living and working in Tokyo.",
-                                    tag: "Tokyo HQ"
+                                    icon: CheckCircle,
+                                    title: "Reliability",
+                                    desc: "We ensure consistent, high-quality experiences by working closely with trusted local partners and reliably delivering on what we promise.",
+                                    tag: "Our Commitments"
                                 },
                                 {
                                     icon: Users,
-                                    title: "Local Accountability",
-                                    desc: "A dedicated Malaysian partner in your time zone, speaking your language, and handling your currency.",
-                                    tag: "KL Partner"
+                                    title: "Responsibility",
+                                    desc: "We are deeply committed to sustainable travel and hold ourselves accountable to our clients, partners, and the communities we visit.",
+                                    tag: "Our Commitments"
+                                },
+                                {
+                                    icon: Briefcase,
+                                    title: "Capability",
+                                    desc: "Our specialized team possesses the deep local knowledge and operational strength needed to craft exceptional, seamless itineraries.",
+                                    tag: "Our Commitments"
                                 },
                                 {
                                     icon: ShieldCheck,
-                                    title: "Official Licensing",
-                                    desc: "The peace of mind that comes with working with a registered, bonded Japanese operator.",
-                                    tag: "Compliance"
+                                    title: "Compliance & Regulatory",
+                                    desc: "We strictly adhere to all travel regulations, working exclusively with fully licensed and regulated suppliers for your complete peace of mind.",
+                                    tag: "Our Commitments"
                                 }
                             ].map((item, i) => (
                                 <div key={i} className="group bg-white p-8 border border-midnight-navy/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 rounded-sm">
@@ -110,14 +116,14 @@ export default function AboutPage() {
                 <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
                     <div className="w-16 h-[1px] bg-brushed-gold/40 mx-auto mb-10"></div>
                     <h2 className="text-4xl md:text-5xl font-serif text-white mb-10 leading-tight">
-                        Our Mission: <span className="italic italic text-brushed-gold">Redefining Muslim-Friendly Travel</span>
+                        Our Mission: <span className="italic text-brushed-gold">Delivering Trusted Muslim-Friendly Experiences</span>
                     </h2>
                     <div className="space-y-8 text-xl font-extralight text-white/70 leading-relaxed italic">
                         <p>
-                            \"Personally lead by Mr. Rosli Seth, our mission is to empower Malaysian travel agencies to sell Japan with absolute confidence. We don’t just 'check for Halal food'—we curate experiences that honor the traveler’s faith while celebrating Japan’s rich traditions.\"
+                            &quot;Our mission is simple yet profound: to deliver the absolute best of what Japan has to offer, fully immersing travelers in the heart of its culture, scenery, and hospitality, without ever forgetting or compromising on Muslim needs and values.&quot;
                         </p>
                         <p>
-                            \"We believe that Japan’s beauty should be accessible to everyone without compromising on religious values. Through the spirit of Omotenashi (Japanese hospitality), we provide the localized support and vetted resources that Malaysian travel professionals need to succeed in this growing market.\"
+                            &quot;Through the spirit of Omotenashi (Japanese hospitality), we curate every journey meticulously. By combining world-class attractions with thoughtfully vetted, authentic halal dining and prayer facilities, we ensure that every experience honors both the breathtaking beauty of Japan and the core principles of your faith.&quot;
                         </p>
                     </div>
                     <div className="w-16 h-[1px] bg-brushed-gold/40 mx-auto mt-10"></div>
@@ -136,19 +142,19 @@ export default function AboutPage() {
                         {[
                             {
                                 title: "Muslim-Friendly Compliances",
-                                desc: "Every itinerary, restaurant, and prayer space has been personally reviewed for quality and religious compliance."
+                                desc: "Every itinerary, restaurant, and prayer space has been carefully selected and vetted for quality and religious compliance."
                             },
                             {
-                                title: "B2B Focused Support",
-                                desc: "We provide ready-to-use marketing assets and seamless logistics so you can focus on the sale."
+                                title: "Travel Agents Focused Support",
+                                desc: "We provide our B2B partners with ready-to-use marketing assets and seamless logistics so you can focus on the sale."
                             },
                             {
-                                title: "Authentic 'Off-Path' Access",
-                                desc: "Beyond typical tourist traps, we offer your clients the 'Real Japan' through our deep local networks."
+                                title: "On-Hand Experience",
+                                desc: "Our itineraries are crafted from genuine, practical experience, ensuring every route and activity is designed for optimal execution on the ground."
                             },
                             {
                                 title: "Cultural Fluency",
-                                desc: "We understand the nuances and expectations of the Malaysian traveler better than anyone else."
+                                desc: "We have a deep understanding of the nuances, preferences, and expectations of the Malaysian traveler to ensure a comfortable journey."
                             }
                         ].map((benefit, i) => (
                             <div key={i} className="p-8 border-l border-midnight-navy/5 hover:border-brushed-gold transition-colors duration-500">
@@ -165,7 +171,7 @@ export default function AboutPage() {
             {/* Final CTA */}
             <section className="py-24 bg-midnight-navy relative overflow-hidden text-center">
                 <div className="max-w-3xl mx-auto px-6 relative z-10">
-                    <h2 className="text-3xl md:text-5xl font-serif text-white mb-8">Ready to elevate your Japan offerings?</h2>
+                    <h2 className="text-3xl md:text-5xl font-serif text-white mb-8">Let&apos;s create An Unforgettable Itinerary for your clients.</h2>
                     <p className="text-white/60 font-light mb-12 text-lg">
                         Gain immediate access to our latest 2026 travel resources and start crafting bespoke journeys for your clients today.
                     </p>
@@ -173,7 +179,7 @@ export default function AboutPage() {
                         href="/partner-resources"
                         className="inline-flex items-center gap-4 bg-brushed-gold text-white px-10 py-5 rounded-sm text-xs font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-midnight-navy transition-all duration-500 shadow-2xl group"
                     >
-                        Download our 2026 B2B Brochure
+                        Download our 2026 B2B Leaflet
                         <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-2" />
                     </Link>
                 </div>

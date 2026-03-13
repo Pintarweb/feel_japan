@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.16] - 2026-03-13
+### Changed
+- update: modified capture.ts, page.tsx, itineraries.json
+
 ## [0.1.15] - 2026-03-12
 ### Changed
 - update: modified route.ts, page.tsx, page.tsx and 5 others
