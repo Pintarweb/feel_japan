@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.17] - 2026-03-15
+### Changed
+- update: modified page.tsx, layout.tsx, BottomNav.tsx and 2 others
+
 ## [0.1.16] - 2026-03-13
 ### Changed
 - update: modified capture.ts, page.tsx, itineraries.json

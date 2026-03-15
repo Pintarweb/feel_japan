@@ -102,16 +102,16 @@ export default function BulletinPage() {
 
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-center md:text-left">
                     <div className="max-w-3xl">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brushed-gold/5 border border-brushed-gold/10 mb-8 cursor-default">
-                            <Newspaper className="w-4 h-4 text-brushed-gold" />
-                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-brushed-gold">
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-brushed-gold/5 border border-brushed-gold/10 mb-6 sm:mb-8 cursor-default">
+                            <Newspaper className="w-3 h-3 sm:w-4 sm:h-4 text-brushed-gold" />
+                            <span className="text-[8px] sm:text-[10px] font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-brushed-gold">
                                 Japan Insider Bulletin
                             </span>
                         </div>
-                        <h1 className="text-4xl md:text-7xl font-serif text-midnight-navy mb-8 leading-tight">
+                        <h1 className="text-3xl md:text-7xl font-serif text-midnight-navy mb-6 sm:mb-8 leading-tight">
                             Strategic <span className="italic font-light text-brushed-gold">Intelligence</span>
                         </h1>
-                        <p className="text-xl text-midnight-navy/60 font-light leading-relaxed">
+                        <p className="text-base sm:text-xl text-midnight-navy/60 font-light leading-relaxed">
                             Filtering the noise to deliver high-priority signals for our Malaysian travel partners.
                         </p>
                     </div>
@@ -131,31 +131,31 @@ export default function BulletinPage() {
                         <div className="h-px flex-1 bg-white/10"></div>
                     </div>
 
-                    <div className="grid lg:grid-cols-3 gap-8">
+                    <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
                         {B2B_INSIDER_ALERTS.map((alert, i) => (
-                            <div key={i} className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-all duration-500 group flex flex-col h-full relative">
+                            <div key={i} className="bg-white/5 backdrop-blur-md border border-white/10 p-6 sm:p-8 rounded-2xl hover:bg-white/10 transition-all duration-500 group flex flex-col h-full relative">
                                 {watchlist.includes(alert.title) && (
                                     <div className="absolute top-4 right-4 flex items-center gap-2 px-2 py-1 bg-brushed-gold/20 rounded-full border border-brushed-gold/30 animate-in zoom-in duration-300">
                                         <div className="w-1.5 h-1.5 bg-brushed-gold rounded-full animate-pulse" />
-                                        <span className="text-[8px] font-bold text-brushed-gold uppercase">Saved</span>
+                                        <span className="text-[6px] sm:text-[8px] font-bold text-brushed-gold uppercase">Saved</span>
                                     </div>
                                 )}
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="p-3 bg-white/10 rounded-xl">
+                                <div className="flex items-center gap-4 mb-5 sm:mb-6">
+                                    <div className="p-2 sm:p-3 bg-white/10 rounded-xl">
                                         {alert.icon}
                                     </div>
-                                    <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">{alert.category}</span>
+                                    <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-white/40">{alert.category}</span>
                                 </div>
-                                <h3 className="text-xl font-serif text-white mb-4 leading-snug">{alert.title}</h3>
-                                <div className="p-4 bg-brushed-gold/10 border-l-2 border-brushed-gold rounded-sm mb-6">
-                                    <p className="text-xs font-bold text-brushed-gold uppercase tracking-tighter mb-1">Skill Output:</p>
-                                    <p className="text-sm text-white/90 font-medium italic">"{alert.action}"</p>
+                                <h3 className="text-lg sm:text-xl font-serif text-white mb-4 leading-snug">{alert.title}</h3>
+                                <div className="p-3 sm:p-4 bg-brushed-gold/10 border-l-2 border-brushed-gold rounded-sm mb-6">
+                                    <p className="text-[9px] font-bold text-brushed-gold uppercase tracking-tighter mb-1">Execution Action:</p>
+                                    <p className="text-xs sm:text-sm text-white/90 font-medium italic">"{alert.action}"</p>
                                 </div>
-                                <p className="text-xs text-white/60 leading-relaxed mb-8">{alert.summary}</p>
+                                <p className="text-[11px] sm:text-xs text-white/60 leading-relaxed mb-6 sm:mb-8">{alert.summary}</p>
 
                                 <button
                                     onClick={() => setSelectedAlert(alert)}
-                                    className="mt-auto w-full py-3 bg-white/10 text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-lg border border-white/5 hover:bg-brushed-gold hover:text-midnight-navy hover:border-brushed-gold transition-all duration-300 flex items-center justify-center gap-2 group/btn"
+                                    className="mt-auto w-full py-3 bg-white/10 text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] rounded-lg border border-white/5 hover:bg-brushed-gold hover:text-midnight-navy hover:border-brushed-gold transition-all duration-300 flex items-center justify-center gap-2 group/btn"
                                 >
                                     Access Briefing
                                     <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
@@ -283,20 +283,20 @@ export default function BulletinPage() {
                                     <ShieldCheck className="w-8 h-8 text-brushed-gold" />
                                 </div>
 
-                                <div className="mt-8 relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
+                                <div className="mt-8 relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8">
                                     <div className="max-w-md">
-                                        <div className="flex items-baseline gap-3 mb-4">
-                                            <span className="text-5xl font-serif text-white uppercase tracking-tighter">Status</span>
-                                            <span className="text-5xl font-serif text-emerald-400 italic">Optimal</span>
+                                        <div className="flex items-baseline gap-2 sm:gap-3 mb-4 flex-wrap">
+                                            <span className="text-3xl sm:text-5xl font-serif text-white uppercase tracking-tighter leading-none">Status</span>
+                                            <span className="text-3xl sm:text-5xl font-serif text-emerald-400 italic leading-none">Optimal</span>
                                         </div>
-                                        <p className="text-white/50 text-sm leading-relaxed">
+                                        <p className="text-white/50 text-xs sm:text-sm leading-relaxed">
                                             Our ground support teams in Tokyo, Osaka, and Fukuoka report no operational disruptions. All pre-booked transport and facilities are confirmed at 100% capacity.
                                         </p>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-2">Confidence Level</p>
-                                        <div className="flex gap-1">
-                                            {[1, 2, 3, 4, 5].map(i => <div key={i} className="w-8 h-1.5 bg-emerald-400 rounded-full" />)}
+                                    <div className="md:text-right">
+                                        <p className="text-[9px] sm:text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-2 font-sans">Confidence Level</p>
+                                        <div className="flex gap-1 flex-wrap">
+                                            {[1, 2, 3, 4, 5].map(i => <div key={i} className="w-6 sm:w-8 h-1 bg-emerald-400 rounded-full" />)}
                                         </div>
                                     </div>
                                 </div>

@@ -30,7 +30,7 @@ export default function Navbar() {
 
     return (
         <>
-            <nav className="sticky top-0 z-[50] flex items-center justify-between px-6 py-2 bg-white/95 backdrop-blur-md border-b border-midnight-navy/5 h-20 lg:h-24">
+            <nav className="sticky top-0 z-[50] flex items-center justify-between px-3 sm:px-6 py-2 bg-white/95 backdrop-blur-md border-b border-midnight-navy/5 h-20 lg:h-24">
                 {/* Mobile: Hamburger / Desktop: Hidden */}
                 <div className="flex items-center gap-2 lg:hidden">
                     <button onClick={() => setIsMenuOpen(true)} className="p-1 group">
@@ -48,17 +48,17 @@ export default function Navbar() {
                             alt="Feel Japan with K"
                             className="h-[120%] lg:h-[135%] w-auto object-contain transition-transform group-hover:scale-105 mt-2"
                         />
-                        <div className="flex flex-col border-l border-midnight-navy/10 pl-4 py-1">
-                            <span className="text-lg lg:text-xl font-serif font-bold tracking-tight text-midnight-navy">Feel Japan with K</span>
-                            <div className="flex items-center gap-3 opacity-60">
-                                <span className="text-[8px] lg:text-[9px] font-bold uppercase tracking-widest leading-none whitespace-nowrap">An affiliated company of</span>
-                                <div className="flex items-center gap-2">
+                        <div className="flex flex-col border-l border-midnight-navy/10 pl-2 sm:pl-4 py-0.5 overflow-hidden justify-center">
+                            <span className="text-[11px] xs:text-[13px] sm:text-lg lg:text-xl font-serif font-bold tracking-tight text-midnight-navy leading-tight truncate sm:whitespace-nowrap">Feel Japan with K</span>
+                            <div className="flex flex-col xs:flex-row xs:items-center gap-0.5 xs:gap-3 opacity-60">
+                                <span className="text-[6px] sm:text-[9px] font-bold uppercase tracking-[0.05em] sm:tracking-widest leading-none whitespace-nowrap">An affiliated company of</span>
+                                <div className="flex items-center gap-1 sm:gap-2">
                                     <img
                                         src="/arkalliance_transparent_logo.png"
                                         alt="Ark Alliance"
-                                        className="h-9 lg:h-10 w-auto object-contain"
+                                        className="h-3 sm:h-9 lg:h-10 w-auto object-contain"
                                     />
-                                    <span className="text-[10px] lg:text-[12px] font-bold uppercase tracking-widest text-midnight-navy">Ark Alliance</span>
+                                    <span className="text-[7px] sm:text-[10px] lg:text-[12px] font-bold uppercase tracking-widest text-midnight-navy whitespace-nowrap">Ark Alliance</span>
                                 </div>
                             </div>
                         </div>

@@ -15,6 +15,32 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "Feel Japan with K | Exclusive B2B Travel",
   description: "Curated luxury travel experiences for discerning agents.",
+  metadataBase: new URL("https://feeljapanwithk.com"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Feel Japan with K | Exclusive B2B Travel",
+    description: "Curated luxury travel experiences for discerning agents.",
+    url: "https://feeljapanwithk.com",
+    siteName: "Feel Japan with K",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Feel Japan with K - Exclusive B2B Travel Showcase",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Feel Japan with K | Exclusive B2B Travel",
+    description: "Curated luxury travel experiences for discerning agents.",
+    images: ["/og-image.png"],
+  },
   icons: {
     icon: "/favicon.png?v=3",
     shortcut: "/favicon.png?v=3",
