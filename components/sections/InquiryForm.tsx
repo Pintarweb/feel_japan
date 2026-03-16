@@ -283,7 +283,7 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                 <div>
                                     <label className="block text-[10px] font-bold uppercase tracking-widest text-midnight-navy/70 mb-1.5 ml-1">Phone Number</label>
                                     <div className="flex gap-2">
-                                        <div className="relative w-44 flex-shrink-0" ref={dropdownRef}>
+                                        <div className="relative w-32 flex-shrink-0" ref={dropdownRef}>
                                             <button
                                                 type="button"
                                                 className="w-full h-full bg-white text-midnight-navy border border-midnight-navy/10 rounded-lg pl-12 pr-8 py-4 flex items-center focus:outline-none focus:ring-1 focus:ring-brushed-gold cursor-pointer text-sm"
@@ -340,7 +340,7 @@ export default function InquiryForm({ brochures, isAgent = false, agentProfile }
                                                 const rawValue = e.target.value.replace(/[^\d\s\-\+]/g, "");
                                                 setPhoneNumber(rawValue);
                                             }}
-                                            className={inputClasses('phone')}
+                                            className={inputClasses('phone') + " flex-1"}
                                             placeholder="e.g. 123456789"
                                             maxLength={20}
                                         />
