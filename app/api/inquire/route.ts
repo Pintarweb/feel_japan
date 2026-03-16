@@ -90,7 +90,8 @@ export async function POST(req: Request) {
     const inquiryData: any = {
       pax,
       adults,
-      children_6_11: numChildrenCWB + numChildrenCNB,
+      children_cwb: numChildrenCWB,
+      children_cnb: numChildrenCNB,
       infants_0_2: numInfants0to2,
       travel_dates,
       package_slug,
