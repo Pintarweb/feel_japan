@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.18] - 2026-03-19
+### Changed
+- update: modified StudioBuilder.tsx, page.tsx, 
+
 ## [0.1.17] - 2026-03-15
 ### Changed
 - update: modified page.tsx, layout.tsx, BottomNav.tsx and 2 others

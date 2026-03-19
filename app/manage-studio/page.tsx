@@ -367,6 +367,8 @@ export default function ManageStudioDashboard() {
                                                 <option value="all">All</option>
                                                 <option value="FIT">FIT</option>
                                                 <option value="GIT">GIT</option>
+                                                <option value="Seasonal">Seasonal</option>
+                                                <option value="Corporate">Corporate</option>
                                             </select>
                                         </td>
                                         <td className="px-8 py-3">
