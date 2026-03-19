@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import Hero from "@/components/sections/Hero";
 import Features from "@/components/sections/Features";
 import Navbar from "@/components/layout/Navbar";
