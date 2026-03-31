@@ -108,7 +108,7 @@ export default function PrivacyPage() {
                         <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-midnight-navy/30 mb-6">Inquiries regarding Privacy</p>
                         <p className="text-sm text-midnight-navy/60">
                             For matters regarding data protection, please contact our legal concierge at:<br />
-                            <span className="text-midnight-navy font-bold mt-2 block">legal@feeljapan.com</span>
+                            <span className="text-midnight-navy font-bold mt-2 block">admin@feeljapanwithk.com</span>
                         </p>
                     </div>
                 </div>

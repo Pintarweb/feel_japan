@@ -120,14 +120,6 @@ export default function TermsPage() {
                         </div>
                     </div>
 
-                    {/* Final Branding Disclaimer */}
-                    <div className="pt-12 border-t border-midnight-navy/5 text-center">
-                        <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-midnight-navy/30 mb-6">Execution of Professional Standards</p>
-                        <p className="text-sm text-midnight-navy/60">
-                            Feel Japan with K • Travel & Tours<br />
-                            Kuala Lumpur Headquarters
-                        </p>
-                    </div>
                 </div>
             </section>
 
