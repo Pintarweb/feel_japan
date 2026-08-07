@@ -76,12 +76,21 @@ export default function StudioArchive() {
 
     async function restoreBrochure(id: string) {
         try {
+            const brochureToRestore = brochures.find(b => b.id === id);
             const { error } = await supabase
                 .from('brochures')
                 .update({ is_archived: false })
                 .eq('id', id);
             if (error) throw error;
             setBrochures(brochures.filter(b => b.id !== id));
+
+            if (brochureToRestore?.slug) {
+                fetch('/api/brochure/capture', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ slug: brochureToRestore.slug })
+                }).catch(err => console.error('PDF Regeneration Trigger Failed:', err));
+            }
         } catch (err) {
             console.error(err);
             alert('Failed to restore.');
