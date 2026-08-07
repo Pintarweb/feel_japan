@@ -154,7 +154,12 @@ export default function PartnerResourcesGrid({ brochures }: PartnerResourcesGrid
                                                         <Globe className="w-3 h-3" />
                                                         Online View
                                                     </Link>
-                                                    {brochure.pdf_last_generated_at ? (
+                                                    {cat === 'Seasonal' ? (
+                                                        <div className="flex items-center justify-center gap-1.5 py-3 border border-gray-200 text-gray-400 text-[9px] font-bold uppercase tracking-widest rounded-sm cursor-not-allowed">
+                                                            <FileText className="w-3 h-3" />
+                                                            Unavailable
+                                                        </div>
+                                                    ) : brochure.pdf_last_generated_at ? (
                                                         <button
                                                             onClick={() => handleOpenModal(brochure, pricingPdfUrlVal)}
                                                             className="flex items-center justify-center gap-1.5 py-3 border border-brushed-gold/30 text-brushed-gold text-[9px] font-bold uppercase tracking-widest rounded-sm hover:bg-brushed-gold/5 transition-colors"
