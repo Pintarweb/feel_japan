@@ -1,4 +1,6 @@
 
+export const dynamic = 'force-dynamic';
+
 import { Metadata } from 'next';
 import { getBrochures } from '@/lib/services/brochureService';
 import Navbar from '@/components/layout/Navbar';
