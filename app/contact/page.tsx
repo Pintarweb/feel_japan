@@ -84,9 +84,9 @@ export default function ContactPage() {
                                                         <Phone className="w-3 h-3 text-brushed-gold/50" />
                                                         +60 13-702 3981
                                                     </a>
-                                                    <a href="mailto:rosli@feeljapanwithk.com" className="flex items-center gap-2 text-xs text-midnight-navy/70 hover:text-brushed-gold transition-colors">
+                                                    <a href="mailto:rosli@feeljapank.com" className="flex items-center gap-2 text-xs text-midnight-navy/70 hover:text-brushed-gold transition-colors">
                                                         <Mail className="w-3 h-3 text-brushed-gold/50" />
-                                                        rosli@feeljapanwithk.com
+                                                        rosli@feeljapank.com
                                                     </a>
                                                 </div>
                                             </div>
@@ -97,9 +97,9 @@ export default function ContactPage() {
                                                         <Phone className="w-3 h-3 text-brushed-gold/50" />
                                                         +60 19-655 6243
                                                     </a>
-                                                    <a href="mailto:yusmarin@feeljapanwithk.com" className="flex items-center gap-2 text-xs text-midnight-navy/70 hover:text-brushed-gold transition-colors">
+                                                    <a href="mailto:yus@feeljapanwithk.com" className="flex items-center gap-2 text-xs text-midnight-navy/70 hover:text-brushed-gold transition-colors">
                                                         <Mail className="w-3 h-3 text-brushed-gold/50" />
-                                                        yusmarin@feeljapanwithk.com
+                                                        yus@feeljapanwithk.com
                                                     </a>
                                                 </div>
                                             </div>

@@ -34,9 +34,9 @@ export default function Footer() {
                                     <Phone className="w-3.5 h-3.5 text-brushed-gold shrink-0 transition-transform group-hover/item:scale-110" />
                                     <span className="font-serif text-sm tracking-wide text-white group-hover/item:text-brushed-gold transition-colors">+60 13-702 3981</span>
                                 </a>
-                                <a href="mailto:rosli@feeljapanwithk.com" className="flex items-center gap-3 group/item pl-[26px] -mt-0.5">
+                                <a href="mailto:rosli@feeljapank.com" className="flex items-center gap-3 group/item pl-[26px] -mt-0.5">
                                     <Mail className="w-2.5 h-2.5 text-brushed-gold/60 shrink-0" />
-                                    <span className="text-[10px] text-white/60 hover:text-white transition-colors lowercase tracking-wider">rosli@feeljapanwithk.com</span>
+                                    <span className="text-[10px] text-white/60 hover:text-white transition-colors lowercase tracking-wider">rosli@feeljapank.com</span>
                                 </a>
                                 <p className="text-[12px] text-white/40 uppercase tracking-widest pl-[36px]">Rosli Seth</p>
                             </div>
@@ -45,9 +45,9 @@ export default function Footer() {
                                     <Phone className="w-3.5 h-3.5 text-brushed-gold shrink-0 transition-transform group-hover/item:scale-110" />
                                     <span className="font-serif text-sm tracking-wide text-white group-hover/item:text-brushed-gold transition-colors">+60 19-655 6243</span>
                                 </a>
-                                <a href="mailto:yusmarin@feeljapanwithk.com" className="flex items-center gap-3 group/item pl-[26px] -mt-0.5">
+                                <a href="mailto:yus@feeljapanwithk.com" className="flex items-center gap-3 group/item pl-[26px] -mt-0.5">
                                     <Mail className="w-2.5 h-2.5 text-brushed-gold/60 shrink-0" />
-                                    <span className="text-[10px] text-white/60 hover:text-white transition-colors lowercase tracking-wider">yusmarin@feeljapanwithk.com</span>
+                                    <span className="text-[10px] text-white/60 hover:text-white transition-colors lowercase tracking-wider">yus@feeljapanwithk.com</span>
                                 </a>
                                 <p className="text-[12px] text-white/40 uppercase tracking-widest pl-[36px]">Yusmarin</p>
                             </div>
